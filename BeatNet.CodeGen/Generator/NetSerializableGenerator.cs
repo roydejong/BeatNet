@@ -101,8 +101,8 @@ public class NetSerializableGenerator
                     field.ParamNameForField == instruction.FieldName || field.ParamName == instruction.FieldName);
 
                 if (linkedField == null)
-                {
-                    // Debugger.Break();
+                { 
+                    Debugger.Break();
                     writeCodeBuffer.AppendLine($"\t\t// TODO Bad Field Ref: {instruction.FieldName}");
                     readCodeBuffer.AppendLine($"\t\t// TODO Bad Field Ref: {instruction.FieldName}");
                     continue;
@@ -132,6 +132,14 @@ public class NetSerializableGenerator
                     case "GetFloat();":
                         rwMethod = "Float";
                         break;
+                    case "GetByte();":
+                        rwMethod = "Byte";
+                        break;
+                    case "1f":
+                        rwMethod = null;
+                        writeCodeBuffer.AppendLine($"\t\twriter.WriteFloat(1f);");
+                        readCodeBuffer.AppendLine($"\t\t{linkedField.ParamNameForField} = 1f;");
+                        break;
                     case "SyncStateId.Deserialize(reader);":
                     case "Deserialize();":
                         // INetSerializable
@@ -141,8 +149,11 @@ public class NetSerializableGenerator
                         break;
                 }
 
-                writeCodeBuffer.AppendLine($"\t\twriter.Write{rwMethod}({linkedField.ParamNameForField});");
-                readCodeBuffer.AppendLine($"\t\t{linkedField.ParamNameForField} = reader.Read{rwMethod}();");
+                if (rwMethod != null)
+                {
+                    writeCodeBuffer.AppendLine($"\t\twriter.Write{rwMethod}({linkedField.ParamNameForField});");
+                    readCodeBuffer.AppendLine($"\t\t{linkedField.ParamNameForField} = reader.Read{rwMethod}();");
+                }
             }
         }
         else

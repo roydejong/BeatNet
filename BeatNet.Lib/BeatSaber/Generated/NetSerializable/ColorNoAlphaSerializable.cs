@@ -13,26 +13,32 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class ColorNoAlphaSerializable : INetSerializable
 {
-	public Color Color { get; set; }
+	public float R { get; set; }
+	public float G { get; set; }
+	public float B { get; set; }
+	public float A { get; set; }
 
-	public ColorNoAlphaSerializable(Color color)
+	public ColorNoAlphaSerializable(float r, float g, float b, float a)
 	{
-		Color = color;
+		R = r;
+		G = g;
+		B = b;
+		A = a;
 	}
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		// TODO Bad Field Ref: color.r
-		// TODO Bad Field Ref: color.g
-		// TODO Bad Field Ref: color.b
-		// TODO Bad Field Ref: a
+		writer.WriteFloat(R);
+		writer.WriteFloat(G);
+		writer.WriteFloat(B);
+		writer.WriteFloat(1f);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		// TODO Bad Field Ref: color.r
-		// TODO Bad Field Ref: color.g
-		// TODO Bad Field Ref: color.b
-		// TODO Bad Field Ref: a
+		R = reader.ReadFloat();
+		G = reader.ReadFloat();
+		B = reader.ReadFloat();
+		A = 1f;
 	}
 }

@@ -19,9 +19,22 @@ public class NetSerializableAnalyzer : ISubAnalyzer
             _currentResult.TypeName = _typeName;
             
             results.NetSerializables.Add(_currentResult);
+
+            if (_typeName is "ColorSerializable" or "Color32Serializable" or "ColorNoAlphaSerializable")
+            {
+                // Special case: We don't use Unity colors, so these should not be "wrappers" as they are in the game
+                // We'll explicitly set up the R/G/B/A fields
+                var colorPartType = _typeName == "Color32Serializable" ? "byte" : "float";
+                _currentResult.Fields.Add("r", new TypedParam() { ParamName = "r", TypeName = colorPartType });
+                _currentResult.Fields.Add("g", new TypedParam() { ParamName = "g", TypeName = colorPartType });
+                _currentResult.Fields.Add("b", new TypedParam() { ParamName = "b", TypeName = colorPartType });
+                _currentResult.Fields.Add("a", new TypedParam() { ParamName = "a", TypeName = colorPartType });
+            }
+
+            return;
         }
 
-        if (_typeName == null)
+        if (_typeName is null or "ColorSerializable" or "Color32Serializable" or "ColorNoAlphaSerializable")
             return;
 
         if (line.IsField)
@@ -88,6 +101,7 @@ public class NetSerializableAnalyzer : ISubAnalyzer
 
         var rawLine = line.RawLine;
         rawLine = rawLine.Replace("this.", "");
+        rawLine = rawLine.Replace("_color.", "");
 
         if (rawLine.Contains("reader."))
         {

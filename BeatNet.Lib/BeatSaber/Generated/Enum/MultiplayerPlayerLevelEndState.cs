@@ -3,6 +3,8 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: MultiplayerLevelCompletionResults
+
 public enum MultiplayerPlayerLevelEndState : int
 {
 	SongFinished = 0,

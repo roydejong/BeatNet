@@ -33,7 +33,7 @@ public class FileAnalyzer
             domainAnalyzer = new RpcManagerAnalyzer();
         else if (FileNameNoExt == "ConnectedPlayerManager")
             domainAnalyzer = new ConnectedPlayerManagerAnalyzer();
-        else if (FileNameNoExt == "SliderData")
+        else if (FileNameNoExt is "SliderData" or "MultiplayerSessionManager")
             domainAnalyzer = null; // Enum extraction only
         else
             domainAnalyzer = new NetSerializableAnalyzer();
@@ -132,7 +132,7 @@ public class FileAnalyzer
     {
         // Explicit Blocklist
         var blockList = new string[] { "PartyMessageHandler", "AuthenticationToken",
-            "MultiplayerSessionManager", "NetworkPacketSerializer", "PoolableSerializable", "StateBuffer", 
+            "NetworkPacketSerializer", "PoolableSerializable", "StateBuffer", 
             "RemoteProcedureCall", "Extensions", "GameplayType", "ScoringType" };
         foreach (var block in blockList)
         {
@@ -144,7 +144,7 @@ public class FileAnalyzer
         var allowList = new string[] { "Serializable", "SyncState", "EntitlementsStatus", "CannotStartGameReason",
             "MultiplayerGameState", "ColorType", "NoteCutDirection", "NoteLineLayer", "SliderMidAnchorMode",
             "NoteData", "DiscoveryPolicy", "InvitePolicy", "GameplayServerMode", "SongSelectionMode",
-            "GameplayServerControlSettings", "MultiplayerAvatarData", "SliderData"
+            "GameplayServerControlSettings", "MultiplayerAvatarData", "SliderData", "MultiplayerSessionManager"
         };
         foreach (var allow in allowList)
         {

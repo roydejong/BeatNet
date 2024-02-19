@@ -3,6 +3,8 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: LevelCompletionResults
+
 public enum LevelEndStateType : int
 {
 	Incomplete = 0,

@@ -3,6 +3,8 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: NodePoseSyncState
+
 public enum NodePose : int
 {
 	Head = 0,

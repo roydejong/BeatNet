@@ -3,6 +3,8 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: StandardScoreSyncState
+
 public enum Score : int
 {
 	ModifiedScore = 0,

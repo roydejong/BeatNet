@@ -3,10 +3,11 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
-// Context: GameplayModifiers
+// Context: MultiplayerSessionManager
 
-public enum EnergyType : int
+public enum SessionType : int
 {
-	Bar = 0,
-	Battery = 1
+	Player = 0,
+	Spectator = 1,
+	DedicatedServer = 2
 }

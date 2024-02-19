@@ -102,7 +102,7 @@ public class NetSerializableGenerator
 
                 if (linkedField == null)
                 { 
-                    Debugger.Break();
+                    // Debugger.Break();
                     writeCodeBuffer.AppendLine($"\t\t// TODO Bad Field Ref: {instruction.FieldName}");
                     readCodeBuffer.AppendLine($"\t\t// TODO Bad Field Ref: {instruction.FieldName}");
                     continue;

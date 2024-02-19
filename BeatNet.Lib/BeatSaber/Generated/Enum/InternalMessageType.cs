@@ -3,6 +3,8 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: ConnectedPlayerManager
+
 public enum InternalMessageType : byte
 {
 	SyncTime = 0,

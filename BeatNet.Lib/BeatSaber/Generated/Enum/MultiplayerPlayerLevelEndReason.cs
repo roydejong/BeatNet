@@ -3,6 +3,8 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: MultiplayerLevelCompletionResults
+
 public enum MultiplayerPlayerLevelEndReason : int
 {
 	Cleared = 0,

@@ -3,6 +3,8 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: MenuRpcManager
+
 public enum MenuRpcType : byte
 {
 	SetPlayersMissingEntitlementsToLevel = 0,

@@ -3,6 +3,8 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: RankModel
+
 public enum Rank : int
 {
 	E = 0,

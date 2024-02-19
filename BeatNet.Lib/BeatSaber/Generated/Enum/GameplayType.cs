@@ -3,6 +3,8 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: NoteData
+
 public enum GameplayType : int
 {
 	Normal = 0,

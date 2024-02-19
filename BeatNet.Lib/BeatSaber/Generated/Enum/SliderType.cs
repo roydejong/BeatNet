@@ -3,6 +3,8 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: SliderData
+
 public enum SliderType : int
 {
 	Normal = 0,

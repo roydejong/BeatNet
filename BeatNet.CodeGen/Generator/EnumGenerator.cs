@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using BeatNet.CodeGen.Analysis.ResultData;
 
 namespace BeatNet.CodeGen.Generator;
@@ -19,6 +20,11 @@ public class EnumGenerator
             var managerNamePlain = Enum.ContainingType!.Replace("RpcManager", "");
             Enum.EnumName = $"{managerNamePlain}RpcType";
         }
+        else if (Enum is { EnumName: "MessageType", ContainingType: "ConnectedPlayerManager" })
+        {
+            // Ignore this enum, it's not used
+            return;
+        }
         
         var targetNamespace = $"{gs.BaseNamespace}.Enum";
         var targetDir = Path.Combine(gs.OutputPath, "Enum");
@@ -36,6 +42,9 @@ public class EnumGenerator
         sw.WriteLine();
         sw.WriteLine($"namespace {targetNamespace};");
         sw.WriteLine();
+        
+        if (Enum.ContainingType != null)
+            sw.WriteLine($"// Context: {Enum.ContainingType}\n");
         
         sw.WriteLine($"public enum {Enum.EnumName} : {Enum.EnumBackingType}");
         sw.WriteLine("{");

@@ -3,8 +3,15 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: MultiplayerSessionManager
+
 public enum MessageType : byte
 {
-	Party = 6,
-	MultiplayerSession = 7
+	MenuRpc = 0,
+	GameplayRpc = 1,
+	NodePoseSyncState = 2,
+	ScoreSyncState = 3,
+	NodePoseSyncStateDelta = 4,
+	ScoreSyncStateDelta = 5,
+	OptionalAvatarData = 6
 }

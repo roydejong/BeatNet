@@ -3,6 +3,8 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: GameplayModifiers
+
 public enum SongSpeed : int
 {
 	Normal = 0,

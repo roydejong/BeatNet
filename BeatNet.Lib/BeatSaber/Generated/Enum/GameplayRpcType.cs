@@ -3,6 +3,8 @@
 
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
+// Context: GameplayRpcManager
+
 public enum GameplayRpcType : byte
 {
 	SetGameplaySceneSyncFinish = 0,

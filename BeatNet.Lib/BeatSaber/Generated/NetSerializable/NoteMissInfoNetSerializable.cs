@@ -8,8 +8,16 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class NoteMissInfoNetSerializable
 {
+	public ColorType ColorType { get; set; }
+	public float NoteTime { get; set; }
+	public int NoteLineIndex { get; set; }
+	public NoteLineLayer NoteLineLayer { get; set; }
 
-	public NoteMissInfoNetSerializable()
+	public NoteMissInfoNetSerializable(ColorType colorType, float noteTime, int noteLineIndex, NoteLineLayer noteLineLayer)
 	{
+		ColorType = colorType;
+		NoteTime = noteTime;
+		NoteLineIndex = noteLineIndex;
+		NoteLineLayer = noteLineLayer;
 	}
 }

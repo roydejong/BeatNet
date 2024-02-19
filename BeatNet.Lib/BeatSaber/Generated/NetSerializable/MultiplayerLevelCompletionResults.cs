@@ -11,11 +11,15 @@ public sealed class MultiplayerLevelCompletionResults
 	public MultiplayerPlayerLevelEndState PlayerLevelEndState { get; set; }
 	public MultiplayerPlayerLevelEndReason PlayerLevelEndReason { get; set; }
 	public LevelCompletionResults LevelCompletionResults { get; set; }
+	public bool HasAnyResults { get; set; }
+	public bool FailedOrGivenUp { get; set; }
 
-	public MultiplayerLevelCompletionResults(MultiplayerPlayerLevelEndState playerLevelEndState, MultiplayerPlayerLevelEndReason playerLevelEndReason, LevelCompletionResults levelCompletionResults)
+	public MultiplayerLevelCompletionResults(MultiplayerPlayerLevelEndState playerLevelEndState, MultiplayerPlayerLevelEndReason playerLevelEndReason, LevelCompletionResults levelCompletionResults, bool hasAnyResults, bool failedOrGivenUp)
 	{
 		PlayerLevelEndState = playerLevelEndState;
 		PlayerLevelEndReason = playerLevelEndReason;
 		LevelCompletionResults = levelCompletionResults;
+		HasAnyResults = hasAnyResults;
+		FailedOrGivenUp = failedOrGivenUp;
 	}
 }

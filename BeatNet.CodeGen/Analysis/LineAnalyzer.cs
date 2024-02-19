@@ -56,7 +56,11 @@ public class LineAnalyzer
         MethodParams = null;
         IsOpenBracket = false;
         IsCloseBracket = false;
-
+        
+        if (RawLine.Contains("<>"))
+            // Weird DisplayClass compiler-generated stuff - skip
+            return;
+        
         // -------------------------------------------------------------------------------------------------------------
         // Access modifiers
 
@@ -290,10 +294,6 @@ public class LineAnalyzer
         
         // -------------------------------------------------------------------------------------------------------------
         // Method declaration
-
-        if (RawLine.Contains("<>"))
-            // Weird DisplayClass compiler-generated stuff
-            return;
         
         if (IsDeclaration && RawLine.Contains('(') && RawLine.Contains(')') && !RawLine.Contains('='))
         {
@@ -370,7 +370,23 @@ public class LineAnalyzer
         // -------------------------------------------------------------------------------------------------------------
         // Field declaration
 
-        if (IsDeclaration && !IsMethod && RawLine.EndsWith(';'))
+        if (IsDeclaration && RawLine.EndsWith(';'))
+        {
+            IsField = true;
+            DeclaredType = Words[0];
+            DeclaredName = Words[1].Trim(';');
+
+            var typeDotIdx = DeclaredType.IndexOf('.');
+            if (typeDotIdx >= 0)
+                DeclaredType = DeclaredType[(typeDotIdx + 1)..];
+            
+            return;
+        }
+        
+        // -------------------------------------------------------------------------------------------------------------
+        // Property declaration fallback
+
+        if (IsDeclaration && Words.Length == 2)
         {
             IsField = true;
             DeclaredType = Words[0];

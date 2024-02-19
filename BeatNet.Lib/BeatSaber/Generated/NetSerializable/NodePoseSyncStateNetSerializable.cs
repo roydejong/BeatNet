@@ -8,10 +8,16 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class NodePoseSyncStateNetSerializable
 {
+	public PacketPool<NodePoseSyncStateNetSerializable> Pool { get; set; }
+	public SyncStateId Id { get; set; }
+	public long Time { get; set; }
 	public NodePoseSyncState State { get; set; }
 
-	public NodePoseSyncStateNetSerializable(NodePoseSyncState state)
+	public NodePoseSyncStateNetSerializable(PacketPool<NodePoseSyncStateNetSerializable> pool, SyncStateId id, long time, NodePoseSyncState state)
 	{
+		Pool = pool;
+		Id = id;
+		Time = time;
 		State = state;
 	}
 }

@@ -8,17 +8,17 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class ByteArrayNetSerializable
 {
-	public byte[] Data { get; set; }
 	public int Length { get; set; }
+	public byte[] Data { get; set; }
 	public string Name { get; set; }
 	public bool AllowEmpty { get; set; }
 	public int MinLength { get; set; }
 	public int MaxLength { get; set; }
 
-	public ByteArrayNetSerializable(byte[] data, int length, string name, bool allowEmpty, int minLength, int maxLength)
+	public ByteArrayNetSerializable(int length, byte[] data, string name, bool allowEmpty, int minLength, int maxLength)
 	{
-		Data = data;
 		Length = length;
+		Data = data;
 		Name = name;
 		AllowEmpty = allowEmpty;
 		MinLength = minLength;

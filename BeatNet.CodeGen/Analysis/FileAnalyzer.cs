@@ -124,7 +124,7 @@ public class FileAnalyzer
         // Explicit Blocklist
         var blockList = new string[] { "ConnectedPlayerManager", "PartyMessageHandler", "AuthenticationToken",
             "MultiplayerSessionManager", "NetworkPacketSerializer", "PoolableSerializable", "StateBuffer", 
-            "RemoteProcedureCall" };
+            "RemoteProcedureCall", "Extensions", "GameplayType", "ScoringType" };
         foreach (var block in blockList)
         {
             if (FileNameNoExt.Contains(block))
@@ -133,10 +133,19 @@ public class FileAnalyzer
         
         // Explicit Allowlist
         var allowList = new string[] { "Serializable", "SyncState", "EntitlementsStatus", "CannotStartGameReason",
-            "MultiplayerGameState" };
+            "MultiplayerGameState", "ColorType", "NoteCutDirection", "NoteLineLayer", "SliderMidAnchorMode",
+            "NoteData", "DiscoveryPolicy", "InvitePolicy", "GameplayServerMode", "SongSelectionMode",
+            "GameplayServerControlSettings", "MultiplayerAvatarData"
+        };
         foreach (var allow in allowList)
         {
             if (FileNameNoExt.Contains(allow))
+                return false;
+        }
+        var allowListFullName = new string[] { "RankModel", "BeatmapDifficulty" };
+        foreach (var allow in allowListFullName)
+        {
+            if (FileNameNoExt == allow)
                 return false;
         }
         

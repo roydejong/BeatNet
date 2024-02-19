@@ -8,14 +8,16 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class SongPackMask
 {
+	public SongPackMask All { get; set; }
 	public int KHashCount { get; set; }
 	public int KHashBits { get; set; }
 	public BitMask256 BloomFilter { get; set; }
 	public string KToStringPrefix { get; set; }
 	public string KToStringSuffix { get; set; }
 
-	public SongPackMask(int kHashCount, int kHashBits, BitMask256 bloomFilter, string kToStringPrefix, string kToStringSuffix)
+	public SongPackMask(SongPackMask all, int kHashCount, int kHashBits, BitMask256 bloomFilter, string kToStringPrefix, string kToStringSuffix)
 	{
+		All = all;
 		KHashCount = kHashCount;
 		KHashBits = kHashBits;
 		BloomFilter = bloomFilter;

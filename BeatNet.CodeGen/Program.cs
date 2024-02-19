@@ -35,7 +35,7 @@ var results = new Results();
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-var assemblyAllowList = new string[] { "Main", "BGNetCore", "GameplayCore" };
+var assemblyAllowList = new string[] { "Main", "BGNetCore", "GameplayCore", "BeatmapCore" };
 var assemblyDirs = Directory.GetDirectories(dirSrc);
 
 foreach (var assemblyDir in assemblyDirs)

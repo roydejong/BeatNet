@@ -21,6 +21,7 @@ Use dnSpy to open the assemblies from `<Beat Saber>/Beat Saber_Data/Managed` tha
 - `Main.dll`
 - `BGNetCore.dll`
 - `GameplayCore.dll`
+- `BeatmapCore.dll`
 
 For each assembly, export the source code using `File` → `Export to project`.
 

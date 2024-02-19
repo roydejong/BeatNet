@@ -32,11 +32,11 @@ public class NetSerializableAnalyzer : ISubAnalyzer
             if (name.Contains("__BackingField"))
                 return;
             
-            _currentResult.Fields.Add(new TypedParam()
+            _currentResult.Fields[name] = new TypedParam()
             {
                 TypeName = line.DeclaredType!,
                 ParamName = name
-            });
+            };
         }
     }
 

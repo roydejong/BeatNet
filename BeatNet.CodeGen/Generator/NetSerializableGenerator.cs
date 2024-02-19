@@ -14,6 +14,9 @@ public class NetSerializableGenerator
 
     public void Generate(GeneratorSettings gs)
     {
+        if (NetSerializable.Fields.Count == 0)
+            return;
+        
         var targetNamespace = $"{gs.BaseNamespace}.NetSerializable";
         var targetDir = Path.Combine(gs.OutputPath, "NetSerializable");
         
@@ -44,7 +47,7 @@ public class NetSerializableGenerator
         constructorBuffer.Append($"\tpublic {NetSerializable.TypeName}(");
         
         var paramNo = 0;
-        foreach (var field in NetSerializable.Fields)
+        foreach (var field in NetSerializable.Fields.Values)
         {
             sw.WriteLine($"\tpublic {field.TypeName} {field.ParamNameForField} {{ get; set; }}");
             

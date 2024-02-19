@@ -8,8 +8,14 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class BeatmapKeyNetSerializable
 {
+	public string LevelID { get; set; }
+	public string BeatmapCharacteristicSerializedName { get; set; }
+	public BeatmapDifficulty Difficulty { get; set; }
 
-	public BeatmapKeyNetSerializable()
+	public BeatmapKeyNetSerializable(string levelID, string beatmapCharacteristicSerializedName, BeatmapDifficulty difficulty)
 	{
+		LevelID = levelID;
+		BeatmapCharacteristicSerializedName = beatmapCharacteristicSerializedName;
+		Difficulty = difficulty;
 	}
 }

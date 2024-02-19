@@ -8,10 +8,12 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class BitMaskArray
 {
+	public int BitCount { get; set; }
 	public ulong[] Data { get; set; }
 
-	public BitMaskArray(ulong[] data)
+	public BitMaskArray(int bitCount, ulong[] data)
 	{
+		BitCount = bitCount;
 		Data = data;
 	}
 }

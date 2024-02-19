@@ -8,6 +8,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class QuaternionSerializable
 {
+	public QuaternionSerializable Identity { get; set; }
 	public int A { get; set; }
 	public int B { get; set; }
 	public int C { get; set; }
@@ -16,8 +17,9 @@ public sealed class QuaternionSerializable
 	public float KScale { get; set; }
 	public float KInvScale { get; set; }
 
-	public QuaternionSerializable(int a, int b, int c, float kSqrtTwo, float kOneOverSqrtTwo, float kScale, float kInvScale)
+	public QuaternionSerializable(QuaternionSerializable identity, int a, int b, int c, float kSqrtTwo, float kOneOverSqrtTwo, float kScale, float kInvScale)
 	{
+		Identity = identity;
 		A = a;
 		B = b;
 		C = c;

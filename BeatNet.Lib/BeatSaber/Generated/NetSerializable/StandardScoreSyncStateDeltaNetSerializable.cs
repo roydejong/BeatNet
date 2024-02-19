@@ -8,10 +8,16 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class StandardScoreSyncStateDeltaNetSerializable
 {
+	public IPacketPool<StandardScoreSyncStateDeltaNetSerializable> Pool { get; set; }
+	public SyncStateId BaseId { get; set; }
+	public int TimeOffsetMs { get; set; }
 	public StandardScoreSyncState Delta { get; set; }
 
-	public StandardScoreSyncStateDeltaNetSerializable(StandardScoreSyncState delta)
+	public StandardScoreSyncStateDeltaNetSerializable(IPacketPool<StandardScoreSyncStateDeltaNetSerializable> pool, SyncStateId baseId, int timeOffsetMs, StandardScoreSyncState delta)
 	{
+		Pool = pool;
+		BaseId = baseId;
+		TimeOffsetMs = timeOffsetMs;
 		Delta = delta;
 	}
 }

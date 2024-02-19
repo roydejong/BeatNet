@@ -8,11 +8,13 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class PoseSerializable
 {
+	public PoseSerializable Identity { get; set; }
 	public Vector3Serializable Position { get; set; }
 	public QuaternionSerializable Rotation { get; set; }
 
-	public PoseSerializable(Vector3Serializable position, QuaternionSerializable rotation)
+	public PoseSerializable(PoseSerializable identity, Vector3Serializable position, QuaternionSerializable rotation)
 	{
+		Identity = identity;
 		Position = position;
 		Rotation = rotation;
 	}

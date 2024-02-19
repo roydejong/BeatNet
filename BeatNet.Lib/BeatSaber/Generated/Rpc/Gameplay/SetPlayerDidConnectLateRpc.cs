@@ -10,7 +10,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Gameplay;
 
 public sealed class SetPlayerDidConnectLateRpc : BaseRpc
 {
-	public override byte RpcType => (byte)GameplayRpcType.SetPlayerDidConnectLate;
+	public override byte RpcType => (byte)GameplayRpcType.SetActivePlayerFailedToConnect;
 
 	public string? UsedId { get; set; } = null;
 	public PlayerSpecificSettingsAtStartNetSerializable? PlayersAtGameStartNetSerializable { get; set; } = null;

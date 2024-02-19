@@ -10,7 +10,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 
 public sealed class SetPlayersPermissionConfigurationRpc : BaseRpc
 {
-	public override byte RpcType => (byte)MenuRpcType.SetPlayersPermissionConfiguration;
+	public override byte RpcType => (byte)MenuRpcType.SetPermissionConfiguration;
 
 	public PlayersLobbyPermissionConfigurationNetSerializable? PlayersPermissionConfiguration { get; set; } = null;
 

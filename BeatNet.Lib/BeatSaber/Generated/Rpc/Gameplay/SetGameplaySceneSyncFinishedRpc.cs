@@ -10,7 +10,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Gameplay;
 
 public sealed class SetGameplaySceneSyncFinishedRpc : BaseRpc
 {
-	public override byte RpcType => (byte)GameplayRpcType.SetGameplaySceneSyncFinished;
+	public override byte RpcType => (byte)GameplayRpcType.SetGameplaySceneSyncFinish;
 
 	public PlayerSpecificSettingsAtStartNetSerializable? PlayersAtGameStartNetSerializable { get; set; } = null;
 	public string? SessionGameId { get; set; } = null;

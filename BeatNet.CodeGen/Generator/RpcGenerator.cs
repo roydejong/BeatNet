@@ -42,7 +42,12 @@ public class RpcGenerator
         
         sw.WriteLine($"public sealed class {Rpc.RpcName} : {baseType}");
         sw.WriteLine("{");
-        sw.WriteLine($"\tpublic override byte RpcType => (byte){managerNamePlain}RpcType.{Rpc.RpcName.Replace("Rpc", "")};");
+        
+        var rpcTypeCase = Rpc.RpcName.Replace("Rpc", "");
+        if (weirdRpcCaseMap.TryGetValue(rpcTypeCase, out var rpcTypeCaseMapped))
+            rpcTypeCase = rpcTypeCaseMapped;
+        
+        sw.WriteLine($"\tpublic override byte RpcType => (byte){managerNamePlain}RpcType.{rpcTypeCase};");
         sw.WriteLine();
         
         if (Rpc.Params.Count > 0)
@@ -97,4 +102,12 @@ public class RpcGenerator
         sw.Write("}");
         sw.Close();
     }
+
+    private static readonly Dictionary<string, string> weirdRpcCaseMap = new()
+    {
+        { "GetPlayersPermissionConfiguration", "GetPermissionConfiguration" },
+        { "SetPlayersPermissionConfiguration", "SetPermissionConfiguration" },
+        { "SetGameplaySceneSyncFinished", "SetGameplaySceneSyncFinish" },
+        { "SetPlayerDidConnectLate", "SetActivePlayerFailedToConnect" }
+    };
 }

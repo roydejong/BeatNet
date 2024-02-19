@@ -11,7 +11,7 @@ public class FileAnalyzer
     public readonly string FullPath;
     public readonly string FileName;
     public readonly string FileNameNoExt;
-    
+
     public FileAnalyzer(string baseDir, string subPath)
     {
         AssemblyName = Path.GetFileNameWithoutExtension(baseDir);
@@ -21,7 +21,7 @@ public class FileAnalyzer
         FileName = Path.GetFileName(FullPath);
         FileNameNoExt = Path.GetFileNameWithoutExtension(FullPath);
     }
-    
+
     public void Analyze(Results results)
     {
         if (ShouldIgnoreFileName())
@@ -32,7 +32,7 @@ public class FileAnalyzer
             domainAnalyzer = new RpcManagerAnalyzer();
         else
             domainAnalyzer = new NetSerializableAnalyzer();
-        
+
         Console.WriteLine($"Analyzing file {SubPath} [{domainAnalyzer}]...");
 
         string? baseType = null;
@@ -42,7 +42,7 @@ public class FileAnalyzer
         {
             baseType = null;
             currentType = null;
-            
+
             foreach (var line in File.ReadAllLines(FullPath))
             {
                 var lineTrimmed = line.Trim();
@@ -54,7 +54,7 @@ public class FileAnalyzer
                     continue;
 
                 var lineAnalyzer = new LineAnalyzer(lineTrimmed, currentType);
-                
+
                 if (lineAnalyzer.IsClass || lineAnalyzer.IsStruct)
                 {
                     baseType ??= lineAnalyzer.DeclaredName;
@@ -76,14 +76,32 @@ public class FileAnalyzer
 
     private bool ShouldIgnoreFileName()
     {
+        // Explicit Blocklist
+        var blockList = new string[] { "ConnectedPlayerManager", "PartyMessageHandler", "AuthenticationToken",
+            "MultiplayerSessionManager", "NetworkPacketSerializer", "PoolableSerializable" };
+        foreach (var block in blockList)
+        {
+            if (FileNameNoExt.Contains(block))
+                return true;
+        }
+        
+        // Explicit Allowlist
+        var allowList = new string[] { "Serializable", "SyncState" };
+        foreach (var allow in allowList)
+        {
+            if (FileNameNoExt.Contains(allow))
+                return false;
+        }
+        
         // RPC manager: its private classes hold all the RPC enums and classes
         if (FileNameNoExt.EndsWith("RpcManager") && !FileNameNoExt.StartsWith("I")) // ignore the interfaces (I*)
             return false;
-        
-        // NetSerializable
-        if (FileNameNoExt.EndsWith("Serializable"))
+
+        // NetSerializable, Serializable, SyncStates, etc.
+        var readAhead = File.ReadAllText(FullPath);
+        if (readAhead.Contains(": INetImmutableSerializable") || readAhead.Contains(": INetSerializable"))
             return false;
-        
+
         return true;
     }
 }

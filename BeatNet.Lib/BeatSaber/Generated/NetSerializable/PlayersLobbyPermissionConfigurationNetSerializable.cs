@@ -7,8 +7,10 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class PlayersLobbyPermissionConfigurationNetSerializable
 {
+	public List<PlayerLobbyPermissionConfigurationNetSerializable> PlayersPermission { get; set; }
 
-	public PlayersLobbyPermissionConfigurationNetSerializable()
+	public PlayersLobbyPermissionConfigurationNetSerializable(List<PlayerLobbyPermissionConfigurationNetSerializable> playersPermission)
 	{
+		PlayersPermission = playersPermission;
 	}
 }

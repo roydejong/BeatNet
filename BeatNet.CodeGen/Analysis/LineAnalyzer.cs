@@ -131,6 +131,12 @@ public class LineAnalyzer
             Words = Words[1..];
         }
 
+        if (Words[0] == "delegate")
+        {
+            // We don't care about delegates (so far)
+            return;
+        }
+
         // -------------------------------------------------------------------------------------------------------------
         // Enum declaration
 
@@ -148,6 +154,8 @@ public class LineAnalyzer
                 Words = Words[1..];
                 EnumBaseType = Words[0];
             }
+
+            return;
         }
 
         // -------------------------------------------------------------------------------------------------------------
@@ -169,6 +177,10 @@ public class LineAnalyzer
 
             DeclaredName = Words[0];
             Words = Words[1..];
+            
+            var classLtIndex = DeclaredName.IndexOf('<');
+            if (classLtIndex >= 0)
+                DeclaredName = DeclaredName[..classLtIndex];
 
             if (Words.Length > 0 && Words[0] == ":")
             {
@@ -233,12 +245,18 @@ public class LineAnalyzer
                     }
                 }
             }
+
+            return;
         }
         
         // -------------------------------------------------------------------------------------------------------------
         // Method declaration
+
+        if (RawLine.Contains("<>"))
+            // Weird DisplayClass compiler-generated stuff
+            return;
         
-        if (IsDeclaration && RawLine.Contains('(') && RawLine.Contains(')'))
+        if (IsDeclaration && RawLine.Contains('(') && RawLine.Contains(')') && !RawLine.Contains('='))
         {
             IsMethod = true;
             
@@ -306,6 +324,8 @@ public class LineAnalyzer
                     DeclaredName = DeclaredName[..declaredNameEnd];
                 }
             }
+
+            return;
         }
         
         // -------------------------------------------------------------------------------------------------------------
@@ -316,6 +336,8 @@ public class LineAnalyzer
             IsField = true;
             DeclaredType = Words[0];
             DeclaredName = Words[1].Trim(';');
+
+            return;
         }
     }
 }

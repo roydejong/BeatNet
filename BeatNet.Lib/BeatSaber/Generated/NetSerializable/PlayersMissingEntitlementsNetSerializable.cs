@@ -7,8 +7,10 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class PlayersMissingEntitlementsNetSerializable
 {
+	public List<string> PlayersWithoutEntitlements { get; set; }
 
-	public PlayersMissingEntitlementsNetSerializable()
+	public PlayersMissingEntitlementsNetSerializable(List<string> playersWithoutEntitlements)
 	{
+		PlayersWithoutEntitlements = playersWithoutEntitlements;
 	}
 }

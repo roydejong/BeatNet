@@ -2,20 +2,19 @@
 // Do not modify manually
 
 using System;
+using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
 
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class StandardScoreSyncStateNetSerializable
 {
-	public PacketPool<StandardScoreSyncStateNetSerializable> Pool { get; set; }
 	public SyncStateId Id { get; set; }
 	public long Time { get; set; }
 	public StandardScoreSyncState State { get; set; }
 
-	public StandardScoreSyncStateNetSerializable(PacketPool<StandardScoreSyncStateNetSerializable> pool, SyncStateId id, long time, StandardScoreSyncState state)
+	public StandardScoreSyncStateNetSerializable(SyncStateId id, long time, StandardScoreSyncState state)
 	{
-		Pool = pool;
 		Id = id;
 		Time = time;
 		State = state;

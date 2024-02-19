@@ -32,6 +32,7 @@ public class NetSerializableGenerator
         sw.WriteLine("// Do not modify manually");
         sw.WriteLine();
         sw.WriteLine("using System;");
+        sw.WriteLine("using BeatNet.Lib.BeatSaber.Common;");
         sw.WriteLine("using BeatNet.Lib.BeatSaber.Generated.Enum;");
         sw.WriteLine();
         sw.WriteLine($"namespace {targetNamespace};");
@@ -49,6 +50,14 @@ public class NetSerializableGenerator
         var paramNo = 0;
         foreach (var field in NetSerializable.Fields.Values)
         {
+            if (field.TypeName.Contains("PacketPool"))
+                // Ignore static pools from the game
+                continue;
+
+            if (field.ParamNameForField == NetSerializable.TypeName)
+                // Avoid "Member names cannot be the same as their enclosing type"
+                field.ParamName += "Value";
+            
             sw.WriteLine($"\tpublic {field.TypeName} {field.ParamNameForField} {{ get; set; }}");
             
             if (paramNo > 0)

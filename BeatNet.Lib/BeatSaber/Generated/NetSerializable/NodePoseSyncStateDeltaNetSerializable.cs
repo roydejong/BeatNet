@@ -2,20 +2,19 @@
 // Do not modify manually
 
 using System;
+using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
 
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class NodePoseSyncStateDeltaNetSerializable
 {
-	public IPacketPool<NodePoseSyncStateDeltaNetSerializable> Pool { get; set; }
 	public SyncStateId BaseId { get; set; }
 	public int TimeOffsetMs { get; set; }
 	public NodePoseSyncState Delta { get; set; }
 
-	public NodePoseSyncStateDeltaNetSerializable(IPacketPool<NodePoseSyncStateDeltaNetSerializable> pool, SyncStateId baseId, int timeOffsetMs, NodePoseSyncState delta)
+	public NodePoseSyncStateDeltaNetSerializable(SyncStateId baseId, int timeOffsetMs, NodePoseSyncState delta)
 	{
-		Pool = pool;
 		BaseId = baseId;
 		TimeOffsetMs = timeOffsetMs;
 		Delta = delta;

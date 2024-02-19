@@ -2,18 +2,19 @@
 // Do not modify manually
 
 using System;
+using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
 
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class MultiplayerAvatarsData
 {
-	public List<MultiplayerAvatarData> MultiplayerAvatarsData { get; set; }
+	public List<MultiplayerAvatarData> MultiplayerAvatarsDataValue { get; set; }
 	public BitMask128 SupportedAvatarTypeIdHashesBloomFilter { get; set; }
 
-	public MultiplayerAvatarsData(List<MultiplayerAvatarData> multiplayerAvatarsData, BitMask128 supportedAvatarTypeIdHashesBloomFilter)
+	public MultiplayerAvatarsData(List<MultiplayerAvatarData> multiplayerAvatarsDataValue, BitMask128 supportedAvatarTypeIdHashesBloomFilter)
 	{
-		MultiplayerAvatarsData = multiplayerAvatarsData;
+		MultiplayerAvatarsDataValue = multiplayerAvatarsDataValue;
 		SupportedAvatarTypeIdHashesBloomFilter = supportedAvatarTypeIdHashesBloomFilter;
 	}
 }

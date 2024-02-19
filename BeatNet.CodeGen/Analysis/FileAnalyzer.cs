@@ -1,4 +1,5 @@
-﻿using BeatNet.CodeGen.Analysis.ResultData;
+﻿using BeatNet.CodeGen.Analysis.Domains;
+using BeatNet.CodeGen.Analysis.ResultData;
 
 namespace BeatNet.CodeGen.Analysis;
 
@@ -29,6 +30,8 @@ public class FileAnalyzer
         ISubAnalyzer? domainAnalyzer = null;
         if (SubPath.Contains("RpcManager"))
             domainAnalyzer = new RpcManagerAnalyzer();
+        else
+            domainAnalyzer = new NetSerializableAnalyzer();
         
         Console.WriteLine($"Analyzing file {SubPath} [{domainAnalyzer}]...");
 
@@ -37,6 +40,9 @@ public class FileAnalyzer
 
         for (var pass = 1; pass <= 2; pass++)
         {
+            baseType = null;
+            currentType = null;
+            
             foreach (var line in File.ReadAllLines(FullPath))
             {
                 var lineTrimmed = line.Trim();
@@ -49,7 +55,7 @@ public class FileAnalyzer
 
                 var lineAnalyzer = new LineAnalyzer(lineTrimmed, currentType);
                 
-                if (lineAnalyzer.IsClass)
+                if (lineAnalyzer.IsClass || lineAnalyzer.IsStruct)
                 {
                     baseType ??= lineAnalyzer.DeclaredName;
                     currentType = lineAnalyzer.DeclaredName;
@@ -72,6 +78,10 @@ public class FileAnalyzer
     {
         // RPC manager: its private classes hold all the RPC enums and classes
         if (FileNameNoExt.EndsWith("RpcManager") && !FileNameNoExt.StartsWith("I")) // ignore the interfaces (I*)
+            return false;
+        
+        // NetSerializable
+        if (FileNameNoExt.EndsWith("Serializable"))
             return false;
         
         return true;

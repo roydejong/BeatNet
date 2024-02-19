@@ -1,0 +1,37 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=0d11e646_002Ddbc9_002D4cd4_002Da8e4_002Dd5b20015a195/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Solution /&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=7272c854_002Da178_002D4491_002D988c_002Deaaed78d3ddd/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TestParsesFieldDeclare #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::66A8B403-42CA-442E-83A2-A9C6E665D0A4::net7.0::BeatNet.Tests.CodeGen.LineAnalyzerTest.TestParsesFieldDeclare&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=7a1017ff_002Df442_002D4241_002D90fc_002D3eefb45ba025/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TestParsesStructDeclare #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::66A8B403-42CA-442E-83A2-A9C6E665D0A4::net7.0::BeatNet.Tests.CodeGen.LineAnalyzerTest.TestParsesStructDeclare&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=7ee31099_002Dc26b_002D42a1_002Db4b3_002Da6195beda1b5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TestParsesFieldDeclare #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::66A8B403-42CA-442E-83A2-A9C6E665D0A4::net7.0::BeatNet.Tests.CodeGen.LineAnalyzerTest.TestParsesFieldDeclare&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=93b55a70_002Dce71_002D40ea_002D9358_002De6f0cfe261f9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TestParsesFieldDeclare" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::66A8B403-42CA-442E-83A2-A9C6E665D0A4::net7.0::BeatNet.Tests.CodeGen.LineAnalyzerTest.TestParsesFieldDeclare&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a30f6444_002D21a9_002D414f_002D82b3_002D9f677f776394/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TestParsesStructDeclare" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::66A8B403-42CA-442E-83A2-A9C6E665D0A4::net7.0::BeatNet.Tests.CodeGen.LineAnalyzerTest.TestParsesStructDeclare&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a47bfcff_002D639e_002D4223_002D9134_002D7b8dea44e346/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TestParsesStructDeclare #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::66A8B403-42CA-442E-83A2-A9C6E665D0A4::net7.0::BeatNet.Tests.CodeGen.LineAnalyzerTest.TestParsesStructDeclare&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ca57bfbb_002D2453_002D4938_002D9bca_002D5bcf4190132f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;BeatNet.Tests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="C:\Users\Roy de Jong\Projects\Beat Saber\BeatNet\BeatNet.Tests" Presentation="&amp;lt;BeatNet.Tests&amp;gt;" /&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

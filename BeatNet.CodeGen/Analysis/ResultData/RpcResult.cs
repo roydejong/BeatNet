@@ -6,5 +6,5 @@ public class RpcResult
 {
     public string RpcManagerName { get; set; }
     public string RpcName { get; set; }
-    public List<MethodParam> Params { get; set; } = new();
+    public List<TypedParam> Params { get; set; } = new();
 }

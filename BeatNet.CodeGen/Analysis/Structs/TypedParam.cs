@@ -1,6 +1,6 @@
 ﻿namespace BeatNet.CodeGen.Analysis.Structs;
 
-public class MethodParam
+public class TypedParam
 {
     public string TypeName;
     public string ParamName;

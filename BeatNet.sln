@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatNet.Lib", "BeatNet.Lib\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatNet.CodeGen", "BeatNet.CodeGen\BeatNet.CodeGen.csproj", "{09EDDA1A-CA23-4A1B-A12A-5CBAE00A0B20}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatNet.Tests", "BeatNet.Tests\BeatNet.Tests.csproj", "{66A8B403-42CA-442E-83A2-A9C6E665D0A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{09EDDA1A-CA23-4A1B-A12A-5CBAE00A0B20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09EDDA1A-CA23-4A1B-A12A-5CBAE00A0B20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09EDDA1A-CA23-4A1B-A12A-5CBAE00A0B20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66A8B403-42CA-442E-83A2-A9C6E665D0A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66A8B403-42CA-442E-83A2-A9C6E665D0A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66A8B403-42CA-442E-83A2-A9C6E665D0A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66A8B403-42CA-442E-83A2-A9C6E665D0A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

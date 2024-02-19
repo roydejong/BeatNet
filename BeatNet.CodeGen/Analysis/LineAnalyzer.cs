@@ -15,6 +15,7 @@ public class LineAnalyzer
     public readonly bool Static;
     public readonly bool Abstract;
     public readonly bool Override;
+    public readonly bool Virtual;
     public readonly bool ReadOnly;
     public readonly bool Const;
     public readonly bool IsEnum;
@@ -22,11 +23,12 @@ public class LineAnalyzer
     public readonly bool IsClass;
     public readonly bool IsMethod;
     public readonly bool IsConstructor;
+    public readonly bool IsField;
     public readonly string? DeclaredName;
     public readonly string? EnumBaseType;
     public readonly List<ClassInheritor>? ClassInheritors;
-    public readonly string? ReturnType;
-    public readonly List<MethodParam>? MethodParams;
+    public readonly string? DeclaredType;
+    public readonly List<TypedParam>? MethodParams;
 
     public LineAnalyzer(string line, string? contextTypeName)
     {
@@ -37,6 +39,7 @@ public class LineAnalyzer
         Static = false;
         Abstract = false;
         Override = false;
+        Virtual = false;
         ReadOnly = false;
         Const = false;
         IsEnum = false;
@@ -47,7 +50,7 @@ public class LineAnalyzer
         DeclaredName = null;
         EnumBaseType = null;
         ClassInheritors = null;
-        ReturnType = null;
+        DeclaredType = null;
         MethodParams = null;
 
         // -------------------------------------------------------------------------------------------------------------
@@ -96,6 +99,13 @@ public class LineAnalyzer
         if (Words[0] == "abstract")
         {
             Abstract = true;
+            IsDeclaration = true;
+            Words = Words[1..];
+        }
+
+        if (Words[0] == "virtual")
+        {
+            Virtual = true;
             IsDeclaration = true;
             Words = Words[1..];
         }
@@ -237,21 +247,25 @@ public class LineAnalyzer
             {
                 IsConstructor = true;
                 
-                ReturnType = contextTypeName;
+                DeclaredType = contextTypeName;
                 DeclaredName = contextTypeName;
             }
             else
             {
                 // Method declaration
-                ReturnType = Words[0];
+                DeclaredType = Words[0];
                 DeclaredName = Words[1];
 
-                if (ReturnType == "event")
+                if (DeclaredType == "event")
                     // We don't care about events (so far)
                     return;
                 
                 if (RawLine.Contains('<') && RawLine.Contains('>'))
                     // We don't care about generic methods (so far)
+                    return;
+
+                if (DeclaredType == "operator" || DeclaredName == "operator")
+                    // We don't care about operator overloads (so far)
                     return;
                 
                 var paramListIdx = RawLine.IndexOf('(');
@@ -263,12 +277,12 @@ public class LineAnalyzer
 
                     if (paramList.Length > 0)
                     {
-                        MethodParams = new List<MethodParam>();
+                        MethodParams = new List<TypedParam>();
 
                         foreach (var paramDeclare in paramList.Split(','))
                         {
                             var partIdx = 0;
-                            var param = new MethodParam();
+                            var param = new TypedParam();
                             
                             foreach (var paramPart in paramDeclare.Trim().Split(' '))
                             {
@@ -291,9 +305,17 @@ public class LineAnalyzer
                     var declaredNameEnd = DeclaredName.IndexOf('(');
                     DeclaredName = DeclaredName[..declaredNameEnd];
                 }
-
-                Console.WriteLine($"Method: {DeclaredName}");
             }
+        }
+        
+        // -------------------------------------------------------------------------------------------------------------
+        // Field declaration
+
+        if (IsDeclaration && !IsMethod && RawLine.EndsWith(';'))
+        {
+            IsField = true;
+            DeclaredType = Words[0];
+            DeclaredName = Words[1].Trim(';');
         }
     }
 }

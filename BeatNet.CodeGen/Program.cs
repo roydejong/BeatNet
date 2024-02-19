@@ -35,7 +35,7 @@ var results = new Results();
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-var assemblyAllowList = new string[] { "Main", "BGNetCore" };
+var assemblyAllowList = new string[] { "Main", "BGNetCore", "GameplayCore" };
 var assemblyDirs = Directory.GetDirectories(dirSrc);
 
 foreach (var assemblyDir in assemblyDirs)
@@ -63,6 +63,7 @@ foreach (var assemblyDir in assemblyDirs)
 Console.WriteLine($"\nAnalysis complete!");
 Console.WriteLine(" • Found RPC Managers: " + results.RpcManagers.Count);
 Console.WriteLine(" • Found RPC Definitions: " + results.Rpcs.Count);
+Console.WriteLine(" • Found NetSerializables: " + results.NetSerializables.Count);
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -78,6 +79,12 @@ foreach (var rpc in results.Rpcs)
 {
     var rpcGen = new RpcGenerator(rpc);
     rpcGen.Generate(gs);
+}
+
+foreach (var ns in results.NetSerializables)
+{
+    var nsGen = new NetSerializableGenerator(ns);
+    nsGen.Generate(gs);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

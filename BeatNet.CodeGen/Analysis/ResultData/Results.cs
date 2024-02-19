@@ -4,4 +4,5 @@ public class Results
 {
     public List<RpcManagerResult> RpcManagers { get; set; } = new();
     public List<RpcResult> Rpcs { get; set; } = new();
+    public List<NetSerializableResult> NetSerializables { get; set; } = new();
 }

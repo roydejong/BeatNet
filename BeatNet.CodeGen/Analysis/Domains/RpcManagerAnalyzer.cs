@@ -2,7 +2,7 @@
 using BeatNet.CodeGen.Analysis.ResultData;
 using BeatNet.CodeGen.Analysis.Structs;
 
-namespace BeatNet.CodeGen.Analysis;
+namespace BeatNet.CodeGen.Analysis.Domains;
 
 public class RpcManagerAnalyzer : ISubAnalyzer
 {
@@ -47,7 +47,7 @@ public class RpcManagerAnalyzer : ISubAnalyzer
                     
                     Console.Write(genericParam);
                     
-                    rpc.Params.Add(new MethodParam()
+                    rpc.Params.Add(new TypedParam()
                     {
                         TypeName = genericParam,
                         ParamName = $"Unk{rpc.Params.Count + 1}"

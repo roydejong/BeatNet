@@ -84,11 +84,73 @@ public sealed class SliderSpawnInfoNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteVarInt(ColorType);
+		writer.WriteVarInt(SliderType);
+		writer.WriteBool(HasHeadNote);
+		writer.WriteFloat(HeadTime);
+		writer.WriteVarInt(HeadLineIndex);
+		writer.WriteVarInt(HeadLineLayer);
+		writer.WriteVarInt(HeadBeforeJumpLineLayer);
+		writer.WriteFloat(HeadControlPointLengthMultiplier);
+		writer.WriteVarInt(HeadCutDirection);
+		writer.WriteFloat(HeadCutDirectionAngleOffset);
+		writer.WriteBool(HasTailNote);
+		writer.WriteFloat(TailTime);
+		writer.WriteVarInt(TailLineIndex);
+		writer.WriteVarInt(TailLineLayer);
+		writer.WriteVarInt(TailBeforeJumpLineLayer);
+		writer.WriteFloat(TailControlPointLengthMultiplier);
+		writer.WriteVarInt(TailCutDirection);
+		writer.WriteFloat(TailCutDirectionAngleOffset);
+		writer.WriteVarInt(MidAnchorMode);
+		writer.WriteVarInt(SliceCount);
+		writer.WriteFloat(SquishAmount);
+		writer.WriteSerializable<Vector3Serializable>(HeadMoveStartPos);
+		writer.WriteSerializable<Vector3Serializable>(HeadJumpStartPos);
+		writer.WriteSerializable<Vector3Serializable>(HeadJumpEndPos);
+		writer.WriteFloat(HeadJumpGravity);
+		writer.WriteSerializable<Vector3Serializable>(TailMoveStartPos);
+		writer.WriteSerializable<Vector3Serializable>(TailJumpStartPos);
+		writer.WriteSerializable<Vector3Serializable>(TailJumpEndPos);
+		writer.WriteFloat(TailJumpGravity);
+		writer.WriteFloat(MoveDuration);
+		writer.WriteFloat(JumpDuration);
+		writer.WriteFloat(Rotation);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		ColorType = reader.ReadVarInt();
+		SliderType = reader.ReadVarInt();
+		HasHeadNote = reader.ReadBool();
+		HeadTime = reader.ReadFloat();
+		HeadLineIndex = reader.ReadVarInt();
+		HeadLineLayer = reader.ReadVarInt();
+		HeadBeforeJumpLineLayer = reader.ReadVarInt();
+		HeadControlPointLengthMultiplier = reader.ReadFloat();
+		HeadCutDirection = reader.ReadVarInt();
+		HeadCutDirectionAngleOffset = reader.ReadFloat();
+		HasTailNote = reader.ReadBool();
+		TailTime = reader.ReadFloat();
+		TailLineIndex = reader.ReadVarInt();
+		TailLineLayer = reader.ReadVarInt();
+		TailBeforeJumpLineLayer = reader.ReadVarInt();
+		TailControlPointLengthMultiplier = reader.ReadFloat();
+		TailCutDirection = reader.ReadVarInt();
+		TailCutDirectionAngleOffset = reader.ReadFloat();
+		MidAnchorMode = reader.ReadVarInt();
+		SliceCount = reader.ReadVarInt();
+		SquishAmount = reader.ReadFloat();
+		HeadMoveStartPos = reader.ReadSerializable<Vector3Serializable>();
+		HeadJumpStartPos = reader.ReadSerializable<Vector3Serializable>();
+		HeadJumpEndPos = reader.ReadSerializable<Vector3Serializable>();
+		HeadJumpGravity = reader.ReadFloat();
+		TailMoveStartPos = reader.ReadSerializable<Vector3Serializable>();
+		TailJumpStartPos = reader.ReadSerializable<Vector3Serializable>();
+		TailJumpEndPos = reader.ReadSerializable<Vector3Serializable>();
+		TailJumpGravity = reader.ReadFloat();
+		MoveDuration = reader.ReadFloat();
+		JumpDuration = reader.ReadFloat();
+		Rotation = reader.ReadFloat();
 	}
 }

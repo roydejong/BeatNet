@@ -14,12 +14,10 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 public sealed class PlayerSpecificSettingsAtStartNetSerializable : INetSerializable
 {
 	public List<IConnectedPlayer> ActivePlayersAtGameStart { get; set; }
-	public IReadOnlyList<PlayerSpecificSettingsNetSerializable> ActivePlayerSpecificSettingsAtGameStart { get; set; }
 
-	public PlayerSpecificSettingsAtStartNetSerializable(List<IConnectedPlayer> activePlayersAtGameStart, IReadOnlyList<PlayerSpecificSettingsNetSerializable> activePlayerSpecificSettingsAtGameStart)
+	public PlayerSpecificSettingsAtStartNetSerializable(List<IConnectedPlayer> activePlayersAtGameStart)
 	{
 		ActivePlayersAtGameStart = activePlayersAtGameStart;
-		ActivePlayerSpecificSettingsAtGameStart = activePlayerSpecificSettingsAtGameStart;
 	}
 
 	public void WriteTo(ref NetWriter writer)

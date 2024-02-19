@@ -26,11 +26,15 @@ public sealed class NodePoseSyncStateNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		// TODO Bad Field Ref: id = SyncStateId
+		writer.WriteVarULong(Time);
+		writer.WriteSerializable<NodePoseSyncState>(State);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		// TODO Bad Field Ref: id = SyncStateId
+		Time = reader.ReadVarULong();
+		State = reader.ReadSerializable<NodePoseSyncState>();
 	}
 }

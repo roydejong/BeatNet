@@ -28,11 +28,17 @@ public sealed class NoteMissInfoNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteVarInt(ColorType);
+		writer.WriteVarInt(NoteLineLayer);
+		writer.WriteVarInt(NoteLineIndex);
+		writer.WriteFloat(NoteTime);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		ColorType = reader.ReadVarInt();
+		NoteLineLayer = reader.ReadVarInt();
+		NoteLineIndex = reader.ReadVarInt();
+		NoteTime = reader.ReadFloat();
 	}
 }

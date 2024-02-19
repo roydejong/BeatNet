@@ -28,11 +28,17 @@ public sealed class Vector4Serializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteVarInt(X);
+		writer.WriteVarInt(Y);
+		writer.WriteVarInt(Z);
+		writer.WriteVarInt(W);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		X = reader.ReadVarInt();
+		Y = reader.ReadVarInt();
+		Z = reader.ReadVarInt();
+		W = reader.ReadVarInt();
 	}
 }

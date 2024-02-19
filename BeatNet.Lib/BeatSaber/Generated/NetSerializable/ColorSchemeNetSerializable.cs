@@ -34,11 +34,23 @@ public sealed class ColorSchemeNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteSerializable<ColorNoAlphaSerializable>(SaberAColor);
+		writer.WriteSerializable<ColorNoAlphaSerializable>(SaberBColor);
+		writer.WriteSerializable<ColorNoAlphaSerializable>(ObstaclesColor);
+		writer.WriteSerializable<ColorNoAlphaSerializable>(EnvironmentColor0);
+		writer.WriteSerializable<ColorNoAlphaSerializable>(EnvironmentColor1);
+		writer.WriteSerializable<ColorNoAlphaSerializable>(EnvironmentColor0Boost);
+		writer.WriteSerializable<ColorNoAlphaSerializable>(EnvironmentColor1Boost);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		SaberAColor = reader.ReadSerializable<ColorNoAlphaSerializable>();
+		SaberBColor = reader.ReadSerializable<ColorNoAlphaSerializable>();
+		ObstaclesColor = reader.ReadSerializable<ColorNoAlphaSerializable>();
+		EnvironmentColor0 = reader.ReadSerializable<ColorNoAlphaSerializable>();
+		EnvironmentColor1 = reader.ReadSerializable<ColorNoAlphaSerializable>();
+		EnvironmentColor0Boost = reader.ReadSerializable<ColorNoAlphaSerializable>();
+		EnvironmentColor1Boost = reader.ReadSerializable<ColorNoAlphaSerializable>();
 	}
 }

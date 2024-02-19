@@ -26,11 +26,15 @@ public sealed class NodePoseSyncState : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteSerializable<PoseSerializable>(Head);
+		writer.WriteSerializable<PoseSerializable>(LeftController);
+		writer.WriteSerializable<PoseSerializable>(RightController);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		Head = reader.ReadSerializable<PoseSerializable>();
+		LeftController = reader.ReadSerializable<PoseSerializable>();
+		RightController = reader.ReadSerializable<PoseSerializable>();
 	}
 }

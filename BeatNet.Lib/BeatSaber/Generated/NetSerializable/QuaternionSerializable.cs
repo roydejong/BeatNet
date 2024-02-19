@@ -36,11 +36,15 @@ public sealed class QuaternionSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteVarInt(A);
+		writer.WriteVarInt(B);
+		writer.WriteVarInt(C);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		A = reader.ReadVarInt();
+		B = reader.ReadVarInt();
+		C = reader.ReadVarInt();
 	}
 }

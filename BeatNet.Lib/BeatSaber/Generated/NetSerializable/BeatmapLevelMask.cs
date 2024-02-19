@@ -32,11 +32,11 @@ public sealed class BeatmapLevelMask : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteSerializable<BitMaskSparse>(BloomFilter);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		BloomFilter = reader.ReadSerializable<BitMaskSparse>();
 	}
 }

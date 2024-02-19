@@ -30,11 +30,19 @@ public sealed class StandardScoreSyncState : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteVarInt(ModifiedScore);
+		writer.WriteVarInt(MultipliedScore);
+		writer.WriteVarInt(ImmediateMaxPossibleMultipliedScore);
+		writer.WriteVarInt(Combo);
+		writer.WriteVarInt(Multiplier);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		ModifiedScore = reader.ReadVarInt();
+		MultipliedScore = reader.ReadVarInt();
+		ImmediateMaxPossibleMultipliedScore = reader.ReadVarInt();
+		Combo = reader.ReadVarInt();
+		Multiplier = reader.ReadVarInt();
 	}
 }

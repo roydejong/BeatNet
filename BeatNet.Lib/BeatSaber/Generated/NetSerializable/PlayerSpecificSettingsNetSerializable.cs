@@ -34,11 +34,23 @@ public sealed class PlayerSpecificSettingsNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteString(UserId);
+		writer.WriteString(UserName);
+		writer.WriteBool(LeftHanded);
+		writer.WriteBool(AutomaticPlayerHeight);
+		writer.WriteFloat(PlayerHeight);
+		writer.WriteFloat(HeadPosToPlayerHeightOffset);
+		writer.WriteSerializable<ColorSchemeNetSerializable>(ColorScheme);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		UserId = reader.ReadString();
+		UserName = reader.ReadString();
+		LeftHanded = reader.ReadBool();
+		AutomaticPlayerHeight = reader.ReadBool();
+		PlayerHeight = reader.ReadFloat();
+		HeadPosToPlayerHeightOffset = reader.ReadFloat();
+		ColorScheme = reader.ReadSerializable<ColorSchemeNetSerializable>();
 	}
 }

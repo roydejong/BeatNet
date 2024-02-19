@@ -50,11 +50,39 @@ public sealed class NoteCutInfoNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		// TODO Bad Field Ref: byte @byte
+		writer.WriteFloat(SaberSpeed);
+		writer.WriteSerializable<Vector3Serializable>(SaberDir);
+		writer.WriteSerializable<Vector3Serializable>(CutPoint);
+		writer.WriteSerializable<Vector3Serializable>(CutNormal);
+		writer.WriteSerializable<Vector3Serializable>(NotePosition);
+		writer.WriteSerializable<Vector3Serializable>(NoteScale);
+		writer.WriteSerializable<QuaternionSerializable>(NoteRotation);
+		writer.WriteVarInt(GameplayType);
+		writer.WriteVarInt(ColorType);
+		writer.WriteVarInt(LineLayer);
+		writer.WriteVarInt(NoteLineIndex);
+		writer.WriteFloat(NoteTime);
+		writer.WriteFloat(TimeToNextColorNote);
+		writer.WriteSerializable<Vector3Serializable>(MoveVec);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		// TODO Bad Field Ref: byte @byte
+		SaberSpeed = reader.ReadFloat();
+		SaberDir = reader.ReadSerializable<Vector3Serializable>();
+		CutPoint = reader.ReadSerializable<Vector3Serializable>();
+		CutNormal = reader.ReadSerializable<Vector3Serializable>();
+		NotePosition = reader.ReadSerializable<Vector3Serializable>();
+		NoteScale = reader.ReadSerializable<Vector3Serializable>();
+		NoteRotation = reader.ReadSerializable<QuaternionSerializable>();
+		GameplayType = reader.ReadVarInt();
+		ColorType = reader.ReadVarInt();
+		LineLayer = reader.ReadVarInt();
+		NoteLineIndex = reader.ReadVarInt();
+		NoteTime = reader.ReadFloat();
+		TimeToNextColorNote = reader.ReadFloat();
+		MoveVec = reader.ReadSerializable<Vector3Serializable>();
 	}
 }

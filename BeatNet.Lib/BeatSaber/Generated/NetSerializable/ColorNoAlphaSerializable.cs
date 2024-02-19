@@ -22,11 +22,17 @@ public sealed class ColorNoAlphaSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		// TODO Bad Field Ref: color.r
+		// TODO Bad Field Ref: color.g
+		// TODO Bad Field Ref: color.b
+		// TODO Bad Field Ref: a
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		// TODO Bad Field Ref: color.r
+		// TODO Bad Field Ref: color.g
+		// TODO Bad Field Ref: color.b
+		// TODO Bad Field Ref: a
 	}
 }

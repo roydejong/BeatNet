@@ -26,11 +26,13 @@ public sealed class PoseSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteSerializable<Vector3Serializable>(Position);
+		writer.WriteSerializable<QuaternionSerializable>(Rotation);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		Position = reader.ReadSerializable<Vector3Serializable>();
+		Rotation = reader.ReadSerializable<QuaternionSerializable>();
 	}
 }

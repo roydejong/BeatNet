@@ -62,11 +62,51 @@ public sealed class NoteSpawnInfoNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteFloat(Time);
+		writer.WriteVarInt(LineIndex);
+		writer.WriteVarInt(NoteLineLayer);
+		writer.WriteVarInt(BeforeJumpNoteLineLayer);
+		writer.WriteVarInt(GameplayType);
+		writer.WriteVarInt(ScoringType);
+		writer.WriteVarInt(ColorType);
+		writer.WriteVarInt(CutDirection);
+		writer.WriteFloat(TimeToNextColorNote);
+		writer.WriteFloat(TimeToPrevColorNote);
+		writer.WriteVarInt(FlipLineIndex);
+		writer.WriteVarInt(FlipYSide);
+		writer.WriteSerializable<Vector3Serializable>(MoveStartPos);
+		writer.WriteSerializable<Vector3Serializable>(MoveEndPos);
+		writer.WriteSerializable<Vector3Serializable>(JumpEndPos);
+		writer.WriteFloat(JumpGravity);
+		writer.WriteFloat(MoveDuration);
+		writer.WriteFloat(JumpDuration);
+		writer.WriteFloat(Rotation);
+		writer.WriteFloat(CutDirectionAngleOffset);
+		writer.WriteFloat(CutSfxVolumeMultiplier);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		Time = reader.ReadFloat();
+		LineIndex = reader.ReadVarInt();
+		NoteLineLayer = reader.ReadVarInt();
+		BeforeJumpNoteLineLayer = reader.ReadVarInt();
+		GameplayType = reader.ReadVarInt();
+		ScoringType = reader.ReadVarInt();
+		ColorType = reader.ReadVarInt();
+		CutDirection = reader.ReadVarInt();
+		TimeToNextColorNote = reader.ReadFloat();
+		TimeToPrevColorNote = reader.ReadFloat();
+		FlipLineIndex = reader.ReadVarInt();
+		FlipYSide = reader.ReadVarInt();
+		MoveStartPos = reader.ReadSerializable<Vector3Serializable>();
+		MoveEndPos = reader.ReadSerializable<Vector3Serializable>();
+		JumpEndPos = reader.ReadSerializable<Vector3Serializable>();
+		JumpGravity = reader.ReadFloat();
+		MoveDuration = reader.ReadFloat();
+		JumpDuration = reader.ReadFloat();
+		Rotation = reader.ReadFloat();
+		CutDirectionAngleOffset = reader.ReadFloat();
+		CutSfxVolumeMultiplier = reader.ReadFloat();
 	}
 }

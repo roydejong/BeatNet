@@ -48,11 +48,37 @@ public sealed class ObstacleSpawnInfoNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteFloat(Time);
+		writer.WriteVarInt(LineIndex);
+		writer.WriteVarInt(LineLayer);
+		writer.WriteFloat(Duration);
+		writer.WriteVarInt(Width);
+		writer.WriteVarInt(Height);
+		writer.WriteSerializable<Vector3Serializable>(MoveStartPos);
+		writer.WriteSerializable<Vector3Serializable>(MoveEndPos);
+		writer.WriteSerializable<Vector3Serializable>(JumpEndPos);
+		writer.WriteFloat(ObstacleHeight);
+		writer.WriteFloat(MoveDuration);
+		writer.WriteFloat(JumpDuration);
+		writer.WriteFloat(NoteLinesDistance);
+		writer.WriteFloat(Rotation);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		Time = reader.ReadFloat();
+		LineIndex = reader.ReadVarInt();
+		LineLayer = reader.ReadVarInt();
+		Duration = reader.ReadFloat();
+		Width = reader.ReadVarInt();
+		Height = reader.ReadVarInt();
+		MoveStartPos = reader.ReadSerializable<Vector3Serializable>();
+		MoveEndPos = reader.ReadSerializable<Vector3Serializable>();
+		JumpEndPos = reader.ReadSerializable<Vector3Serializable>();
+		ObstacleHeight = reader.ReadFloat();
+		MoveDuration = reader.ReadFloat();
+		JumpDuration = reader.ReadFloat();
+		NoteLinesDistance = reader.ReadFloat();
+		Rotation = reader.ReadFloat();
 	}
 }

@@ -32,11 +32,13 @@ public sealed class PlayerLobbyPermissionConfigurationNetSerializable : INetSeri
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteString(UserId);
+		// TODO Bad Field Ref: byte @byte
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		UserId = reader.ReadString();
+		// TODO Bad Field Ref: byte @byte
 	}
 }

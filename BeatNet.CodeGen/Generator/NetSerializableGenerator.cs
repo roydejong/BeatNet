@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using BeatNet.CodeGen.Analysis.ResultData;
 
 namespace BeatNet.CodeGen.Generator;
@@ -50,7 +51,7 @@ public class NetSerializableGenerator
         var constructorBodyBuffer = new StringBuilder();
         
         constructorBuffer.Append($"\tpublic {NetSerializable.TypeName}(");
-        
+
         var paramNo = 0;
         foreach (var field in NetSerializable.Fields.Values)
         {
@@ -81,17 +82,77 @@ public class NetSerializableGenerator
         sw.WriteLine(constructorBuffer);
         
         // Read/write methods
+        var anyInstructions = NetSerializable.DeserializeInstructions.Count > 0;
+        
         var writeCodeBuffer = new StringBuilder();
         writeCodeBuffer.AppendLine("\tpublic void WriteTo(ref NetWriter writer)");
         writeCodeBuffer.AppendLine("\t{");
-        writeCodeBuffer.AppendLine("\t\tthrow new NotImplementedException(); // TODO");
-        writeCodeBuffer.AppendLine("\t}");
-        sw.WriteLine(writeCodeBuffer);
         
         var readCodeBuffer = new StringBuilder();
         readCodeBuffer.AppendLine("\tpublic void ReadFrom(ref NetReader reader)");
         readCodeBuffer.AppendLine("\t{");
-        readCodeBuffer.AppendLine("\t\tthrow new NotImplementedException(); // TODO");
+        
+        if (anyInstructions)
+        {
+            for (var instructionIdx = 0; instructionIdx < NetSerializable.DeserializeInstructions.Count; instructionIdx++)
+            {
+                var instruction = NetSerializable.DeserializeInstructions.ElementAt(instructionIdx);
+                var linkedField = NetSerializable.Fields.Values.FirstOrDefault(field => 
+                    field.ParamNameForField == instruction.FieldName || field.ParamName == instruction.FieldName);
+
+                if (linkedField == null)
+                {
+                    // Debugger.Break();
+                    writeCodeBuffer.AppendLine($"\t\t// TODO Bad Field Ref: {instruction.FieldName}");
+                    readCodeBuffer.AppendLine($"\t\t// TODO Bad Field Ref: {instruction.FieldName}");
+                    continue;
+                }
+                
+                var rwMethod = $"Serializable<{linkedField.TypeName}>";
+                switch (instruction.CallType.Trim(';').Trim(')').Trim('('))
+                {
+                    case "GetVarULong":
+                        rwMethod = "VarULong";
+                        break;
+                    case "GetVarUInt":
+                        rwMethod = "VarUInt";
+                        break;
+                    case "GetVarLong":
+                        rwMethod = "VarLong";
+                        break;
+                    case "GetVarInt":
+                        rwMethod = "VarInt";
+                        break;
+                    case "GetString":
+                        rwMethod = "String";
+                        break;
+                    case "GetBool":
+                        rwMethod = "Bool";
+                        break;
+                    case "GetFloat":
+                        rwMethod = "Float";
+                        break;
+                    case "Deserialize":
+                        // INetSerializable
+                        break;
+                    default:
+                        Debugger.Break();
+                        break;
+                }
+
+                writeCodeBuffer.AppendLine($"\t\twriter.Write{rwMethod}({linkedField.ParamNameForField});");
+                readCodeBuffer.AppendLine($"\t\t{linkedField.ParamNameForField} = reader.Read{rwMethod}();");
+            }
+        }
+        else
+        {
+            writeCodeBuffer.AppendLine("\t\tthrow new NotImplementedException(); // TODO");
+            readCodeBuffer.AppendLine("\t\tthrow new NotImplementedException(); // TODO");
+        }
+        
+        writeCodeBuffer.AppendLine("\t}");
+        sw.WriteLine(writeCodeBuffer);
+        
         readCodeBuffer.AppendLine("\t}");
         sw.Write(readCodeBuffer);
         

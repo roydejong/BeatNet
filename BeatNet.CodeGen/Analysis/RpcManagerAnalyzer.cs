@@ -50,7 +50,7 @@ public class RpcManagerAnalyzer : ISubAnalyzer
                     rpc.Params.Add(new MethodParam()
                     {
                         TypeName = genericParam,
-                        ParamName = $"Param{rpc.Params.Count + 1}"
+                        ParamName = $"Unk{rpc.Params.Count + 1}"
                     });
                 }
                 Console.Write(")");
@@ -83,13 +83,13 @@ public class RpcManagerAnalyzer : ISubAnalyzer
                 var paramList = line.MethodParams;
                 if (paramList != null)
                 {
-                    foreach (var param in paramList)
+                    for (var i = 0; i < paramList.Count; i++)
                     {
-                        var rpcParam = rpc.Params.FirstOrDefault(p => p.TypeName == param.TypeName);
-                        if (rpcParam != null)
-                        {
-                            rpcParam.ParamName = param.ParamName;
-                        }
+                        var param = paramList[i];
+                        var rpcParam = rpc.Params[i];
+                        
+                        rpcParam.TypeName = param.TypeName;
+                        rpcParam.ParamName = param.ParamName;
                     }
                 }
             }

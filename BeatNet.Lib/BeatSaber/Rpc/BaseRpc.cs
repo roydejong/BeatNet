@@ -4,12 +4,23 @@ public abstract class BaseRpc
 {
     public long SyncTime { get; set; }
 
-    public object? Param0 { get; } = null;
-    public object? Param1 { get; } = null;
-    public object? Param2 { get; } = null;
-    public object? Param3 { get; } = null;
+    public abstract int ValueCount { get; }
+    public abstract object? Value0 { get; }
+    public abstract object? Value1 { get; }
+    public abstract object? Value2 { get; }
+    public abstract object? Value3 { get; }
 
-    public int ParamCount => 0;
+    public object? GetValue(int index)
+    {
+        return index switch
+        {
+            0 => Value0,
+            1 => Value1,
+            2 => Value2,
+            3 => Value3,
+            _ => null
+        };
+    }
 
     public void WriteTo(object writer)
     {

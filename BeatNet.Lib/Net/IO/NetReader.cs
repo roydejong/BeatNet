@@ -247,7 +247,9 @@ public ref struct NetReader
 
     public T ReadSerializable<T>() where T : INetSerializable
     {
-        return default;
+        var instance = (T)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(T));
+        instance.ReadFrom(ref this);
+        return instance;
     }
 
     #endregion

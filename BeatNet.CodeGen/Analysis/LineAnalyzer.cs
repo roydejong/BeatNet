@@ -295,8 +295,9 @@ public class LineAnalyzer
         // -------------------------------------------------------------------------------------------------------------
         // Method declaration
         
-        if (IsDeclaration && RawLine.Contains('(') && RawLine.Contains(')') && !RawLine.Contains('='))
+        if (Words[0] == "void" || (IsDeclaration && RawLine.Contains('(') && RawLine.Contains(')') && !RawLine.Contains('=')))
         {
+            IsDeclaration = true;
             IsMethod = true;
             
             // Constructor declaration

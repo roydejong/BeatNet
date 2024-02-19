@@ -26,11 +26,15 @@ public sealed class BeatmapKeyNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteString(LevelID);
+		writer.WriteString(BeatmapCharacteristicSerializedName);
+		writer.WriteVarUInt((uint)Difficulty);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		LevelID = reader.ReadString();
+		BeatmapCharacteristicSerializedName = reader.ReadString();
+		Difficulty = (BeatmapDifficulty)reader.ReadVarUInt();
 	}
 }

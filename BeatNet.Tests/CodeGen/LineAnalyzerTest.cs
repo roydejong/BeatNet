@@ -68,4 +68,15 @@ public class LineAnalyzerTest
         Assert.That(line.DeclaredName, Is.EqualTo("SetPlayersMissingEntitlementsToLevel"));
         Assert.That(line.DefaultValue, Is.EqualTo("123"));
     }
+    
+    [Test]
+    public void TestParsesMethodWithNoModifierAndDotDeclare()
+    {
+        var text = "void INetSerializable.Deserialize(NetDataReader reader)";
+        var line = new LineAnalyzer(text, contextInEnum: false);
+        
+        Assert.That(line.IsDeclaration, Is.True);
+        Assert.That(line.IsMethod, Is.True);
+        Assert.That(line.DeclaredName, Is.EqualTo("INetSerializable.Deserialize"));
+    }
 }

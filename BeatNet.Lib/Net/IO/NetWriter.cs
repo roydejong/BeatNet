@@ -232,10 +232,9 @@ public ref struct NetWriter
 
     #region Serializable
 
-    public void WriteSerializable<T>(T value) where T : INetSerializable
-    {
-        
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteSerializable<T>(T value) where T : INetSerializable =>
+        value.WriteTo(ref this);
 
     #endregion
 }

@@ -46,10 +46,10 @@ public class NetSerializableGenerator
         sw.WriteLine($"public sealed class {NetSerializable.TypeName} : INetSerializable");
         sw.WriteLine("{");
         sw.WriteLine(
-            FieldGenerator.GenerateMethods(NetSerializable)
+            FieldGenerator.GenerateFields(NetSerializable)
         );
         sw.WriteLine(
-            ConstructorGenerator.GenerateConstructor(NetSerializable, false)
+            ConstructorGenerator.GenerateConstructor(NetSerializable)
         );
         sw.Write(
             ReadWriteMethodGenerator.GenerateMethods(NetSerializable)

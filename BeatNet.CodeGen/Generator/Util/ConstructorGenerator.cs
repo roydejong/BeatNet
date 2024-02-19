@@ -5,7 +5,7 @@ namespace BeatNet.CodeGen.Generator.Util;
 
 public static class ConstructorGenerator
 {
-    public static string GenerateConstructor(IResultWithFields item, bool asNullables)
+    public static string GenerateConstructor(IResultWithFields item)
     {
         var fields = item.GetFields().ToList();
         

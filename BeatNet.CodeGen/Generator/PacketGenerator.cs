@@ -42,10 +42,10 @@ public class PacketGenerator
         sw.WriteLine($"public sealed class {Packet.PacketName} : INetSerializable");
         sw.WriteLine("{");
         sw.WriteLine(
-            FieldGenerator.GenerateMethods(Packet)
+            FieldGenerator.GenerateFields(Packet)
         );
         sw.WriteLine(
-            ConstructorGenerator.GenerateConstructor(Packet, false)
+            ConstructorGenerator.GenerateConstructor(Packet)
         );
         sw.Write(
             ReadWriteMethodGenerator.GenerateMethods(Packet)

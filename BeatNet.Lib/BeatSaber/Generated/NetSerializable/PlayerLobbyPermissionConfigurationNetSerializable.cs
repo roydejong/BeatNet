@@ -33,12 +33,23 @@ public sealed class PlayerLobbyPermissionConfigurationNetSerializable : INetSeri
 	public void WriteTo(ref NetWriter writer)
 	{
 		writer.WriteString(UserId);
-		// TODO Bad Field Ref: byte @byte
+		byte flags = 0;
+		flags |= (byte)(IsServerOwner ? 1 : 0);
+		flags |= (byte)(HasRecommendBeatmapsPermission ? 2 : 0);
+		flags |= (byte)(HasRecommendGameplayModifiersPermission ? 4 : 0);
+		flags |= (byte)(HasKickVotePermission ? 8 : 0);
+		flags |= (byte)(HasInvitePermission ? 16 : 0);
+		writer.WriteByte(flags);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
 		UserId = reader.ReadString();
-		// TODO Bad Field Ref: byte @byte
+		var flags = reader.ReadByte();
+		IsServerOwner = (flags & 1) != 0;
+		HasRecommendBeatmapsPermission = (flags & 2) != 0;
+		HasRecommendGameplayModifiersPermission = (flags & 4) != 0;
+		HasKickVotePermission = (flags & 8) != 0;
+		HasInvitePermission = (flags & 16) != 0;
 	}
 }

@@ -116,7 +116,15 @@ public class DeserializeParser
         else if (rawLine.Contains("@byte &"))
         {
             // Byte shifted flags
-            // TODO
+            var eqIdx = rawLine.IndexOf('=');
+            var refField = rawLine[..eqIdx].Trim();
+            var deserializeFn = rawLine[(eqIdx + 1)..].Trim();
+            
+            return new DeserializeInstruction()
+            {
+                CallType = deserializeFn,
+                FieldName = refField.Trim('_')
+            };
         }
         else
         {

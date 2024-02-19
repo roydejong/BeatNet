@@ -24,17 +24,32 @@ public static class ReadWriteMethodGenerator
         readCodeBuffer.AppendLine("\tpublic void ReadFrom(ref NetReader reader)");
         readCodeBuffer.AppendLine("\t{");
         
+        var hasByteFlag = false;
+        var byteFlagBitCount = 0;
+        
         if (anyInstructions)
         {
             for (var instructionIdx = 0; instructionIdx < instructions.Count(); instructionIdx++)
             {
                 var instruction = instructions.ElementAt(instructionIdx);
+                
                 var linkedField = fields.FirstOrDefault(field => 
                     field.NameForField == instruction.FieldName || field.Name == instruction.FieldName);
 
                 if (linkedField == null)
                 { 
-                    // Debugger.Break();
+                    if (instruction.FieldName == "byte @byte")
+                    {
+                        // Starting byte flag group (packed bools)
+                        hasByteFlag = true;
+                        byteFlagBitCount = 0;
+                        
+                        writeCodeBuffer.AppendLine("\t\tbyte flags = 0;");
+                        readCodeBuffer.AppendLine("\t\tvar flags = reader.ReadByte();");
+                        continue;
+                    }
+                    
+                    Debugger.Break();
                     writeCodeBuffer.AppendLine($"\t\t// TODO Bad Field Ref: {instruction.FieldName}");
                     readCodeBuffer.AppendLine($"\t\t// TODO Bad Field Ref: {instruction.FieldName}");
                     continue;
@@ -94,12 +109,31 @@ public static class ReadWriteMethodGenerator
                         // INetSerializable
                         break;
                     default:
-                        Debugger.Break();
+                        if (instruction.CallType.Contains("@byte"))
+                        {
+                            var bitShift = 1 << byteFlagBitCount;
+                            rwMethod = null;
+                            writeCodeBuffer.AppendLine($"\t\tflags |= (byte)({linkedField.NameForField} ? {bitShift} : 0);");
+                            readCodeBuffer.AppendLine($"\t\t{linkedField.NameForField} = (flags & {bitShift}) != 0;");
+                            byteFlagBitCount++;
+                        }
+                        else
+                        {
+                            Debugger.Break();
+                        }
                         break;
                 }
 
                 if (rwMethod != null)
                 {
+                    if (hasByteFlag)
+                    {
+                        // Ending byte flag group (packed bools)
+                        writeCodeBuffer.AppendLine($"\t\twriter.WriteByte(flags);");
+                        hasByteFlag = false;
+                        byteFlagBitCount = 0;
+                    }
+                    
                     writeCodeBuffer.AppendLine($"\t\twriter.Write{rwMethod}({writeCastPrefix}{linkedField.NameForField});");
                     readCodeBuffer.AppendLine($"\t\t{linkedField.NameForField} = {readCastPrefix}reader.Read{rwMethod}();");
                 }
@@ -109,6 +143,12 @@ public static class ReadWriteMethodGenerator
         {
             writeCodeBuffer.AppendLine("\t\tthrow new NotImplementedException(); // TODO");
             readCodeBuffer.AppendLine("\t\tthrow new NotImplementedException(); // TODO");
+        }
+        
+        if (hasByteFlag)
+        {
+            // Ending byte flag group (packed bools) - last field
+            writeCodeBuffer.AppendLine($"\t\twriter.WriteByte(flags);");
         }
         
         writeCodeBuffer.AppendLine("\t}");

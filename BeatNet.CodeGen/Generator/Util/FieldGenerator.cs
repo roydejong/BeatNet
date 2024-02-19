@@ -5,7 +5,7 @@ namespace BeatNet.CodeGen.Generator.Util;
 
 public static class FieldGenerator
 {
-    public static string GenerateMethods(IResultWithFields item)
+    public static string GenerateFields(IResultWithFields item)
     {
         var fields = item.GetFields().ToList();
         

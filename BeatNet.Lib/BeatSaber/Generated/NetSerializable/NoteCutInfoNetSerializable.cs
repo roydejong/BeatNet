@@ -50,7 +50,9 @@ public sealed class NoteCutInfoNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		// TODO Bad Field Ref: byte @byte
+		byte flags = 0;
+		flags |= (byte)(CutWasOk ? 1 : 0);
+		writer.WriteByte(flags);
 		writer.WriteFloat(SaberSpeed);
 		writer.WriteSerializable<Vector3Serializable>(SaberDir);
 		writer.WriteSerializable<Vector3Serializable>(CutPoint);
@@ -69,7 +71,8 @@ public sealed class NoteCutInfoNetSerializable : INetSerializable
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		// TODO Bad Field Ref: byte @byte
+		var flags = reader.ReadByte();
+		CutWasOk = (flags & 1) != 0;
 		SaberSpeed = reader.ReadFloat();
 		SaberDir = reader.ReadSerializable<Vector3Serializable>();
 		CutPoint = reader.ReadSerializable<Vector3Serializable>();

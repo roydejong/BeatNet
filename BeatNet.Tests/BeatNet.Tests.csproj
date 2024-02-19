@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BeatNet.CodeGen\BeatNet.CodeGen.csproj" />
+    <ProjectReference Include="..\BeatNet.Lib\BeatNet.Lib.csproj" />
   </ItemGroup>
 
 </Project>

@@ -74,7 +74,8 @@ Console.WriteLine($"\nGenerating output files...");
 var gs = new GeneratorSettings()
 {
     OutputPath = Path.GetFullPath(dirDst),
-    BaseNamespace = "BeatNet.Lib.BeatSaber.Generated"
+    BaseNamespace = "BeatNet.Lib.BeatSaber.Generated",
+    Results = results
 };
 
 foreach (var rpc in results.Rpcs)

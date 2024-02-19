@@ -32,13 +32,17 @@ public class NetSerializableGenerator
         sw.WriteLine("// Do not modify manually");
         sw.WriteLine();
         sw.WriteLine("using System;");
+        sw.WriteLine("using BeatNet.Lib.Net;");
+        sw.WriteLine("using BeatNet.Lib.Net.IO;");
         sw.WriteLine("using BeatNet.Lib.BeatSaber.Common;");
         sw.WriteLine("using BeatNet.Lib.BeatSaber.Generated.Enum;");
         sw.WriteLine();
         sw.WriteLine($"namespace {targetNamespace};");
         sw.WriteLine();
+        sw.WriteLine($"// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global");
+        sw.WriteLine();
         
-        sw.WriteLine($"public sealed class {NetSerializable.TypeName}");
+        sw.WriteLine($"public sealed class {NetSerializable.TypeName} : INetSerializable");
         sw.WriteLine("{");
         
         // RPC Params & Constructor w/ params
@@ -74,7 +78,22 @@ public class NetSerializableGenerator
         constructorBuffer.AppendLine($"\t{{");
         constructorBuffer.Append(constructorBodyBuffer);
         constructorBuffer.AppendLine($"\t}}");
-        sw.Write(constructorBuffer);
+        sw.WriteLine(constructorBuffer);
+        
+        // Read/write methods
+        var writeCodeBuffer = new StringBuilder();
+        writeCodeBuffer.AppendLine("\tpublic void WriteTo(ref NetWriter writer)");
+        writeCodeBuffer.AppendLine("\t{");
+        writeCodeBuffer.AppendLine("\t\tthrow new NotImplementedException(); // TODO");
+        writeCodeBuffer.AppendLine("\t}");
+        sw.WriteLine(writeCodeBuffer);
+        
+        var readCodeBuffer = new StringBuilder();
+        readCodeBuffer.AppendLine("\tpublic void ReadFrom(ref NetReader reader)");
+        readCodeBuffer.AppendLine("\t{");
+        readCodeBuffer.AppendLine("\t\tthrow new NotImplementedException(); // TODO");
+        readCodeBuffer.AppendLine("\t}");
+        sw.Write(readCodeBuffer);
         
         // End of class and file
         sw.Write("}");

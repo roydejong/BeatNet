@@ -2,12 +2,16 @@
 // Do not modify manually
 
 using System;
+using BeatNet.Lib.Net;
+using BeatNet.Lib.Net.IO;
 using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
 
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
-public sealed class GameplayModifiers
+// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global
+
+public sealed class GameplayModifiers : INetSerializable
 {
 	public EnergyType EnergyType { get; set; }
 	public bool NoFailOn0Energy { get; set; }
@@ -50,5 +54,15 @@ public sealed class GameplayModifiers
 		CutAngleTolerance = cutAngleTolerance;
 		NotesUniformScale = notesUniformScale;
 		NoModifiers = noModifiers;
+	}
+
+	public void WriteTo(ref NetWriter writer)
+	{
+		throw new NotImplementedException(); // TODO
+	}
+
+	public void ReadFrom(ref NetReader reader)
+	{
+		throw new NotImplementedException(); // TODO
 	}
 }

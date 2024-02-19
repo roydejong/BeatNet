@@ -2,12 +2,16 @@
 // Do not modify manually
 
 using System;
+using BeatNet.Lib.Net;
+using BeatNet.Lib.Net.IO;
 using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
 
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
-public sealed class BitMaskSparse
+// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global
+
+public sealed class BitMaskSparse : INetSerializable
 {
 	public int BitCount { get; set; }
 	public SortedSet<uint> SparseSet { get; set; }
@@ -16,5 +20,15 @@ public sealed class BitMaskSparse
 	{
 		BitCount = bitCount;
 		SparseSet = sparseSet;
+	}
+
+	public void WriteTo(ref NetWriter writer)
+	{
+		throw new NotImplementedException(); // TODO
+	}
+
+	public void ReadFrom(ref NetReader reader)
+	{
+		throw new NotImplementedException(); // TODO
 	}
 }

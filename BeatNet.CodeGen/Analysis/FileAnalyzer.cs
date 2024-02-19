@@ -78,7 +78,8 @@ public class FileAnalyzer
     {
         // Explicit Blocklist
         var blockList = new string[] { "ConnectedPlayerManager", "PartyMessageHandler", "AuthenticationToken",
-            "MultiplayerSessionManager", "NetworkPacketSerializer", "PoolableSerializable" };
+            "MultiplayerSessionManager", "NetworkPacketSerializer", "PoolableSerializable", "StateBuffer", 
+            "RemoteProcedureCall" };
         foreach (var block in blockList)
         {
             if (FileNameNoExt.Contains(block))
@@ -99,7 +100,7 @@ public class FileAnalyzer
 
         // NetSerializable, Serializable, SyncStates, etc.
         var readAhead = File.ReadAllText(FullPath);
-        if (readAhead.Contains(": INetImmutableSerializable") || readAhead.Contains(": INetSerializable"))
+        if (readAhead.Contains("INetImmutableSerializable") || readAhead.Contains("INetSerializable"))
             return false;
 
         return true;

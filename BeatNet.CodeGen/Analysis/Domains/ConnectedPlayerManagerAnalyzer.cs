@@ -1,11 +1,14 @@
-﻿using BeatNet.CodeGen.Analysis.ResultData;
+﻿using System.Diagnostics;
+using BeatNet.CodeGen.Analysis.ResultData;
 using BeatNet.CodeGen.Analysis.Structs;
+using BeatNet.CodeGen.Analysis.Util;
 
 namespace BeatNet.CodeGen.Analysis.Domains;
 
 public class ConnectedPlayerManagerAnalyzer : ISubAnalyzer
 {
     private PacketResult? _currentPacket = null;
+    private DeserializeParser _deserializeParser = new();
     
     public void AnalyzeLine_FirstPass(LineAnalyzer line, Results results)
     {
@@ -42,10 +45,13 @@ public class ConnectedPlayerManagerAnalyzer : ISubAnalyzer
                 ParamName = name
             };
         }
+        
+        var result = _deserializeParser.FeedNextLine(line);
+        if (result != null)
+            _currentPacket.DeserializeInstructions.Add(result);
     }
 
     public void AnalyzeLine_SecondPass(LineAnalyzer line, Results results)
     {
-        
     }
 }

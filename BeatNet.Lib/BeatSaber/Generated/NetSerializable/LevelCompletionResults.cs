@@ -2,6 +2,7 @@
 // Do not modify manually
 
 using System;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
@@ -10,14 +11,14 @@ public sealed class LevelCompletionResults
 	public GameplayModifiers GameplayModifiers { get; set; }
 	public int ModifiedScore { get; set; }
 	public int MultipliedScore { get; set; }
-	public RankModel.Rank Rank { get; set; }
+	public Rank Rank { get; set; }
 	public bool FullCombo { get; set; }
 	public float LeftSaberMovementDistance { get; set; }
 	public float RightSaberMovementDistance { get; set; }
 	public float LeftHandMovementDistance { get; set; }
 	public float RightHandMovementDistance { get; set; }
-	public LevelCompletionResults.LevelEndStateType LevelEndStateType { get; set; }
-	public LevelCompletionResults.LevelEndAction LevelEndAction { get; set; }
+	public LevelEndStateType LevelEndStateType { get; set; }
+	public LevelEndAction LevelEndAction { get; set; }
 	public float Energy { get; set; }
 	public int GoodCutsCount { get; set; }
 	public int BadCutsCount { get; set; }
@@ -32,7 +33,7 @@ public sealed class LevelCompletionResults
 	public int MaxCombo { get; set; }
 	public float EndSongTime { get; set; }
 
-	public LevelCompletionResults(GameplayModifiers gameplayModifiers, int modifiedScore, int multipliedScore, RankModel.Rank rank, bool fullCombo, float leftSaberMovementDistance, float rightSaberMovementDistance, float leftHandMovementDistance, float rightHandMovementDistance, LevelCompletionResults.LevelEndStateType levelEndStateType, LevelCompletionResults.LevelEndAction levelEndAction, float energy, int goodCutsCount, int badCutsCount, int missedCount, int notGoodCount, int okCount, int maxCutScore, int totalCutScore, int goodCutsCountForNotesWithFullScoreScoringType, float averageCenterDistanceCutScoreForNotesWithFullScoreScoringType, float averageCutScoreForNotesWithFullScoreScoringType, int maxCombo, float endSongTime)
+	public LevelCompletionResults(GameplayModifiers gameplayModifiers, int modifiedScore, int multipliedScore, Rank rank, bool fullCombo, float leftSaberMovementDistance, float rightSaberMovementDistance, float leftHandMovementDistance, float rightHandMovementDistance, LevelEndStateType levelEndStateType, LevelEndAction levelEndAction, float energy, int goodCutsCount, int badCutsCount, int missedCount, int notGoodCount, int okCount, int maxCutScore, int totalCutScore, int goodCutsCountForNotesWithFullScoreScoringType, float averageCenterDistanceCutScoreForNotesWithFullScoreScoringType, float averageCutScoreForNotesWithFullScoreScoringType, int maxCombo, float endSongTime)
 	{
 		GameplayModifiers = gameplayModifiers;
 		ModifiedScore = modifiedScore;

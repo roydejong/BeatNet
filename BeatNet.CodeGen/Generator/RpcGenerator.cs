@@ -31,16 +31,22 @@ public class RpcGenerator
         sw.WriteLine();
         sw.WriteLine("using System;");
         sw.WriteLine("using BeatNet.Lib.BeatSaber.Rpc;");
+        sw.WriteLine("using BeatNet.Lib.BeatSaber.Generated.Enum;");
         sw.WriteLine("using BeatNet.Lib.BeatSaber.Generated.NetSerializable;");
         sw.WriteLine();
         sw.WriteLine($"namespace {targetNamespace};");
         sw.WriteLine();
         
+        var hasParams = Rpc.Params.Count > 0;
+        var baseType = hasParams ? "BaseRpc" : "BaseSimpleRpc";
+        
+        sw.WriteLine($"public sealed class {Rpc.RpcName} : {baseType}");
+        sw.WriteLine("{");
+        sw.WriteLine($"\tpublic override byte RpcType => (byte){managerNamePlain}RpcType.{Rpc.RpcName.Replace("Rpc", "")};");
+        sw.WriteLine();
+        
         if (Rpc.Params.Count > 0)
         {
-            sw.WriteLine($"public sealed class {Rpc.RpcName} : BaseRpc");
-            sw.WriteLine("{");
-            
             // RPC Params & Constructor w/ params
             var constructorBuffer = new StringBuilder();
             var constructorBodyBuffer = new StringBuilder();
@@ -80,9 +86,6 @@ public class RpcGenerator
         }
         else
         {
-            sw.WriteLine($"public sealed class {Rpc.RpcName} : BaseSimpleRpc");
-            sw.WriteLine("{");
-            
             // Simple constructor
             sw.WriteLine($"\tpublic {Rpc.RpcName}()");
             sw.WriteLine($"\t{{");
@@ -91,7 +94,7 @@ public class RpcGenerator
         }
         
         // End of class and file
-        sw.WriteLine("}");
+        sw.Write("}");
         sw.Close();
     }
 }

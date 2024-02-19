@@ -2,6 +2,7 @@
 // Do not modify manually
 
 using System;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
@@ -11,8 +12,8 @@ public sealed class NoteSpawnInfoNetSerializable
 	public int LineIndex { get; set; }
 	public NoteLineLayer NoteLineLayer { get; set; }
 	public NoteLineLayer BeforeJumpNoteLineLayer { get; set; }
-	public NoteData.GameplayType GameplayType { get; set; }
-	public NoteData.ScoringType ScoringType { get; set; }
+	public GameplayType GameplayType { get; set; }
+	public ScoringType ScoringType { get; set; }
 	public ColorType ColorType { get; set; }
 	public NoteCutDirection CutDirection { get; set; }
 	public float TimeToNextColorNote { get; set; }
@@ -29,7 +30,7 @@ public sealed class NoteSpawnInfoNetSerializable
 	public float CutDirectionAngleOffset { get; set; }
 	public float CutSfxVolumeMultiplier { get; set; }
 
-	public NoteSpawnInfoNetSerializable(float time, int lineIndex, NoteLineLayer noteLineLayer, NoteLineLayer beforeJumpNoteLineLayer, NoteData.GameplayType gameplayType, NoteData.ScoringType scoringType, ColorType colorType, NoteCutDirection cutDirection, float timeToNextColorNote, float timeToPrevColorNote, int flipLineIndex, float flipYSide, Vector3Serializable moveStartPos, Vector3Serializable moveEndPos, Vector3Serializable jumpEndPos, float jumpGravity, float moveDuration, float jumpDuration, float rotation, float cutDirectionAngleOffset, float cutSfxVolumeMultiplier)
+	public NoteSpawnInfoNetSerializable(float time, int lineIndex, NoteLineLayer noteLineLayer, NoteLineLayer beforeJumpNoteLineLayer, GameplayType gameplayType, ScoringType scoringType, ColorType colorType, NoteCutDirection cutDirection, float timeToNextColorNote, float timeToPrevColorNote, int flipLineIndex, float flipYSide, Vector3Serializable moveStartPos, Vector3Serializable moveEndPos, Vector3Serializable jumpEndPos, float jumpGravity, float moveDuration, float jumpDuration, float rotation, float cutDirectionAngleOffset, float cutSfxVolumeMultiplier)
 	{
 		Time = time;
 		LineIndex = lineIndex;

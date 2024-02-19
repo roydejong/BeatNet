@@ -3,12 +3,15 @@
 
 using System;
 using BeatNet.Lib.BeatSaber.Rpc;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Gameplay;
 
 public sealed class SetPlayerDidConnectLateRpc : BaseRpc
 {
+	public override byte RpcType => (byte)GameplayRpcType.SetPlayerDidConnectLate;
+
 	public string? UsedId { get; set; } = null;
 	public PlayerSpecificSettingsAtStartNetSerializable? PlayersAtGameStartNetSerializable { get; set; } = null;
 	public string? SessionGameId { get; set; } = null;

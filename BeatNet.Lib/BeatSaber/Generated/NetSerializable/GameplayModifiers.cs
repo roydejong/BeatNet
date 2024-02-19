@@ -2,29 +2,30 @@
 // Do not modify manually
 
 using System;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class GameplayModifiers
 {
-	public GameplayModifiers.EnergyType EnergyType { get; set; }
+	public EnergyType EnergyType { get; set; }
 	public bool NoFailOn0Energy { get; set; }
 	public bool InstaFail { get; set; }
 	public bool FailOnSaberClash { get; set; }
-	public GameplayModifiers.EnabledObstacleType EnabledObstacleType { get; set; }
+	public EnabledObstacleType EnabledObstacleType { get; set; }
 	public bool FastNotes { get; set; }
 	public bool StrictAngles { get; set; }
 	public bool DisappearingArrows { get; set; }
 	public bool GhostNotes { get; set; }
 	public bool NoBombs { get; set; }
-	public GameplayModifiers.SongSpeed SongSpeed { get; set; }
+	public SongSpeed SongSpeed { get; set; }
 	public bool NoArrows { get; set; }
 	public bool ProMode { get; set; }
 	public bool ZenMode { get; set; }
 	public bool SmallCubes { get; set; }
 	public GameplayModifiers NoModifiers { get; set; }
 
-	public GameplayModifiers(GameplayModifiers.EnergyType energyType, bool noFailOn0Energy, bool instaFail, bool failOnSaberClash, GameplayModifiers.EnabledObstacleType enabledObstacleType, bool fastNotes, bool strictAngles, bool disappearingArrows, bool ghostNotes, bool noBombs, GameplayModifiers.SongSpeed songSpeed, bool noArrows, bool proMode, bool zenMode, bool smallCubes, GameplayModifiers noModifiers)
+	public GameplayModifiers(EnergyType energyType, bool noFailOn0Energy, bool instaFail, bool failOnSaberClash, EnabledObstacleType enabledObstacleType, bool fastNotes, bool strictAngles, bool disappearingArrows, bool ghostNotes, bool noBombs, SongSpeed songSpeed, bool noArrows, bool proMode, bool zenMode, bool smallCubes, GameplayModifiers noModifiers)
 	{
 		EnergyType = energyType;
 		NoFailOn0Energy = noFailOn0Energy;

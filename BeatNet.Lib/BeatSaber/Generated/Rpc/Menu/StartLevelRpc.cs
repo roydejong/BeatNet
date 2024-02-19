@@ -3,12 +3,15 @@
 
 using System;
 using BeatNet.Lib.BeatSaber.Rpc;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 
 public sealed class StartLevelRpc : BaseRpc
 {
+	public override byte RpcType => (byte)MenuRpcType.StartLevel;
+
 	public BeatmapKeyNetSerializable? BeatmapKeySerializable { get; set; } = null;
 	public GameplayModifiers? GameplayModifiers { get; set; } = null;
 	public long? StartTime { get; set; } = null;

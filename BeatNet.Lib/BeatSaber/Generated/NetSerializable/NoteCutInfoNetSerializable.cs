@@ -2,6 +2,7 @@
 // Do not modify manually
 
 using System;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
@@ -15,7 +16,7 @@ public sealed class NoteCutInfoNetSerializable
 	public Vector3Serializable NotePosition { get; set; }
 	public Vector3Serializable NoteScale { get; set; }
 	public QuaternionSerializable NoteRotation { get; set; }
-	public NoteData.GameplayType GameplayType { get; set; }
+	public GameplayType GameplayType { get; set; }
 	public ColorType ColorType { get; set; }
 	public float NoteTime { get; set; }
 	public int NoteLineIndex { get; set; }
@@ -23,7 +24,7 @@ public sealed class NoteCutInfoNetSerializable
 	public float TimeToNextColorNote { get; set; }
 	public Vector3Serializable MoveVec { get; set; }
 
-	public NoteCutInfoNetSerializable(float saberSpeed, bool cutWasOk, Vector3Serializable saberDir, Vector3Serializable cutPoint, Vector3Serializable cutNormal, Vector3Serializable notePosition, Vector3Serializable noteScale, QuaternionSerializable noteRotation, NoteData.GameplayType gameplayType, ColorType colorType, float noteTime, int noteLineIndex, NoteLineLayer lineLayer, float timeToNextColorNote, Vector3Serializable moveVec)
+	public NoteCutInfoNetSerializable(float saberSpeed, bool cutWasOk, Vector3Serializable saberDir, Vector3Serializable cutPoint, Vector3Serializable cutNormal, Vector3Serializable notePosition, Vector3Serializable noteScale, QuaternionSerializable noteRotation, GameplayType gameplayType, ColorType colorType, float noteTime, int noteLineIndex, NoteLineLayer lineLayer, float timeToNextColorNote, Vector3Serializable moveVec)
 	{
 		SaberSpeed = saberSpeed;
 		CutWasOk = cutWasOk;

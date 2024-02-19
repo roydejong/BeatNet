@@ -2,16 +2,17 @@
 // Do not modify manually
 
 using System;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class MultiplayerLevelCompletionResults
 {
-	public MultiplayerLevelCompletionResults.MultiplayerPlayerLevelEndState PlayerLevelEndState { get; set; }
-	public MultiplayerLevelCompletionResults.MultiplayerPlayerLevelEndReason PlayerLevelEndReason { get; set; }
+	public MultiplayerPlayerLevelEndState PlayerLevelEndState { get; set; }
+	public MultiplayerPlayerLevelEndReason PlayerLevelEndReason { get; set; }
 	public LevelCompletionResults LevelCompletionResults { get; set; }
 
-	public MultiplayerLevelCompletionResults(MultiplayerLevelCompletionResults.MultiplayerPlayerLevelEndState playerLevelEndState, MultiplayerLevelCompletionResults.MultiplayerPlayerLevelEndReason playerLevelEndReason, LevelCompletionResults levelCompletionResults)
+	public MultiplayerLevelCompletionResults(MultiplayerPlayerLevelEndState playerLevelEndState, MultiplayerPlayerLevelEndReason playerLevelEndReason, LevelCompletionResults levelCompletionResults)
 	{
 		PlayerLevelEndState = playerLevelEndState;
 		PlayerLevelEndReason = playerLevelEndReason;

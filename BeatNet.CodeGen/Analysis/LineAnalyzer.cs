@@ -25,12 +25,15 @@ public class LineAnalyzer
     public readonly bool IsConstructor;
     public readonly bool IsField;
     public readonly string? DeclaredName;
-    public readonly string? EnumBaseType;
     public readonly List<ClassInheritor>? ClassInheritors;
     public readonly string? DeclaredType;
     public readonly List<TypedParam>? MethodParams;
+    public bool IsOpenBracket;
+    public bool IsCloseBracket;
+    public bool IsEnumCase;
+    public string? DefaultValue;
 
-    public LineAnalyzer(string line, string? contextTypeName)
+    public LineAnalyzer(string line, string? contextTypeName = null, bool? contextInEnum = false)
     {
         RawLine = line;
         Words = RawLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -48,10 +51,11 @@ public class LineAnalyzer
         IsMethod = false;
         IsConstructor = false;
         DeclaredName = null;
-        EnumBaseType = null;
         ClassInheritors = null;
         DeclaredType = null;
         MethodParams = null;
+        IsOpenBracket = false;
+        IsCloseBracket = false;
 
         // -------------------------------------------------------------------------------------------------------------
         // Access modifiers
@@ -137,6 +141,41 @@ public class LineAnalyzer
             return;
         }
 
+        if (Words[0] == "{")
+        {
+            IsOpenBracket = true;
+            return;
+        }
+        
+        if (Words[0] == "}")
+        {
+            IsCloseBracket = true;
+            return;
+        }
+
+        if (Words.Length == 0)
+            Debugger.Break();
+
+        // -------------------------------------------------------------------------------------------------------------
+        // Enum case
+
+        if (contextInEnum ?? false)
+        {
+            IsDeclaration = true;
+            IsEnumCase = true;
+            DeclaredName = Words[0].Trim(',');
+            Words = Words[1..];
+
+            var hasExplicitValue = Words.Length > 0 && Words[0] == "=";
+            if (hasExplicitValue)
+            {
+                Words = Words[1..];
+                DefaultValue = Words[0].Trim(',');
+            }
+
+            return;
+        }
+
         // -------------------------------------------------------------------------------------------------------------
         // Enum declaration
 
@@ -152,7 +191,7 @@ public class LineAnalyzer
             if (Words.Length > 0 && Words[0] == ":")
             {
                 Words = Words[1..];
-                EnumBaseType = Words[0];
+                DeclaredType = Words[0];
             }
 
             return;
@@ -337,6 +376,10 @@ public class LineAnalyzer
             DeclaredType = Words[0];
             DeclaredName = Words[1].Trim(';');
 
+            var typeDotIdx = DeclaredType.IndexOf('.');
+            if (typeDotIdx >= 0)
+                DeclaredType = DeclaredType[(typeDotIdx + 1)..];
+            
             return;
         }
     }

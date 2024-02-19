@@ -3,12 +3,15 @@
 
 using System;
 using BeatNet.Lib.BeatSaber.Rpc;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 
 public sealed class RecommendBeatmapRpc : BaseRpc
 {
+	public override byte RpcType => (byte)MenuRpcType.RecommendBeatmap;
+
 	public BeatmapKeyNetSerializable? Key { get; set; } = null;
 
 	public override int ValueCount => 1;

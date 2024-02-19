@@ -3,12 +3,15 @@
 
 using System;
 using BeatNet.Lib.BeatSaber.Rpc;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Gameplay;
 
 public sealed class ObstacleSpawnedRpc : BaseRpc
 {
+	public override byte RpcType => (byte)GameplayRpcType.ObstacleSpawned;
+
 	public float? SongTime { get; set; } = null;
 	public ObstacleSpawnInfoNetSerializable? ObstacleSpawnInfoNetSerializable { get; set; } = null;
 

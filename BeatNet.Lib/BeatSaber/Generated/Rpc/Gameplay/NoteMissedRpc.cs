@@ -3,12 +3,15 @@
 
 using System;
 using BeatNet.Lib.BeatSaber.Rpc;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Gameplay;
 
 public sealed class NoteMissedRpc : BaseRpc
 {
+	public override byte RpcType => (byte)GameplayRpcType.NoteMissed;
+
 	public float? SongTime { get; set; } = null;
 	public NoteMissInfoNetSerializable? NoteMissInfoNetSerializable { get; set; } = null;
 

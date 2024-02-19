@@ -2,6 +2,8 @@
 
 public abstract class BaseRpc
 {
+    public abstract byte RpcType { get; }
+    
     public long SyncTime { get; set; }
 
     public abstract int ValueCount { get; }

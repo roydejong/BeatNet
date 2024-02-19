@@ -3,12 +3,15 @@
 
 using System;
 using BeatNet.Lib.BeatSaber.Rpc;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 
 public sealed class GetRecommendedGameplayModifiersRpc : BaseSimpleRpc
 {
+	public override byte RpcType => (byte)MenuRpcType.GetRecommendedGameplayModifiers;
+
 	public GetRecommendedGameplayModifiersRpc()
 	{
 		// RPC without parameters

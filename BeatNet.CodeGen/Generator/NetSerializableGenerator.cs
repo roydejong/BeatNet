@@ -29,6 +29,7 @@ public class NetSerializableGenerator
         sw.WriteLine("// Do not modify manually");
         sw.WriteLine();
         sw.WriteLine("using System;");
+        sw.WriteLine("using BeatNet.Lib.BeatSaber.Generated.Enum;");
         sw.WriteLine();
         sw.WriteLine($"namespace {targetNamespace};");
         sw.WriteLine();
@@ -64,7 +65,7 @@ public class NetSerializableGenerator
         sw.Write(constructorBuffer);
         
         // End of class and file
-        sw.WriteLine("}");
+        sw.Write("}");
         sw.Close();
     }
 }

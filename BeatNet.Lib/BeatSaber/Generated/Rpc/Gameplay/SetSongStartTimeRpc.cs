@@ -3,12 +3,15 @@
 
 using System;
 using BeatNet.Lib.BeatSaber.Rpc;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Gameplay;
 
 public sealed class SetSongStartTimeRpc : BaseRpc
 {
+	public override byte RpcType => (byte)GameplayRpcType.SetSongStartTime;
+
 	public long? StartTime { get; set; } = null;
 
 	public override int ValueCount => 1;

@@ -3,12 +3,15 @@
 
 using System;
 using BeatNet.Lib.BeatSaber.Rpc;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Gameplay;
 
 public sealed class SetGameplaySceneSyncFinishedRpc : BaseRpc
 {
+	public override byte RpcType => (byte)GameplayRpcType.SetGameplaySceneSyncFinished;
+
 	public PlayerSpecificSettingsAtStartNetSerializable? PlayersAtGameStartNetSerializable { get; set; } = null;
 	public string? SessionGameId { get; set; } = null;
 

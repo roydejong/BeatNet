@@ -1,4 +1,5 @@
-﻿using BeatNet.CodeGen.Analysis.Domains;
+﻿using System.Diagnostics;
+using BeatNet.CodeGen.Analysis.Domains;
 using BeatNet.CodeGen.Analysis.ResultData;
 
 namespace BeatNet.CodeGen.Analysis;
@@ -42,6 +43,8 @@ public class FileAnalyzer
         {
             baseType = null;
             currentType = null;
+            EnumResult? currentEnum = null;
+            int enumValueGen = 0;
 
             foreach (var line in File.ReadAllLines(FullPath))
             {
@@ -53,7 +56,7 @@ public class FileAnalyzer
                 if (lineTrimmed.StartsWith("//") || lineTrimmed.StartsWith("/*") || lineTrimmed.StartsWith("*/"))
                     continue;
 
-                var lineAnalyzer = new LineAnalyzer(lineTrimmed, currentType);
+                var lineAnalyzer = new LineAnalyzer(lineTrimmed, currentType, currentEnum != null);
 
                 if (lineAnalyzer.IsClass || lineAnalyzer.IsStruct)
                 {
@@ -65,6 +68,48 @@ public class FileAnalyzer
                 if (pass == 1)
                 {
                     domainAnalyzer?.AnalyzeLine_FirstPass(lineAnalyzer, results);
+
+                    if (lineAnalyzer.IsEnum)
+                    {
+                        currentEnum = new EnumResult
+                        {
+                            ContainingType = baseType,
+                            EnumName = lineAnalyzer.DeclaredName,
+                            EnumBackingType = lineAnalyzer.DeclaredType ?? "int"
+                        };
+                        results.Enums.Add(currentEnum);
+                    }
+                    else if (currentEnum != null)
+                    {
+                        if (lineAnalyzer.IsEnumCase)
+                        {
+                            int enumValue = enumValueGen;
+
+                            if (lineAnalyzer.DefaultValue != null)
+                            {
+                                int.TryParse(lineAnalyzer.DefaultValue, out enumValue);
+                            }
+
+                            if (enumValue > enumValueGen)
+                                enumValueGen = enumValue;
+
+                            currentEnum.Cases.Add(enumValue, lineAnalyzer.DeclaredName!);
+                            enumValueGen++;
+                        }
+                        else if (lineAnalyzer.IsCloseBracket)
+                        {
+                            currentEnum = null;
+                            enumValueGen = 0;
+                        }
+                        else if (lineAnalyzer.IsOpenBracket)
+                        {
+                            // Continue
+                        }
+                        else
+                        {
+                            Debugger.Break();
+                        }
+                    }
                 }
                 else if (pass == 2)
                 {
@@ -87,7 +132,8 @@ public class FileAnalyzer
         }
         
         // Explicit Allowlist
-        var allowList = new string[] { "Serializable", "SyncState" };
+        var allowList = new string[] { "Serializable", "SyncState", "EntitlementsStatus", "CannotStartGameReason",
+            "MultiplayerGameState" };
         foreach (var allow in allowList)
         {
             if (FileNameNoExt.Contains(allow))

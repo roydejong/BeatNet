@@ -3,12 +3,15 @@
 
 using System;
 using BeatNet.Lib.BeatSaber.Rpc;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 
 public sealed class SetIsEntitledToLevelRpc : BaseRpc
 {
+	public override byte RpcType => (byte)MenuRpcType.SetIsEntitledToLevel;
+
 	public string? LevelId { get; set; } = null;
 	public EntitlementsStatus? EntitlementStatus { get; set; } = null;
 

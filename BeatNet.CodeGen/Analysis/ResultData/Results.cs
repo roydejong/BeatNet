@@ -6,4 +6,5 @@ public class Results
     public List<RpcResult> Rpcs { get; set; } = new();
     public List<NetSerializableResult> NetSerializables { get; set; } = new();
     public List<EnumResult> Enums { get; set; } = new();
+    public List<PacketResult> Packets { get; set; } = new();
 }

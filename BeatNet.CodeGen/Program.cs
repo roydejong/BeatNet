@@ -65,6 +65,7 @@ Console.WriteLine(" • Found RPC Managers: " + results.RpcManagers.Count);
 Console.WriteLine(" • Found RPC Definitions: " + results.Rpcs.Count);
 Console.WriteLine(" • Found NetSerializables: " + results.NetSerializables.Count);
 Console.WriteLine(" • Found Enums: " + results.Enums.Count);
+Console.WriteLine(" • Found CPM Packets: " + results.Packets.Count);
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -92,6 +93,12 @@ foreach (var en in results.Enums)
 {
     var enGen = new EnumGenerator(en);
     enGen.Generate(gs);
+}
+
+foreach (var pk in results.Packets)
+{
+    var pkGen = new PacketGenerator(pk);
+    pkGen.Generate(gs);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

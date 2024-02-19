@@ -31,6 +31,8 @@ public class FileAnalyzer
         ISubAnalyzer? domainAnalyzer = null;
         if (SubPath.Contains("RpcManager"))
             domainAnalyzer = new RpcManagerAnalyzer();
+        else if (FileNameNoExt == "ConnectedPlayerManager")
+            domainAnalyzer = new ConnectedPlayerManagerAnalyzer();
         else
             domainAnalyzer = new NetSerializableAnalyzer();
 
@@ -122,7 +124,7 @@ public class FileAnalyzer
     private bool ShouldIgnoreFileName()
     {
         // Explicit Blocklist
-        var blockList = new string[] { "ConnectedPlayerManager", "PartyMessageHandler", "AuthenticationToken",
+        var blockList = new string[] { "PartyMessageHandler", "AuthenticationToken",
             "MultiplayerSessionManager", "NetworkPacketSerializer", "PoolableSerializable", "StateBuffer", 
             "RemoteProcedureCall", "Extensions", "GameplayType", "ScoringType" };
         foreach (var block in blockList)
@@ -142,7 +144,8 @@ public class FileAnalyzer
             if (FileNameNoExt.Contains(allow))
                 return false;
         }
-        var allowListFullName = new string[] { "RankModel", "BeatmapDifficulty" };
+        var allowListFullName = new string[] { "RankModel", "BeatmapDifficulty", "ConnectedPlayerManager", 
+            "DisconnectedReason" };
         foreach (var allow in allowListFullName)
         {
             if (FileNameNoExt == allow)

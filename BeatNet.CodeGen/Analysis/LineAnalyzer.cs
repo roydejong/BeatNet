@@ -57,7 +57,7 @@ public class LineAnalyzer
         IsOpenBracket = false;
         IsCloseBracket = false;
         
-        if (RawLine.Contains("<>"))
+        if (RawLine.Contains("<>") || RawLine.Contains(">5__2"))
             // Weird DisplayClass compiler-generated stuff - skip
             return;
         

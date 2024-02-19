@@ -28,16 +28,16 @@ public sealed class NoteMissInfoNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		writer.WriteVarInt(ColorType);
-		writer.WriteVarInt(NoteLineLayer);
+		writer.WriteVarInt((int)ColorType);
+		writer.WriteVarInt((int)NoteLineLayer);
 		writer.WriteVarInt(NoteLineIndex);
 		writer.WriteFloat(NoteTime);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		ColorType = reader.ReadVarInt();
-		NoteLineLayer = reader.ReadVarInt();
+		ColorType = (ColorType)reader.ReadVarInt();
+		NoteLineLayer = (NoteLineLayer)reader.ReadVarInt();
 		NoteLineIndex = reader.ReadVarInt();
 		NoteTime = reader.ReadFloat();
 	}

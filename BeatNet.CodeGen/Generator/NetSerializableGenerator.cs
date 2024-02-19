@@ -109,19 +109,30 @@ public class NetSerializableGenerator
                 }
                 
                 var rwMethod = $"Serializable<{linkedField.TypeName}>";
+                var shouldTypeCast = instruction.TypeCast != null;
+                var readCastPrefix = shouldTypeCast ? $"({instruction.TypeCast})" : "";
+                var writeCastPrefix = "";
                 switch (instruction.CallType)
                 {
                     case "GetVarULong();":
                         rwMethod = "VarULong";
+                        if (shouldTypeCast)
+                            writeCastPrefix = $"(ulong)";
                         break;
                     case "GetVarUInt();":
                         rwMethod = "VarUInt";
+                        if (shouldTypeCast)
+                            writeCastPrefix = $"(uint)";
                         break;
                     case "GetVarLong();":
                         rwMethod = "VarLong";
+                        if (shouldTypeCast)
+                            writeCastPrefix = $"(long)";
                         break;
                     case "GetVarInt();":
                         rwMethod = "VarInt";
+                        if (shouldTypeCast)
+                            writeCastPrefix = $"(int)";
                         break;
                     case "GetString();":
                         rwMethod = "String";
@@ -131,9 +142,13 @@ public class NetSerializableGenerator
                         break;
                     case "GetFloat();":
                         rwMethod = "Float";
+                        if (shouldTypeCast)
+                            writeCastPrefix = $"(float)";
                         break;
                     case "GetByte();":
                         rwMethod = "Byte";
+                        if (shouldTypeCast)
+                            writeCastPrefix = $"(byte)";
                         break;
                     case "1f":
                         rwMethod = null;
@@ -151,8 +166,8 @@ public class NetSerializableGenerator
 
                 if (rwMethod != null)
                 {
-                    writeCodeBuffer.AppendLine($"\t\twriter.Write{rwMethod}({linkedField.ParamNameForField});");
-                    readCodeBuffer.AppendLine($"\t\t{linkedField.ParamNameForField} = reader.Read{rwMethod}();");
+                    writeCodeBuffer.AppendLine($"\t\twriter.Write{rwMethod}({writeCastPrefix}{linkedField.ParamNameForField});");
+                    readCodeBuffer.AppendLine($"\t\t{linkedField.ParamNameForField} = {readCastPrefix}reader.Read{rwMethod}();");
                 }
             }
         }

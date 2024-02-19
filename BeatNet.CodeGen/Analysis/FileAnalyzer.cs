@@ -33,6 +33,8 @@ public class FileAnalyzer
             domainAnalyzer = new RpcManagerAnalyzer();
         else if (FileNameNoExt == "ConnectedPlayerManager")
             domainAnalyzer = new ConnectedPlayerManagerAnalyzer();
+        else if (FileNameNoExt == "SliderData")
+            domainAnalyzer = null; // Enum extraction only
         else
             domainAnalyzer = new NetSerializableAnalyzer();
 
@@ -73,10 +75,15 @@ public class FileAnalyzer
 
                     if (lineAnalyzer.IsEnum)
                     {
+                        var enumName = lineAnalyzer.DeclaredName;
+                        
+                        if (enumName == "Type")
+                            enumName = "SliderType";
+                        
                         currentEnum = new EnumResult
                         {
                             ContainingType = baseType,
-                            EnumName = lineAnalyzer.DeclaredName,
+                            EnumName = enumName,
                             EnumBackingType = lineAnalyzer.DeclaredType ?? "int"
                         };
                         results.Enums.Add(currentEnum);
@@ -137,7 +144,7 @@ public class FileAnalyzer
         var allowList = new string[] { "Serializable", "SyncState", "EntitlementsStatus", "CannotStartGameReason",
             "MultiplayerGameState", "ColorType", "NoteCutDirection", "NoteLineLayer", "SliderMidAnchorMode",
             "NoteData", "DiscoveryPolicy", "InvitePolicy", "GameplayServerMode", "SongSelectionMode",
-            "GameplayServerControlSettings", "MultiplayerAvatarData"
+            "GameplayServerControlSettings", "MultiplayerAvatarData", "SliderData"
         };
         foreach (var allow in allowList)
         {

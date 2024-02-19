@@ -58,9 +58,9 @@ public sealed class NoteCutInfoNetSerializable : INetSerializable
 		writer.WriteSerializable<Vector3Serializable>(NotePosition);
 		writer.WriteSerializable<Vector3Serializable>(NoteScale);
 		writer.WriteSerializable<QuaternionSerializable>(NoteRotation);
-		writer.WriteVarInt(GameplayType);
-		writer.WriteVarInt(ColorType);
-		writer.WriteVarInt(LineLayer);
+		writer.WriteVarInt((int)GameplayType);
+		writer.WriteVarInt((int)ColorType);
+		writer.WriteVarInt((int)LineLayer);
 		writer.WriteVarInt(NoteLineIndex);
 		writer.WriteFloat(NoteTime);
 		writer.WriteFloat(TimeToNextColorNote);
@@ -77,9 +77,9 @@ public sealed class NoteCutInfoNetSerializable : INetSerializable
 		NotePosition = reader.ReadSerializable<Vector3Serializable>();
 		NoteScale = reader.ReadSerializable<Vector3Serializable>();
 		NoteRotation = reader.ReadSerializable<QuaternionSerializable>();
-		GameplayType = reader.ReadVarInt();
-		ColorType = reader.ReadVarInt();
-		LineLayer = reader.ReadVarInt();
+		GameplayType = (GameplayType)reader.ReadVarInt();
+		ColorType = (ColorType)reader.ReadVarInt();
+		LineLayer = (NoteLineLayer)reader.ReadVarInt();
 		NoteLineIndex = reader.ReadVarInt();
 		NoteTime = reader.ReadFloat();
 		TimeToNextColorNote = reader.ReadFloat();

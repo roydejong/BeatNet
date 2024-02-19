@@ -64,16 +64,16 @@ public sealed class NoteSpawnInfoNetSerializable : INetSerializable
 	{
 		writer.WriteFloat(Time);
 		writer.WriteVarInt(LineIndex);
-		writer.WriteVarInt(NoteLineLayer);
-		writer.WriteVarInt(BeforeJumpNoteLineLayer);
-		writer.WriteVarInt(GameplayType);
-		writer.WriteVarInt(ScoringType);
-		writer.WriteVarInt(ColorType);
-		writer.WriteVarInt(CutDirection);
+		writer.WriteVarInt((int)NoteLineLayer);
+		writer.WriteVarInt((int)BeforeJumpNoteLineLayer);
+		writer.WriteVarInt((int)GameplayType);
+		writer.WriteVarInt((int)ScoringType);
+		writer.WriteVarInt((int)ColorType);
+		writer.WriteVarInt((int)CutDirection);
 		writer.WriteFloat(TimeToNextColorNote);
 		writer.WriteFloat(TimeToPrevColorNote);
 		writer.WriteVarInt(FlipLineIndex);
-		writer.WriteVarInt(FlipYSide);
+		writer.WriteVarInt((int)FlipYSide);
 		writer.WriteSerializable<Vector3Serializable>(MoveStartPos);
 		writer.WriteSerializable<Vector3Serializable>(MoveEndPos);
 		writer.WriteSerializable<Vector3Serializable>(JumpEndPos);
@@ -89,16 +89,16 @@ public sealed class NoteSpawnInfoNetSerializable : INetSerializable
 	{
 		Time = reader.ReadFloat();
 		LineIndex = reader.ReadVarInt();
-		NoteLineLayer = reader.ReadVarInt();
-		BeforeJumpNoteLineLayer = reader.ReadVarInt();
-		GameplayType = reader.ReadVarInt();
-		ScoringType = reader.ReadVarInt();
-		ColorType = reader.ReadVarInt();
-		CutDirection = reader.ReadVarInt();
+		NoteLineLayer = (NoteLineLayer)reader.ReadVarInt();
+		BeforeJumpNoteLineLayer = (NoteLineLayer)reader.ReadVarInt();
+		GameplayType = (GameplayType)reader.ReadVarInt();
+		ScoringType = (ScoringType)reader.ReadVarInt();
+		ColorType = (ColorType)reader.ReadVarInt();
+		CutDirection = (NoteCutDirection)reader.ReadVarInt();
 		TimeToNextColorNote = reader.ReadFloat();
 		TimeToPrevColorNote = reader.ReadFloat();
 		FlipLineIndex = reader.ReadVarInt();
-		FlipYSide = reader.ReadVarInt();
+		FlipYSide = (float)reader.ReadVarInt();
 		MoveStartPos = reader.ReadSerializable<Vector3Serializable>();
 		MoveEndPos = reader.ReadSerializable<Vector3Serializable>();
 		JumpEndPos = reader.ReadSerializable<Vector3Serializable>();

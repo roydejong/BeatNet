@@ -50,7 +50,7 @@ public sealed class ObstacleSpawnInfoNetSerializable : INetSerializable
 	{
 		writer.WriteFloat(Time);
 		writer.WriteVarInt(LineIndex);
-		writer.WriteVarInt(LineLayer);
+		writer.WriteVarInt((int)LineLayer);
 		writer.WriteFloat(Duration);
 		writer.WriteVarInt(Width);
 		writer.WriteVarInt(Height);
@@ -68,7 +68,7 @@ public sealed class ObstacleSpawnInfoNetSerializable : INetSerializable
 	{
 		Time = reader.ReadFloat();
 		LineIndex = reader.ReadVarInt();
-		LineLayer = reader.ReadVarInt();
+		LineLayer = (NoteLineLayer)reader.ReadVarInt();
 		Duration = reader.ReadFloat();
 		Width = reader.ReadVarInt();
 		Height = reader.ReadVarInt();

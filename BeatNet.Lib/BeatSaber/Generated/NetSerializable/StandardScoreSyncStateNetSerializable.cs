@@ -27,14 +27,14 @@ public sealed class StandardScoreSyncStateNetSerializable : INetSerializable
 	public void WriteTo(ref NetWriter writer)
 	{
 		writer.WriteSerializable<SyncStateId>(Id);
-		writer.WriteVarULong(Time);
+		writer.WriteVarULong((ulong)Time);
 		writer.WriteSerializable<StandardScoreSyncState>(State);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
 		Id = reader.ReadSerializable<SyncStateId>();
-		Time = reader.ReadVarULong();
+		Time = (long)reader.ReadVarULong();
 		State = reader.ReadSerializable<StandardScoreSyncState>();
 	}
 }

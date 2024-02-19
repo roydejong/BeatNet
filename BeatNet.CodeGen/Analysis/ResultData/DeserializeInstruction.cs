@@ -4,4 +4,5 @@ public class DeserializeInstruction
 {
     public string FieldName;
     public string CallType;
+    public string? TypeCast;
 }

@@ -40,20 +40,25 @@ public class NetSerializableAnalyzer : ISubAnalyzer
         if (line.IsField)
         {
             var name = line.DeclaredName!;
+            var type = line.DeclaredType!;
+            
             name = name.Trim('_');
 
             if (name.Contains("__BackingField"))
                 return;
 
-            if (line.DeclaredType!.Contains("IReadOnly"))
+            if (type.Contains("IReadOnly"))
                 return;
+
+            if (name == "sliderType")
+                type = "SliderType"; // BG called this "Type" which, well, isn't ideal - so explicit fix
 
             // if (line.Const)
             //     return;
             
             _currentResult.Fields[name] = new TypedParam()
             {
-                TypeName = line.DeclaredType!,
+                TypeName = type,
                 ParamName = name
             };
         }
@@ -111,11 +116,28 @@ public class NetSerializableAnalyzer : ISubAnalyzer
             
             var dotIdx = rawLine.IndexOf("reader.", StringComparison.Ordinal);
             var callType = rawLine[(dotIdx + 7)..];
+
+            var typecastEndIdx = rawLine.IndexOf(")reader.", StringComparison.Ordinal);
+            string? typeCast = null;
+            
+            if (typecastEndIdx > 0)
+            {
+                var typecastStartIdx = rawLine.LastIndexOf('(', typecastEndIdx);
+                typeCast = rawLine[(typecastStartIdx + 1)..typecastEndIdx];
+                
+                var typeCastDotIdx = typeCast.IndexOf('.');
+                if (typeCastDotIdx > 0)
+                    typeCast = typeCast[(typeCastDotIdx + 1)..];
+                
+                if (typeCast == "Type") // BG called this "Type" which, well, isn't ideal - so explicit fix
+                    typeCast = "SliderType"; 
+            }
             
             _currentResult.DeserializeInstructions.Add(new DeserializeInstruction()
             {
                 CallType = callType,
-                FieldName = refField.Trim('_')
+                FieldName = refField.Trim('_'),
+                TypeCast = typeCast
             });
         }
         else if (rawLine.Contains(".Deserialize"))

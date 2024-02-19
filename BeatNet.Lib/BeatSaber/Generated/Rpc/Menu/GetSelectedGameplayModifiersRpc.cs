@@ -4,7 +4,7 @@ using BeatNet.Lib.BeatSaber.Rpc;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 
-public sealed class GetSelectedGameplayModifiersRpc : BaseRpc
+public sealed class GetSelectedGameplayModifiersRpc : BaseSimpleRpc
 {
 	public GetSelectedGameplayModifiersRpc()
 	{

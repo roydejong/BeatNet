@@ -4,7 +4,7 @@ using BeatNet.Lib.BeatSaber.Rpc;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Gameplay;
 
-public sealed class GetGameplaySongReadyRpc : BaseRpc
+public sealed class GetGameplaySongReadyRpc : BaseSimpleRpc
 {
 	public GetGameplaySongReadyRpc()
 	{

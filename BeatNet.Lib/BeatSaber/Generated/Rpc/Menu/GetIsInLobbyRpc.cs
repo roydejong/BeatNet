@@ -4,7 +4,7 @@ using BeatNet.Lib.BeatSaber.Rpc;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 
-public sealed class GetIsInLobbyRpc : BaseRpc
+public sealed class GetIsInLobbyRpc : BaseSimpleRpc
 {
 	public GetIsInLobbyRpc()
 	{

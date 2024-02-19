@@ -4,7 +4,7 @@ using BeatNet.Lib.BeatSaber.Rpc;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Gameplay;
 
-public sealed class RequestReturnToMenuRpc : BaseRpc
+public sealed class RequestReturnToMenuRpc : BaseSimpleRpc
 {
 	public RequestReturnToMenuRpc()
 	{

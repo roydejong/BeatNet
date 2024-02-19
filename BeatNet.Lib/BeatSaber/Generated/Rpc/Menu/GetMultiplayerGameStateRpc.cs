@@ -4,7 +4,7 @@ using BeatNet.Lib.BeatSaber.Rpc;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 
-public sealed class GetMultiplayerGameStateRpc : BaseRpc
+public sealed class GetMultiplayerGameStateRpc : BaseSimpleRpc
 {
 	public GetMultiplayerGameStateRpc()
 	{

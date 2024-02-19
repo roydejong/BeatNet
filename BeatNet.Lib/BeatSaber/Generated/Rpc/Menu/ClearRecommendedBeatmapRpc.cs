@@ -4,7 +4,7 @@ using BeatNet.Lib.BeatSaber.Rpc;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 
-public sealed class ClearRecommendedBeatmapRpc : BaseRpc
+public sealed class ClearRecommendedBeatmapRpc : BaseSimpleRpc
 {
 	public ClearRecommendedBeatmapRpc()
 	{

@@ -4,7 +4,7 @@ using BeatNet.Lib.BeatSaber.Rpc;
 
 namespace BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 
-public sealed class CancelCountdownRpc : BaseRpc
+public sealed class CancelCountdownRpc : BaseSimpleRpc
 {
 	public CancelCountdownRpc()
 	{

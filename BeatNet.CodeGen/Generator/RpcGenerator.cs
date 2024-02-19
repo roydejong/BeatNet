@@ -33,11 +33,12 @@ public class RpcGenerator
         sw.WriteLine();
         sw.WriteLine($"namespace {targetNamespace};");
         sw.WriteLine();
-        sw.WriteLine($"public sealed class {Rpc.RpcName} : BaseRpc");
-        sw.WriteLine("{");
         
         if (Rpc.Params.Count > 0)
         {
+            sw.WriteLine($"public sealed class {Rpc.RpcName} : BaseRpc");
+            sw.WriteLine("{");
+            
             // RPC Params & Constructor w/ params
             var constructorBuffer = new StringBuilder();
             var constructorBodyBuffer = new StringBuilder();
@@ -77,6 +78,9 @@ public class RpcGenerator
         }
         else
         {
+            sw.WriteLine($"public sealed class {Rpc.RpcName} : BaseSimpleRpc");
+            sw.WriteLine("{");
+            
             // Simple constructor
             sw.WriteLine($"\tpublic {Rpc.RpcName}()");
             sw.WriteLine($"\t{{");

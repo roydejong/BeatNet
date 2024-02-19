@@ -6,7 +6,7 @@ namespace BeatNet.CodeGen.Generator.Util;
 
 public static class ReadWriteMethodGenerator
 {
-    public static string GenerateMethods(ISerializeDeserialize item)
+    public static string GenerateMethods(IResultWithFieldsAndInstructions item)
     {
         var fields = item.GetFields().ToList();
         var instructions = item.GetInstructions().ToList();
@@ -30,7 +30,7 @@ public static class ReadWriteMethodGenerator
             {
                 var instruction = instructions.ElementAt(instructionIdx);
                 var linkedField = fields.FirstOrDefault(field => 
-                    field.ParamNameForField == instruction.FieldName || field.ParamName == instruction.FieldName);
+                    field.NameForField == instruction.FieldName || field.Name == instruction.FieldName);
 
                 if (linkedField == null)
                 { 
@@ -85,8 +85,10 @@ public static class ReadWriteMethodGenerator
                     case "1f":
                         rwMethod = null;
                         writeCodeBuffer.AppendLine($"\t\twriter.WriteFloat(1f);");
-                        readCodeBuffer.AppendLine($"\t\t{linkedField.ParamNameForField} = 1f;");
+                        readCodeBuffer.AppendLine($"\t\t{linkedField.NameForField} = 1f;");
                         break;
+                    case "MultiplayerAvatarsData.Deserialize(reader);":
+                    case "PlayerStateHash.Deserialize(reader);":
                     case "SyncStateId.Deserialize(reader);":
                     case "Deserialize();":
                         // INetSerializable
@@ -98,8 +100,8 @@ public static class ReadWriteMethodGenerator
 
                 if (rwMethod != null)
                 {
-                    writeCodeBuffer.AppendLine($"\t\twriter.Write{rwMethod}({writeCastPrefix}{linkedField.ParamNameForField});");
-                    readCodeBuffer.AppendLine($"\t\t{linkedField.ParamNameForField} = {readCastPrefix}reader.Read{rwMethod}();");
+                    writeCodeBuffer.AppendLine($"\t\twriter.Write{rwMethod}({writeCastPrefix}{linkedField.NameForField});");
+                    readCodeBuffer.AppendLine($"\t\t{linkedField.NameForField} = {readCastPrefix}reader.Read{rwMethod}();");
                 }
             }
         }

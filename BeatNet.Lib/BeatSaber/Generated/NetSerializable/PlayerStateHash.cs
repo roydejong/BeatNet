@@ -13,15 +13,14 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class PlayerStateHash : INetSerializable
 {
-	public BitMask128 BloomFilter { get; set; }
-	public string KToStringPrefix { get; set; }
-	public string KToStringSuffix { get; set; }
+	public const string kToStringPrefix = "[PlayerStateMask ";
+	public const string kToStringSuffix = "]";
 
-	public PlayerStateHash(BitMask128 bloomFilter, string kToStringPrefix, string kToStringSuffix)
+	public BitMask128 BloomFilter { get; set; }
+
+	public PlayerStateHash(BitMask128 bloomFilter)
 	{
 		BloomFilter = bloomFilter;
-		KToStringPrefix = kToStringPrefix;
-		KToStringSuffix = kToStringSuffix;
 	}
 
 	public void WriteTo(ref NetWriter writer)

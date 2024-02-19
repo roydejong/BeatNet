@@ -13,25 +13,22 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class QuaternionSerializable : INetSerializable
 {
+	public const float kSqrtTwo = 1.4142135f;
+	public const float kOneOverSqrtTwo = 0.70710677f;
+	public const float kScale = 11584.53f;
+	public const float kInvScale = 8.632201E-05f;
+
 	public QuaternionSerializable Identity { get; set; }
 	public int A { get; set; }
 	public int B { get; set; }
 	public int C { get; set; }
-	public float KSqrtTwo { get; set; }
-	public float KOneOverSqrtTwo { get; set; }
-	public float KScale { get; set; }
-	public float KInvScale { get; set; }
 
-	public QuaternionSerializable(QuaternionSerializable identity, int a, int b, int c, float kSqrtTwo, float kOneOverSqrtTwo, float kScale, float kInvScale)
+	public QuaternionSerializable(QuaternionSerializable identity, int a, int b, int c)
 	{
 		Identity = identity;
 		A = a;
 		B = b;
 		C = c;
-		KSqrtTwo = kSqrtTwo;
-		KOneOverSqrtTwo = kOneOverSqrtTwo;
-		KScale = kScale;
-		KInvScale = kInvScale;
 	}
 
 	public void WriteTo(ref NetWriter writer)

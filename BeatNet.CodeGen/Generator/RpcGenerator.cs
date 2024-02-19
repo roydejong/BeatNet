@@ -77,7 +77,7 @@ public class RpcGenerator
                 
                 var byteShift = 1 << paramNo;
                 
-                writeCodeBuffer.Append($"\t\t\t({param.ParamNameForField} != null ? {byteShift} : 0)");
+                writeCodeBuffer.Append($"\t\t\t({param.NameForField} != null ? {byteShift} : 0)");
                 
                 if (paramNo < (Rpc.Params.Count - 1))
                 {
@@ -169,14 +169,14 @@ public class RpcGenerator
                 }
 
                 writeCodeBuffer.AppendLine();
-                writeCodeBuffer.AppendLine($"\t\tif ({param.ParamNameForField} != null)");
-                writeCodeBuffer.AppendLine($"\t\t\twriter.Write{rwFunction}({param.ParamNameForField}{writeValueSuffix});");
+                writeCodeBuffer.AppendLine($"\t\tif ({param.NameForField} != null)");
+                writeCodeBuffer.AppendLine($"\t\t\twriter.Write{rwFunction}({param.NameForField}{writeValueSuffix});");
                 
                 readCodeBuffer.AppendLine();
                 readCodeBuffer.AppendLine($"\t\tif ((nullFlags & (1 << {paramNo})) != 0)");
-                readCodeBuffer.AppendLine($"\t\t\t{param.ParamNameForField} = reader.Read{rwFunction}();");
+                readCodeBuffer.AppendLine($"\t\t\t{param.NameForField} = reader.Read{rwFunction}();");
                 readCodeBuffer.AppendLine("\t\telse");
-                readCodeBuffer.AppendLine($"\t\t\t{param.ParamNameForField} = null;");
+                readCodeBuffer.AppendLine($"\t\t\t{param.NameForField} = null;");
             }
             
             var constructorBuffer = new StringBuilder($"\tpublic {Rpc.RpcName}(");
@@ -185,15 +185,15 @@ public class RpcGenerator
             for (var paramNo = 0; paramNo < Rpc.Params.Count; paramNo++)
             {
                 var param = Rpc.Params[paramNo];
-                sw.WriteLine($"\tpublic {param.TypeName}? {param.ParamNameForField} {{ get; set; }} = null;");
+                sw.WriteLine($"\tpublic {param.TypeName}? {param.NameForField} {{ get; set; }} = null;");
 
                 if (paramNo > 0)
                 {
                     constructorBuffer.Append(", ");
                 }
 
-                constructorBuffer.Append($"{param.TypeName}? {param.ParamNameForArg} = null");
-                constructorBodyBuffer.AppendLine($"\t\t{param.ParamNameForField} = {param.ParamNameForArg};");
+                constructorBuffer.Append($"{param.TypeName}? {param.NameForArg} = null");
+                constructorBodyBuffer.AppendLine($"\t\t{param.NameForField} = {param.NameForArg};");
             }
             
             sw.WriteLine();

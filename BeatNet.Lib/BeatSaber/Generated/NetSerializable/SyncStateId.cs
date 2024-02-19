@@ -13,12 +13,12 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class SyncStateId : INetSerializable
 {
-	public byte KMaxValue { get; set; }
+	public const byte kMaxValue = 128;
+
 	public byte Id { get; set; }
 
-	public SyncStateId(byte kMaxValue, byte id)
+	public SyncStateId(byte id)
 	{
-		KMaxValue = kMaxValue;
 		Id = id;
 	}
 

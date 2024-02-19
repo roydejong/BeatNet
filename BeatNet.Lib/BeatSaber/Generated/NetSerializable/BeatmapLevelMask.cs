@@ -13,21 +13,17 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class BeatmapLevelMask : INetSerializable
 {
-	public int KBitCount { get; set; }
-	public int KHashCount { get; set; }
-	public int KHashBits { get; set; }
-	public BitMaskSparse BloomFilter { get; set; }
-	public string KToStringPrefix { get; set; }
-	public string KToStringSuffix { get; set; }
+	public const int kBitCount = 16384;
+	public const int kHashCount = 1;
+	public const int kHashBits = 14;
+	public const string kToStringPrefix = "[BeatmapLevelMask ";
+	public const string kToStringSuffix = "]";
 
-	public BeatmapLevelMask(int kBitCount, int kHashCount, int kHashBits, BitMaskSparse bloomFilter, string kToStringPrefix, string kToStringSuffix)
+	public BitMaskSparse BloomFilter { get; set; }
+
+	public BeatmapLevelMask(BitMaskSparse bloomFilter)
 	{
-		KBitCount = kBitCount;
-		KHashCount = kHashCount;
-		KHashBits = kHashBits;
 		BloomFilter = bloomFilter;
-		KToStringPrefix = kToStringPrefix;
-		KToStringSuffix = kToStringSuffix;
 	}
 
 	public void WriteTo(ref NetWriter writer)

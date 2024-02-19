@@ -2,8 +2,7 @@
 
 namespace BeatNet.CodeGen.Analysis.ResultData.Common;
 
-public interface ISerializeDeserialize
+public interface IResultWithFieldsAndInstructions : IResultWithFields
 {
-    IEnumerable<TypedParam> GetFields();
     IEnumerable<DeserializeInstruction> GetInstructions();
 }

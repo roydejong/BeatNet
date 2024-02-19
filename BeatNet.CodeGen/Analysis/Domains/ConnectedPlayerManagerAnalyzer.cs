@@ -30,25 +30,14 @@ public class ConnectedPlayerManagerAnalyzer : ISubAnalyzer
 
         if (_currentPacket == null)
             return;
-
-        if (line.IsField)
-        {
-            var name = line.DeclaredName!;
-            name = name.Trim('_');
-
-            if (name.Contains("__BackingField"))
-                return;
-            
-            _currentPacket.Fields[name] = new TypedParam()
-            {
-                TypeName = line.DeclaredType!,
-                ParamName = name
-            };
-        }
         
-        var result = _deserializeParser.FeedNextLine(line);
-        if (result != null)
-            _currentPacket.DeserializeInstructions.Add(result);
+        var field = FieldParser.TryParse(line);
+        if (field != null)
+            _currentPacket.Fields[field.Name] = field;
+        
+        var instr = _deserializeParser.FeedNextLine(line);
+        if (instr != null)
+            _currentPacket.DeserializeInstructions.Add(instr);
     }
 
     public void AnalyzeLine_SecondPass(LineAnalyzer line, Results results)

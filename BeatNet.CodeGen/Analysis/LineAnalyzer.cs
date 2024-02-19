@@ -352,7 +352,7 @@ public class LineAnalyzer
                                 }
                                 else if (partIdx == 2)
                                 {
-                                    param.ParamName = paramPart.Trim(',');
+                                    param.Name = paramPart.Trim(',');
                                 }
                             }
                             
@@ -369,33 +369,22 @@ public class LineAnalyzer
         }
         
         // -------------------------------------------------------------------------------------------------------------
-        // Field declaration
+        // Field / prop declaration
 
-        if (IsDeclaration && RawLine.EndsWith(';'))
+        if ((IsDeclaration && RawLine.EndsWith(';')) || (IsDeclaration && Words.Length == 2))
         {
             IsField = true;
-            DeclaredType = Words[0];
-            DeclaredName = Words[1].Trim(';');
-
-            var typeDotIdx = DeclaredType.IndexOf('.');
-            if (typeDotIdx >= 0)
-                DeclaredType = DeclaredType[(typeDotIdx + 1)..];
             
-            return;
-        }
-        
-        // -------------------------------------------------------------------------------------------------------------
-        // Property declaration fallback
-
-        if (IsDeclaration && Words.Length == 2)
-        {
-            IsField = true;
             DeclaredType = Words[0];
             DeclaredName = Words[1].Trim(';');
 
             var typeDotIdx = DeclaredType.IndexOf('.');
             if (typeDotIdx >= 0)
                 DeclaredType = DeclaredType[(typeDotIdx + 1)..];
+
+            var eqIdx = RawLine.IndexOf('=');
+            if (eqIdx > 0)
+                DefaultValue = RawLine[(eqIdx + 1)..].Trim().Trim(';');
             
             return;
         }

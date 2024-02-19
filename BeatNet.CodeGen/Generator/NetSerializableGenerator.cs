@@ -43,51 +43,17 @@ public class NetSerializableGenerator
         sw.WriteLine();
         sw.WriteLine($"// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global");
         sw.WriteLine();
-        
         sw.WriteLine($"public sealed class {NetSerializable.TypeName} : INetSerializable");
         sw.WriteLine("{");
-        
-        // RPC Params & Constructor w/ params
-        var constructorBuffer = new StringBuilder();
-        var constructorBodyBuffer = new StringBuilder();
-        
-        constructorBuffer.Append($"\tpublic {NetSerializable.TypeName}(");
-
-        var paramNo = 0;
-        foreach (var field in NetSerializable.Fields.Values)
-        {
-            if (field.TypeName.Contains("PacketPool"))
-                // Ignore static pools from the game
-                continue;
-
-            if (field.ParamNameForField == NetSerializable.TypeName)
-                // Avoid "Member names cannot be the same as their enclosing type"
-                field.ParamName += "Value";
-            
-            sw.WriteLine($"\tpublic {field.TypeName} {field.ParamNameForField} {{ get; set; }}");
-            
-            if (paramNo > 0)
-                constructorBuffer.Append(", ");
-            
-            constructorBuffer.Append($"{field.TypeName} {field.ParamNameForArg}");
-            constructorBodyBuffer.AppendLine($"\t\t{field.ParamNameForField} = {field.ParamNameForArg};");
-            
-            paramNo++;
-        }
-        
-        sw.WriteLine();
-        constructorBuffer.AppendLine(")");
-        constructorBuffer.AppendLine($"\t{{");
-        constructorBuffer.Append(constructorBodyBuffer);
-        constructorBuffer.AppendLine($"\t}}");
-        sw.WriteLine(constructorBuffer);
-        
-        // Read/write methods
+        sw.WriteLine(
+            FieldGenerator.GenerateMethods(NetSerializable)
+        );
+        sw.WriteLine(
+            ConstructorGenerator.GenerateConstructor(NetSerializable, false)
+        );
         sw.Write(
             ReadWriteMethodGenerator.GenerateMethods(NetSerializable)
         );
-        
-        // End of class and file
         sw.Write("}");
         sw.Close();
     }

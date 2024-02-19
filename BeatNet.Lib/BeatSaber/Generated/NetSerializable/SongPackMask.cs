@@ -13,21 +13,18 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class SongPackMask : INetSerializable
 {
-	public SongPackMask All { get; set; }
-	public int KHashCount { get; set; }
-	public int KHashBits { get; set; }
-	public BitMask256 BloomFilter { get; set; }
-	public string KToStringPrefix { get; set; }
-	public string KToStringSuffix { get; set; }
+	public const int kHashCount = 2;
+	public const int kHashBits = 13;
+	public const string kToStringPrefix = "[SongPackMask ";
+	public const string kToStringSuffix = "]";
 
-	public SongPackMask(SongPackMask all, int kHashCount, int kHashBits, BitMask256 bloomFilter, string kToStringPrefix, string kToStringSuffix)
+	public SongPackMask All { get; set; }
+	public BitMask256 BloomFilter { get; set; }
+
+	public SongPackMask(SongPackMask all, BitMask256 bloomFilter)
 	{
 		All = all;
-		KHashCount = kHashCount;
-		KHashBits = kHashBits;
 		BloomFilter = bloomFilter;
-		KToStringPrefix = kToStringPrefix;
-		KToStringSuffix = kToStringSuffix;
 	}
 
 	public void WriteTo(ref NetWriter writer)

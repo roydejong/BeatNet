@@ -79,4 +79,19 @@ public class LineAnalyzerTest
         Assert.That(line.IsMethod, Is.True);
         Assert.That(line.DeclaredName, Is.EqualTo("INetSerializable.Deserialize"));
     }
+    
+    [Test]
+    public void TestParsesConstsWithValues()
+    {
+        var text = "private const int kBitCount = 16384;";
+        var line = new LineAnalyzer(text, contextInEnum: false);
+        
+        Assert.That(line.IsDeclaration, Is.True);
+        Assert.That(line.Modifier, Is.EqualTo("private"));
+        Assert.That(line.IsField, Is.True);
+        Assert.That(line.Const, Is.True);
+        Assert.That(line.DeclaredType, Is.EqualTo("int"));
+        Assert.That(line.DeclaredName, Is.EqualTo("kBitCount"));
+        Assert.That(line.DefaultValue, Is.EqualTo("16384"));
+    }
 }

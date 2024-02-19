@@ -109,30 +109,31 @@ public class NetSerializableGenerator
                 }
                 
                 var rwMethod = $"Serializable<{linkedField.TypeName}>";
-                switch (instruction.CallType.Trim(';').Trim(')').Trim('('))
+                switch (instruction.CallType)
                 {
-                    case "GetVarULong":
+                    case "GetVarULong();":
                         rwMethod = "VarULong";
                         break;
-                    case "GetVarUInt":
+                    case "GetVarUInt();":
                         rwMethod = "VarUInt";
                         break;
-                    case "GetVarLong":
+                    case "GetVarLong();":
                         rwMethod = "VarLong";
                         break;
-                    case "GetVarInt":
+                    case "GetVarInt();":
                         rwMethod = "VarInt";
                         break;
-                    case "GetString":
+                    case "GetString();":
                         rwMethod = "String";
                         break;
-                    case "GetBool":
+                    case "GetBool();":
                         rwMethod = "Bool";
                         break;
-                    case "GetFloat":
+                    case "GetFloat();":
                         rwMethod = "Float";
                         break;
-                    case "Deserialize":
+                    case "SyncStateId.Deserialize(reader);":
+                    case "Deserialize();":
                         // INetSerializable
                         break;
                     default:

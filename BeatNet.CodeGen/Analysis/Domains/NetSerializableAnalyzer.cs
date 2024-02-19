@@ -107,14 +107,33 @@ public class NetSerializableAnalyzer : ISubAnalyzer
         else if (rawLine.Contains(".Deserialize"))
         {
             // Deserialize assign
-            var dotIdx = rawLine.IndexOf(".Deserialize", StringComparison.Ordinal);
-            var refField = rawLine[..dotIdx];
-            
-            _currentResult.DeserializeInstructions.Add(new DeserializeInstruction()
+            var hasEq = rawLine.Contains('=');
+
+            if (hasEq)
             {
-                CallType = "Deserialize",
-                FieldName = refField.Trim('_')
-            });
+                // Assign the result of Object.Deserialize()
+                var eqIdx = rawLine.IndexOf('=');
+                var refField = rawLine[..eqIdx].Trim();
+                var deserializeFn = rawLine[(eqIdx + 1)..].Trim();
+            
+                _currentResult.DeserializeInstructions.Add(new DeserializeInstruction()
+                {
+                    CallType = deserializeFn,
+                    FieldName = refField.Trim('_')
+                });
+            }
+            else
+            {
+                // Object.Deserialize() fills existing struct / no explicit assignment
+                var dotIdx = rawLine.IndexOf(".Deserialize", StringComparison.Ordinal);
+                var refField = rawLine[..dotIdx];
+            
+                _currentResult.DeserializeInstructions.Add(new DeserializeInstruction()
+                {
+                    CallType = "Deserialize();",
+                    FieldName = refField.Trim('_')
+                });
+            }
         }
         else if (rawLine.EndsWith("= 1f;"))
         {

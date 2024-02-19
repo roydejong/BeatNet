@@ -1,4 +1,5 @@
-﻿using BeatNet.CodeGen.Analysis.Structs;
+﻿using System.Diagnostics;
+using BeatNet.CodeGen.Analysis.Structs;
 
 namespace BeatNet.CodeGen.Analysis;
 
@@ -7,31 +8,47 @@ namespace BeatNet.CodeGen.Analysis;
 
 public class LineAnalyzer
 {
+    public readonly string RawLine;
     public readonly string[] Words;
     public readonly bool IsDeclaration;
     public readonly string? Modifier;
     public readonly bool Static;
+    public readonly bool Abstract;
+    public readonly bool Override;
     public readonly bool ReadOnly;
     public readonly bool Const;
     public readonly bool IsEnum;
+    public readonly bool IsStruct;
     public readonly bool IsClass;
+    public readonly bool IsMethod;
+    public readonly bool IsConstructor;
     public readonly string? DeclaredName;
     public readonly string? EnumBaseType;
     public readonly List<ClassInheritor>? ClassInheritors;
+    public readonly string? ReturnType;
+    public readonly List<MethodParam>? MethodParams;
 
     public LineAnalyzer(string line, string? contextTypeName)
     {
-        Words = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        RawLine = line;
+        Words = RawLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         IsDeclaration = false;
         Modifier = null;
         Static = false;
+        Abstract = false;
+        Override = false;
         ReadOnly = false;
         Const = false;
         IsEnum = false;
+        IsStruct = false;
         IsClass = false;
+        IsMethod = false;
+        IsConstructor = false;
         DeclaredName = null;
         EnumBaseType = null;
         ClassInheritors = null;
+        ReturnType = null;
+        MethodParams = null;
 
         // -------------------------------------------------------------------------------------------------------------
         // Access modifiers
@@ -76,6 +93,20 @@ public class LineAnalyzer
             Words = Words[1..];
         }
 
+        if (Words[0] == "abstract")
+        {
+            Abstract = true;
+            IsDeclaration = true;
+            Words = Words[1..];
+        }
+
+        if (Words[0] == "override")
+        {
+            Override = true;
+            IsDeclaration = true;
+            Words = Words[1..];
+        }
+
         if (Words[0] == "readonly")
         {
             ReadOnly = true;
@@ -111,12 +142,20 @@ public class LineAnalyzer
 
         // -------------------------------------------------------------------------------------------------------------
         // Class declaration
-
+        
         if (Words[0] == "class")
         {
-            Words = Words[1..];
-            IsDeclaration = true;
             IsClass = true;
+        }
+        else if (Words[0] == "struct")
+        {
+            IsStruct = true;
+        }
+
+        if (IsClass || IsStruct)
+        {
+            IsDeclaration = true;
+            Words = Words[1..];
 
             DeclaredName = Words[0];
             Words = Words[1..];
@@ -183,6 +222,77 @@ public class LineAnalyzer
                         inheritor = null;
                     }
                 }
+            }
+        }
+        
+        // -------------------------------------------------------------------------------------------------------------
+        // Method declaration
+        
+        if (IsDeclaration && RawLine.Contains('(') && RawLine.Contains(')'))
+        {
+            IsMethod = true;
+            
+            // Constructor declaration
+            if (contextTypeName != null && Words[0].StartsWith(contextTypeName))
+            {
+                IsConstructor = true;
+                
+                ReturnType = contextTypeName;
+                DeclaredName = contextTypeName;
+            }
+            else
+            {
+                // Method declaration
+                ReturnType = Words[0];
+                DeclaredName = Words[1];
+
+                if (ReturnType == "event")
+                    // We don't care about events (so far)
+                    return;
+                
+                if (RawLine.Contains('<') && RawLine.Contains('>'))
+                    // We don't care about generic methods (so far)
+                    return;
+                
+                var paramListIdx = RawLine.IndexOf('(');
+
+                if (paramListIdx >= 0)
+                {
+                    var paramListEndIdx = RawLine.IndexOf(')');
+                    var paramList = RawLine[(paramListIdx + 1)..paramListEndIdx];
+
+                    if (paramList.Length > 0)
+                    {
+                        MethodParams = new List<MethodParam>();
+
+                        foreach (var paramDeclare in paramList.Split(','))
+                        {
+                            var partIdx = 0;
+                            var param = new MethodParam();
+                            
+                            foreach (var paramPart in paramDeclare.Trim().Split(' '))
+                            {
+                                partIdx++;
+                                
+                                if (partIdx == 1)
+                                {
+                                    param.TypeName = paramPart;
+                                }
+                                else if (partIdx == 2)
+                                {
+                                    param.ParamName = paramPart.Trim(',');
+                                }
+                            }
+                            
+                            MethodParams.Add(param);
+                        }
+                    }
+                    
+                    var declaredNameEnd = DeclaredName.IndexOf('(');
+                    DeclaredName = DeclaredName[..declaredNameEnd];
+                }
+
+                Console.WriteLine($"Method: {DeclaredName}");
             }
         }
     }

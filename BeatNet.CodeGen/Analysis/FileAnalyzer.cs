@@ -35,26 +35,36 @@ public class FileAnalyzer
         string? baseType = null;
         string? currentType = null;
 
-        foreach (var line in File.ReadAllLines(FullPath))
+        for (var pass = 1; pass <= 2; pass++)
         {
-            var lineTrimmed = line.Trim();
-            // Skip empty lines
-            if (lineTrimmed.Length == 0)
-                continue;
-            // Skip comments (dnSpy generates some)
-            if (lineTrimmed.StartsWith("//") || lineTrimmed.StartsWith("/*") || lineTrimmed.StartsWith("*/"))
-                continue;
-            
-            var lineAnalyzer = new LineAnalyzer(lineTrimmed, currentType);
-
-            if (lineAnalyzer.IsClass)
+            foreach (var line in File.ReadAllLines(FullPath))
             {
-                baseType ??= lineAnalyzer.DeclaredName;
-                currentType = lineAnalyzer.DeclaredName;
-                Console.WriteLine($"Processing class: {AssemblyName}.{baseType} › {currentType}");
+                var lineTrimmed = line.Trim();
+                // Skip empty lines
+                if (lineTrimmed.Length == 0)
+                    continue;
+                // Skip comments (dnSpy generates some)
+                if (lineTrimmed.StartsWith("//") || lineTrimmed.StartsWith("/*") || lineTrimmed.StartsWith("*/"))
+                    continue;
+
+                var lineAnalyzer = new LineAnalyzer(lineTrimmed, currentType);
+                
+                if (lineAnalyzer.IsClass)
+                {
+                    baseType ??= lineAnalyzer.DeclaredName;
+                    currentType = lineAnalyzer.DeclaredName;
+                    Console.WriteLine($"Processing class: {AssemblyName}.{baseType} › {currentType}");
+                }
+
+                if (pass == 1)
+                {
+                    domainAnalyzer?.AnalyzeLine_FirstPass(lineAnalyzer, results);
+                }
+                else if (pass == 2)
+                {
+                    domainAnalyzer?.AnalyzeLine_SecondPass(lineAnalyzer, results);
+                }
             }
-            
-            domainAnalyzer?.AnalyzeLine(lineAnalyzer, results);
         }
     }
 

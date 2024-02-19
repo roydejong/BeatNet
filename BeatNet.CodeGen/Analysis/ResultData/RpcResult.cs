@@ -1,8 +1,10 @@
-﻿namespace BeatNet.CodeGen.Analysis.ResultData;
+﻿using BeatNet.CodeGen.Analysis.Structs;
+
+namespace BeatNet.CodeGen.Analysis.ResultData;
 
 public class RpcResult
 {
     public string RpcManagerName { get; set; }
     public string RpcName { get; set; }
-    public List<string> ParamTypes { get; set; } = new();
+    public List<MethodParam> Params { get; set; } = new();
 }

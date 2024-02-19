@@ -1,4 +1,6 @@
-﻿using BeatNet.CodeGen.Analysis.ResultData;
+﻿using System.Diagnostics;
+using BeatNet.CodeGen.Analysis.ResultData;
+using BeatNet.CodeGen.Analysis.Structs;
 
 namespace BeatNet.CodeGen.Analysis;
 
@@ -6,8 +8,9 @@ public class RpcManagerAnalyzer : ISubAnalyzer
 {
     private string? _rpcManagerName = null;
     private RpcManagerResult? _currentResult = null;
+    private Dictionary<string, RpcResult> _namedRpcs = new();
 
-    public void AnalyzeLine(LineAnalyzer line, Results results)
+    public void AnalyzeLine_FirstPass(LineAnalyzer line, Results results)
     {
         if (line.IsClass && line.DeclaredName!.Contains("RpcManager"))
         {
@@ -44,7 +47,11 @@ public class RpcManagerAnalyzer : ISubAnalyzer
                     
                     Console.Write(genericParam);
                     
-                    rpc.ParamTypes.Add(genericParam);
+                    rpc.Params.Add(new MethodParam()
+                    {
+                        TypeName = genericParam,
+                        ParamName = $"Param{rpc.Params.Count + 1}"
+                    });
                 }
                 Console.Write(")");
             }
@@ -52,6 +59,44 @@ public class RpcManagerAnalyzer : ISubAnalyzer
             Console.WriteLine();
             
             results.Rpcs.Add(rpc);
+            _namedRpcs.Add(rpc.RpcName, rpc);
+        }
+    }
+
+    public void AnalyzeLine_SecondPass(LineAnalyzer line, Results results)
+    {
+        if (line is { IsMethod: true, IsConstructor: false })
+        {
+            // Rpc managers will contain methods like "SetGameplaySceneSyncFinished" which would then call the "SetGameplaySceneSyncFinishedRpc" with properly named params, e.g.:
+            // public void SetGameplaySceneSyncFinished(PlayerSpecificSettingsAtStartNetSerializable playersAtGameStartNetSerializable, string sessionGameId)
+            // We want to get the RPC param names from these methods for RPC class generation
+
+            if (line.DeclaredName!.StartsWith("Invoke"))
+                return;
+            if (line.DeclaredName is "Dispose" or "EnabledForPlayer")
+                return;
+            
+            var expectedRpcName = line.DeclaredName + "Rpc";
+            
+            if (_namedRpcs.TryGetValue(expectedRpcName, out var rpc))
+            {
+                var paramList = line.MethodParams;
+                if (paramList != null)
+                {
+                    foreach (var param in paramList)
+                    {
+                        var rpcParam = rpc.Params.FirstOrDefault(p => p.TypeName == param.TypeName);
+                        if (rpcParam != null)
+                        {
+                            rpcParam.ParamName = param.ParamName;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debugger.Break();
+            }
         }
     }
 }

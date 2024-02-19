@@ -79,3 +79,7 @@ foreach (var rpc in results.Rpcs)
     var rpcGen = new RpcGenerator(rpc);
     rpcGen.Generate(gs);
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+Console.WriteLine($"\nDone. Bye!");

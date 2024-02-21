@@ -128,8 +128,8 @@ public class FileAnalyzer
     private bool ShouldIgnoreFileName()
     {
         // Explicit Blocklist
-        var blockList = new string[] { "PartyMessageHandler", "AuthenticationToken",
-            "NetworkPacketSerializer", "PoolableSerializable", "StateBuffer", 
+        var blockList = new string[] { "PartyMessageHandler", "AuthenticationToken", "ByteArrayNetSerializable",
+            "NetworkPacketSerializer", "PoolableSerializable", "StateBuffer", "BitMaskArray", "BitMaskSparse",
             "RemoteProcedureCall", "Extensions", "GameplayType", "ScoringType" };
         foreach (var block in blockList)
         {

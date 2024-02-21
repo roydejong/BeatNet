@@ -64,6 +64,14 @@ public ref struct NetReader
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void ReadBytesInto(byte[] bytes, int offset, int length)
+    {
+        ThrowIfExceedsBufferSize(length);
+        Data.Slice(Position, length).CopyTo(bytes.AsSpan(offset, length));
+        Position += length;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool ReadBool() => ReadByte() == 1;
 
     #endregion

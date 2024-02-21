@@ -11,22 +11,26 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global
 
-public sealed class BitMaskArray : INetSerializable
+public sealed class OptionalAvatarDataPacket : INetSerializable
 {
-	public ulong[] Data { get; set; }
+	public uint DataType { get; set; }
+	public ByteArrayNetSerializable Data { get; set; }
 
-	public BitMaskArray(ulong[] data)
+	public OptionalAvatarDataPacket(uint dataType, ByteArrayNetSerializable data)
 	{
+		DataType = dataType;
 		Data = data;
 	}
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteUInt(DataType);
+		writer.WriteSerializable<ByteArrayNetSerializable>(Data);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		DataType = reader.ReadUInt();
+		Data = reader.ReadSerializable<ByteArrayNetSerializable>();
 	}
 }

@@ -58,6 +58,14 @@ public ref struct NetWriter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteBytes(byte[] value, int offset, int length)
+    {
+        ThrowIfExceedsBufferSize(length);
+        value.AsSpan(offset, length).CopyTo(Data[Position..]);
+        Position += length;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void ShiftBytesForward(int fromIndex, int targetIndex, int length)
     {
         if (fromIndex >= targetIndex)

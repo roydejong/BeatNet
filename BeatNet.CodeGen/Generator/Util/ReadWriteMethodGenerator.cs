@@ -174,6 +174,11 @@ public static class ReadWriteMethodGenerator
                         if (shouldTypeCast)
                             writeCastPrefix = $"(ulong)";
                         break;
+                    case "GetUInt()":
+                        rwMethod = "UInt";
+                        if (shouldTypeCast)
+                            writeCastPrefix = $"(uint)";
+                        break;
                     case "1f":
                         rwMethod = null;
                         writeCodeBuffer.AppendLine($"\t\twriter.WriteFloat(1f);");

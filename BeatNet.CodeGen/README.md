@@ -22,6 +22,7 @@ Use dnSpy to open the assemblies from `<Beat Saber>/Beat Saber_Data/Managed` tha
 - `BGNetCore.dll`
 - `GameplayCore.dll`
 - `BeatmapCore.dll`
+- `BeatSaber.AvatarCore.dll`
 
 For each assembly, export the source code using `File` → `Export to project`.
 
@@ -53,3 +54,12 @@ The following directories / namespaces will be generated:
 | `Rpc`              | Remote procedure call (RPC) packets; top-level packets. Further divided into RPC manager type (`Menu`, `Gameplay`). |
 | `NetSerializable`  | Game structures that are serializable over the network.                                                             |
 | `Enum`             | Enumerations used in the game that are referenced by NetSerializables and packets.                                  |
+
+### Special cases
+Some types that fall into these categories will NOT be automatically generated (too complex for this dumb codegen).
+
+You will need to provide a manual implementation for these that implements `INetSerializable`:
+
+- `BitMaskArray`
+- `BitMaskSparse`
+- `ByteArrayNetSerializable`

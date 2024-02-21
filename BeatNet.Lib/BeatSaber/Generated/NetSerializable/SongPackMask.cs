@@ -29,11 +29,11 @@ public sealed class SongPackMask : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteSerializable<SongPackMask>(All);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		All = reader.ReadSerializable<SongPackMask>();
 	}
 }

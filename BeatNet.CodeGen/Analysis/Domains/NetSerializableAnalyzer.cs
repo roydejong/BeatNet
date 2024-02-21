@@ -39,8 +39,14 @@ public class NetSerializableAnalyzer : ISubAnalyzer
             return;
 
         var field = FieldParser.TryParse(line);
+        
         if (field != null)
+        {
+            if (_typeName.Contains("BitMask") && field.Name is "bitCount" or "maxValue")
+                return; // Ignore these fields, they're not part of the actual serialized data
+            
             _currentResult.Fields[field.Name] = field;
+        }
     }
 
     // These are tricky to parse / generate, these may end up using predefined code
@@ -56,13 +62,7 @@ public class NetSerializableAnalyzer : ISubAnalyzer
         if (_typeName == null || SpecialTypesIgnore.Contains(_typeName))
             return;
         
-        if (_typeName == "MultiplayerAvatarsData")
-        {
-            // Debugger.Break();
-        }
-
-        var instr = _deserializeParser.FeedNextLine(line);
-        if (instr != null)
+        foreach (var instr in _deserializeParser.FeedNextLine(_currentResult, line))
             _currentResult.DeserializeInstructions.Add(instr);
     }
 }

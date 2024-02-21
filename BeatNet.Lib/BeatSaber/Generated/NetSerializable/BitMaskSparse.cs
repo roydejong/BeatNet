@@ -13,12 +13,10 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class BitMaskSparse : INetSerializable
 {
-	public int BitCount { get; set; }
 	public SortedSet<uint> SparseSet { get; set; }
 
-	public BitMaskSparse(int bitCount, SortedSet<uint> sparseSet)
+	public BitMaskSparse(SortedSet<uint> sparseSet)
 	{
-		BitCount = bitCount;
 		SparseSet = sparseSet;
 	}
 

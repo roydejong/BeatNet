@@ -1,51 +1,102 @@
 ﻿using System.Diagnostics;
 using BeatNet.CodeGen.Analysis.ResultData;
+using BeatNet.CodeGen.Analysis.ResultData.Common;
 
 namespace BeatNet.CodeGen.Analysis.Util;
 
 public class DeserializeParser
 {
     private bool _inDeserialize = false;
+    private bool _inStaticDeserialize = false;
     private int _deserializeDepth = 0;
-    private string? _lastListName = null;
     
-    public DeserializeInstruction? FeedNextLine(LineAnalyzer line)
+    public IEnumerable<DeserializeInstruction> FeedNextLine(IResultWithFields item, LineAnalyzer line)
     {
         if (!_inDeserialize)
         {
             _deserializeDepth = 0;
-            
+
             if (line.IsMethod && line.DeclaredName!.Contains("Deserialize"))
+            {
                 _inDeserialize = true;
-            
-            return null;
+                _inStaticDeserialize = line.Static;
+            }
+
+            yield break;
         }
 
         if (line.IsOpenBracket)
         {
             _deserializeDepth++;
-            return null;
+            yield break;
         } 
         else if (line.IsCloseBracket)
         {
             _deserializeDepth--;
-            return null;
+            yield break;
         }
 
         if (_deserializeDepth == 0)
         {
             _inDeserialize = false;
-            return null;
+            yield break;
         }
 
         var rawLine = line.RawLine;
         rawLine = rawLine.Replace("this.", "");
         rawLine = rawLine.Replace("_color.", "");
 
-        if (rawLine.Contains("return"))
+        if (rawLine.Contains("return") && _inStaticDeserialize)
         {
-            // TODO
             // Return statements are used by immutable structs
+            // e.g. "return new BitMask128(reader.GetULong(), reader.GetULong());"
+            
+            var newIdx = rawLine.IndexOf("new", StringComparison.Ordinal);
+            var fieldStartIdx = rawLine.IndexOf("(", StringComparison.Ordinal);
+            
+            var newTypeName = rawLine[(newIdx + 3)..fieldStartIdx].Trim();
+            var fieldList = rawLine[(fieldStartIdx + 1)..^2].Split(',');
+
+            var fieldIndex = 0;
+            foreach (var field in fieldList)
+            {
+                var linkedField = item.GetFields().Where(f => !f.IsConst).ElementAt(fieldIndex);
+                
+                if (field.Contains("reader."))
+                {
+                    var dotIdx = field.IndexOf("reader.", StringComparison.Ordinal);
+                    var callType = field[(dotIdx + 7)..];
+                
+                    yield return new DeserializeInstruction()
+                    {
+                        CallType = callType,
+                        FieldName = linkedField.Name,
+                        TypeCast = linkedField.TypeName
+                    };
+                }
+                else if (field.Contains(".Deserialize"))
+                {
+                    var dotIdx = field.IndexOf(".Deserialize", StringComparison.Ordinal);
+                    var refType = field[..dotIdx];
+                    
+                    string? typeCast = null;
+                    if (refType != linkedField.TypeName)
+                        typeCast = refType;
+                    
+                    yield return new DeserializeInstruction()
+                    {
+                        CallType = "Deserialize();",
+                        FieldName = linkedField.Name,
+                        TypeCast = typeCast
+                    };
+                }
+                else
+                {
+                    // Parser expectation failed: expected reader or deserialize call in static return
+                }
+                
+                fieldIndex++;
+            }
         }
         else if (rawLine.Contains("reader.") && !rawLine.Contains(".Add"))
         {
@@ -72,12 +123,13 @@ public class DeserializeParser
                     typeCast = "SliderType"; 
             }
             
-            return new DeserializeInstruction()
+            yield return new DeserializeInstruction()
             {
                 CallType = callType,
                 FieldName = refField.Trim('_'),
                 TypeCast = typeCast
             };
+            yield break;
         }
         else if (rawLine.Contains(".Deserialize"))
         {
@@ -106,21 +158,23 @@ public class DeserializeParser
                 refField = rawLine[..dotIdx];
             }
             
-            return new DeserializeInstruction()
+            yield return new DeserializeInstruction()
             {
                 CallType = "Deserialize();",
                 FieldName = refField.Trim('_'),
                 TypeCast = refType
             };
+            yield break;
         }
         else if (rawLine.EndsWith("= 1f;"))
         {
             // Hardcoded alpha for networked colors
-            return new DeserializeInstruction()
+            yield return new DeserializeInstruction()
             {
                 CallType = "1f",
                 FieldName = "a"
             };
+            yield break;
         }
         else if (rawLine.Contains("@byte &"))
         {
@@ -129,15 +183,16 @@ public class DeserializeParser
             var refField = rawLine[..eqIdx].Trim();
             var deserializeFn = rawLine[(eqIdx + 1)..].Trim();
             
-            return new DeserializeInstruction()
+            yield return new DeserializeInstruction()
             {
                 CallType = deserializeFn,
                 FieldName = refField.Trim('_')
             };
+            yield break;
         }
         
         // Other lines not caught by these checks have not been known to be relevant
 
-        return null;
+        yield break;
     }
 }

@@ -131,50 +131,55 @@ public static class ReadWriteMethodGenerator
                 var shouldTypeCast = instruction.TypeCast != null;
                 var readCastPrefix = shouldTypeCast ? $"({instruction.TypeCast})" : "";
                 var writeCastPrefix = "";
-                switch (instruction.CallType)
+                switch (instruction.CallType.Trim(';'))
                 {
-                    case "GetVarULong();":
+                    case "GetVarULong()":
                         rwMethod = "VarULong";
                         if (shouldTypeCast)
                             writeCastPrefix = $"(ulong)";
                         break;
-                    case "GetVarUInt();":
+                    case "GetVarUInt()":
                         rwMethod = "VarUInt";
                         if (shouldTypeCast)
                             writeCastPrefix = $"(uint)";
                         break;
-                    case "GetVarLong();":
+                    case "GetVarLong()":
                         rwMethod = "VarLong";
                         if (shouldTypeCast)
                             writeCastPrefix = $"(long)";
                         break;
-                    case "GetVarInt();":
+                    case "GetVarInt()":
                         rwMethod = "VarInt";
                         if (shouldTypeCast)
                             writeCastPrefix = $"(int)";
                         break;
-                    case "GetString();":
+                    case "GetString()":
                         rwMethod = "String";
                         break;
-                    case "GetBool();":
+                    case "GetBool()":
                         rwMethod = "Bool";
                         break;
-                    case "GetFloat();":
+                    case "GetFloat()":
                         rwMethod = "Float";
                         if (shouldTypeCast)
                             writeCastPrefix = $"(float)";
                         break;
-                    case "GetByte();":
+                    case "GetByte()":
                         rwMethod = "Byte";
                         if (shouldTypeCast)
                             writeCastPrefix = $"(byte)";
+                        break;
+                    case "GetULong()":
+                        rwMethod = "ULong";
+                        if (shouldTypeCast)
+                            writeCastPrefix = $"(ulong)";
                         break;
                     case "1f":
                         rwMethod = null;
                         writeCodeBuffer.AppendLine($"\t\twriter.WriteFloat(1f);");
                         readCodeBuffer.AppendLine($"\t\t{linkedField.NameForField} = 1f;");
                         break;
-                    case "Deserialize();":
+                    case "Deserialize()":
                         // "X = obj.Deserialize()" or simply "X.Deserialize()" -- INetSerializable
                         if (instruction.TypeCast?.Contains("List<") ?? false)
                         {

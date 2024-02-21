@@ -24,11 +24,11 @@ public sealed class SyncStateId : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteByte((byte)Id);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		Id = (byte)reader.ReadByte();
 	}
 }

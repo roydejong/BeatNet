@@ -35,8 +35,7 @@ public class ConnectedPlayerManagerAnalyzer : ISubAnalyzer
         if (field != null)
             _currentPacket.Fields[field.Name] = field;
         
-        var instr = _deserializeParser.FeedNextLine(line);
-        if (instr != null)
+        foreach (var instr in _deserializeParser.FeedNextLine(_currentPacket, line))
             _currentPacket.DeserializeInstructions.Add(instr);
     }
 

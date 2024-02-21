@@ -25,11 +25,11 @@ public sealed class PlayerStateHash : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteSerializable<BitMask128>(BloomFilter);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		BloomFilter = reader.ReadSerializable<BitMask128>();
 	}
 }

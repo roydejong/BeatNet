@@ -13,26 +13,24 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 public sealed class BitMask128 : INetSerializable
 {
-	public int BitCount { get; set; }
-	public BitMask128 MaxValue { get; set; }
 	public ulong D0 { get; set; }
 	public ulong D1 { get; set; }
 
-	public BitMask128(int bitCount, BitMask128 maxValue, ulong d0, ulong d1)
+	public BitMask128(ulong d0, ulong d1)
 	{
-		BitCount = bitCount;
-		MaxValue = maxValue;
 		D0 = d0;
 		D1 = d1;
 	}
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteULong((ulong)D0);
+		writer.WriteULong((ulong)D1);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		D0 = (ulong)reader.ReadULong();
+		D1 = (ulong)reader.ReadULong();
 	}
 }

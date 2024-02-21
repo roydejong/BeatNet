@@ -22,11 +22,13 @@ public sealed class PlayerSpecificSettingsAtStartNetSerializable : INetSerializa
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		// TODO Bad Field Ref: int @int / GetInt(); / 
+		// TODO Bad Field Ref: playerSpecificSettingsNetSerializable / Deserialize(); / 
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		// TODO Bad Field Ref: int @int / GetInt(); / 
+		// TODO Bad Field Ref: playerSpecificSettingsNetSerializable / Deserialize(); / 
 	}
 }

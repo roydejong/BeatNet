@@ -33,12 +33,10 @@ public class FileAnalyzer
             domainAnalyzer = new RpcManagerAnalyzer();
         else if (FileNameNoExt == "ConnectedPlayerManager")
             domainAnalyzer = new ConnectedPlayerManagerAnalyzer();
-        else if (FileNameNoExt is "SliderData" or "MultiplayerSessionManager")
+        else if (FileNameNoExt is "SliderData" or "MultiplayerSessionManager" or "NoteData" or "GameplayServerConfiguration")
             domainAnalyzer = null; // Enum extraction only
         else
             domainAnalyzer = new NetSerializableAnalyzer();
-
-        Console.WriteLine($"Analyzing file {SubPath} [{domainAnalyzer}]...");
 
         string? baseType = null;
         string? currentType = null;
@@ -66,7 +64,6 @@ public class FileAnalyzer
                 {
                     baseType ??= lineAnalyzer.DeclaredName;
                     currentType = lineAnalyzer.DeclaredName;
-                    Console.WriteLine($"Processing class: {AssemblyName}.{baseType} › {currentType}");
                 }
 
                 if (pass == 1)

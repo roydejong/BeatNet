@@ -301,7 +301,7 @@ public class LineAnalyzer
             IsMethod = true;
             
             // Constructor declaration
-            if (contextTypeName != null && Words[0].StartsWith(contextTypeName))
+            if (contextTypeName != null && Words[0].StartsWith(contextTypeName) && Words[0].Contains('('))
             {
                 IsConstructor = true;
                 

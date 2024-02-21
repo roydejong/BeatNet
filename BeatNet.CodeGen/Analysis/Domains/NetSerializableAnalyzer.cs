@@ -43,11 +43,10 @@ public class NetSerializableAnalyzer : ISubAnalyzer
             _currentResult.Fields[field.Name] = field;
     }
 
+    // These are tricky to parse / generate, these may end up using predefined code
     private static readonly string[] SpecialTypesIgnore = { "ByteArrayNetSerializable",
-        "NodePoseSyncStateDeltaNetSerializable", "PlayerSpecificSettingsAtStartNetSerializable",
-        "StandardScoreSyncStateDeltaNetSerializable", "BitMaskArray", "BitMaskSparse",
-        "MultiplayerAvatarsData", "PlayersLobbyPermissionConfigurationNetSerializable",
-        "PlayersMissingEntitlementsNetSerializable"
+        "BitMaskArray", "BitMaskSparse", "NodePoseSyncStateDeltaNetSerializable", 
+        "StandardScoreSyncStateDeltaNetSerializable", 
     };
 
     private DeserializeParser _deserializeParser = new();
@@ -56,6 +55,11 @@ public class NetSerializableAnalyzer : ISubAnalyzer
     {
         if (_typeName == null || SpecialTypesIgnore.Contains(_typeName))
             return;
+        
+        if (_typeName == "MultiplayerAvatarsData")
+        {
+            // Debugger.Break();
+        }
 
         var instr = _deserializeParser.FeedNextLine(line);
         if (instr != null)

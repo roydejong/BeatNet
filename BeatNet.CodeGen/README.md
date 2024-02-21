@@ -41,6 +41,9 @@ Run the code generator with the following command line arguments:
 | `source-dir` | The directory containing the exported source code. Should contain subdirectories for each assembly (e.g. a `Main` directory). |
 | `output-dir` | The directory to output the generated code to.                                                                                |
 
+
+⚠️ Warning: The **output directory** will be wiped clean before generating the code. Any files or changes in that directory will be lost.
+
 ### Output
 The following directories / namespaces will be generated:
 

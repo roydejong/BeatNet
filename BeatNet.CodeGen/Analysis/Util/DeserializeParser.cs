@@ -7,6 +7,7 @@ public class DeserializeParser
 {
     private bool _inDeserialize = false;
     private int _deserializeDepth = 0;
+    private string? _lastListName = null;
     
     public DeserializeInstruction? FeedNextLine(LineAnalyzer line)
     {
@@ -41,7 +42,12 @@ public class DeserializeParser
         rawLine = rawLine.Replace("this.", "");
         rawLine = rawLine.Replace("_color.", "");
 
-        if (rawLine.Contains("reader."))
+        if (rawLine.Contains("return"))
+        {
+            // TODO
+            // Return statements are used by immutable structs
+        }
+        else if (rawLine.Contains("reader.") && !rawLine.Contains(".Add"))
         {
             // Reader assign
             var eqIdx = rawLine.IndexOf('=');
@@ -77,32 +83,35 @@ public class DeserializeParser
         {
             // Deserialize assign
             var hasEq = rawLine.Contains('=');
-
+            string refField;
+            string? refType = null;
+            
             if (hasEq)
             {
                 // Assign the result of Object.Deserialize()
                 var eqIdx = rawLine.IndexOf('=');
-                var refField = rawLine[..eqIdx].Trim();
-                var deserializeFn = rawLine[(eqIdx + 1)..].Trim();
-            
-                return new DeserializeInstruction()
+                refField = rawLine[..eqIdx].Trim();
+
+                var spaceIdx = rawLine.IndexOf(' ', 0, eqIdx - 1);
+                if (spaceIdx > 0)
                 {
-                    CallType = deserializeFn,
-                    FieldName = refField.Trim('_')
-                };
+                    refType = rawLine[..spaceIdx].Trim();;
+                    refField = rawLine[(spaceIdx + 1)..eqIdx].Trim();
+                }
             }
             else
             {
                 // Object.Deserialize() fills existing struct / no explicit assignment
                 var dotIdx = rawLine.IndexOf(".Deserialize", StringComparison.Ordinal);
-                var refField = rawLine[..dotIdx];
-            
-                return new DeserializeInstruction()
-                {
-                    CallType = "Deserialize();",
-                    FieldName = refField.Trim('_')
-                };
+                refField = rawLine[..dotIdx];
             }
+            
+            return new DeserializeInstruction()
+            {
+                CallType = "Deserialize();",
+                FieldName = refField.Trim('_'),
+                TypeCast = refType
+            };
         }
         else if (rawLine.EndsWith("= 1f;"))
         {
@@ -126,10 +135,8 @@ public class DeserializeParser
                 FieldName = refField.Trim('_')
             };
         }
-        else
-        {
-            Debugger.Break();
-        }
+        
+        // Other lines not caught by these checks have not been known to be relevant
 
         return null;
     }

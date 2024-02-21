@@ -220,12 +220,24 @@ public ref struct NetWriter
         => WriteVarLong(value);
     
     #endregion
+    
+    #region BeatSaber Arrays
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteByteArray(byte[] value)
+    {
+        WriteUInt((uint)value.Length);
+        WriteBytes(value);
+    }
+    
+    #endregion
 
     #region Enum
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteEnum<T>(T value) where T : Enum
     {
-        
+        throw new NotImplementedException(); // TODO
     }
 
     #endregion
@@ -235,6 +247,14 @@ public ref struct NetWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteSerializable<T>(T value) where T : INetSerializable =>
         value.WriteTo(ref this);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteSerializableList<TList, TItem>(TList value) where TList : IList<TItem> where TItem : INetSerializable
+    {
+        WriteInt(value.Count);
+        foreach (var item in value)
+            WriteSerializable(item);
+    }
 
     #endregion
 }

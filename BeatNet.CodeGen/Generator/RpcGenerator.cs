@@ -149,7 +149,6 @@ public class RpcGenerator
                             rwFunction = "FloatArray";
                             break;
                         case "byte[]":
-                            // Never seen / tested / implemented in the wild
                             rwFunction = "ByteArray";
                             break;
                         case "bool[]":

@@ -24,11 +24,13 @@ public sealed class MultiplayerAvatarsData : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteSerializableList<List<MultiplayerAvatarData>, MultiplayerAvatarData>(MultiplayerAvatarsDataValue);
+		writer.WriteSerializable<BitMask128>(SupportedAvatarTypeIdHashesBloomFilter);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		MultiplayerAvatarsDataValue = reader.ReadSerializableList<List<MultiplayerAvatarData>, MultiplayerAvatarData>();
+		SupportedAvatarTypeIdHashesBloomFilter = reader.ReadSerializable<BitMask128>();
 	}
 }

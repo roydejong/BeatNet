@@ -70,6 +70,20 @@ public class LineAnalyzerTest
     }
     
     [Test]
+    public void TestParsesMethodDeclare()
+    {
+        var text = "public static MultiplayerAvatarsData Deserialize(NetDataReader reader)";
+        var line = new LineAnalyzer(text, contextInEnum: false);
+        
+        Assert.That(line.IsDeclaration, Is.True);
+        Assert.That(line.IsMethod, Is.True);
+        Assert.That(line.Modifier, Is.EqualTo("public"));
+        Assert.That(line.Static, Is.True);
+        Assert.That(line.DeclaredType, Is.EqualTo("MultiplayerAvatarsData"));
+        Assert.That(line.DeclaredName, Is.EqualTo("Deserialize"));
+    }
+    
+    [Test]
     public void TestParsesMethodWithNoModifierAndDotDeclare()
     {
         var text = "void INetSerializable.Deserialize(NetDataReader reader)";
@@ -77,6 +91,7 @@ public class LineAnalyzerTest
         
         Assert.That(line.IsDeclaration, Is.True);
         Assert.That(line.IsMethod, Is.True);
+        Assert.That(line.DeclaredType, Is.EqualTo("void"));
         Assert.That(line.DeclaredName, Is.EqualTo("INetSerializable.Deserialize"));
     }
     

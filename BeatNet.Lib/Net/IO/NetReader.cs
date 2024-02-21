@@ -1,4 +1,5 @@
 ﻿using System.Buffers.Binary;
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
@@ -234,21 +235,48 @@ public ref struct NetReader
 
     #endregion
 
+    #region BeatSaber Arrays
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public byte[] ReadByteArray()
+    {
+        var byteCount = ReadUShort();
+        ThrowIfExceedsBufferSize(byteCount);
+        var slice = Data[Position..(Position + byteCount)];
+        Position += byteCount;
+        return slice.ToArray();
+    }
+    
+    #endregion
+    
     #region Enum
 
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T ReadEnum<T>() where T : Enum
     {
-        return default;
+        throw new NotImplementedException(); // TODO
     }
 
     #endregion
 
     #region Serializable
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T ReadSerializable<T>() where T : INetSerializable
     {
         var instance = (T)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(T));
         instance.ReadFrom(ref this);
+        return instance;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TList ReadSerializableList<TList, TItem>() where TList : IList<TItem> where TItem : INetSerializable
+    {
+        var count = ReadInt();
+        var instance = (TList)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(TList));
+        for (var i = 0; i < count; i++)
+            instance.Add(ReadSerializable<TItem>());
         return instance;
     }
 

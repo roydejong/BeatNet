@@ -31,32 +31,18 @@ public class RpcManagerAnalyzer : ISubAnalyzer
             rpc.RpcManagerName = _rpcManagerName!;
             rpc.RpcName = line.DeclaredName!;
             
-            Console.Write($" • Found RPC definition: {_rpcManagerName} › {rpc.RpcName}");
-            
             var genericParams = line.ClassInheritors[0].Generics;
             if (genericParams != null)
             {
-                var firstParam = true;
-                Console.Write(" (");
                 foreach (var genericParam in genericParams)
                 {
-                    if (!firstParam)
-                        Console.Write(", ");
-                    else
-                        firstParam = false;
-                    
-                    Console.Write(genericParam);
-                    
                     rpc.Params.Add(new TypedParam()
                     {
                         TypeName = genericParam,
                         Name = $"Unk{rpc.Params.Count + 1}"
                     });
                 }
-                Console.Write(")");
             }
-            
-            Console.WriteLine();
             
             results.Rpcs.Add(rpc);
             _namedRpcs.Add(rpc.RpcName, rpc);

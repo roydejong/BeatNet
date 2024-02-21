@@ -22,11 +22,11 @@ public sealed class PlayersMissingEntitlementsNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		// TODO Bad Field Ref: int @int / GetInt(); / 
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		// TODO Bad Field Ref: int @int / GetInt(); / 
 	}
 }

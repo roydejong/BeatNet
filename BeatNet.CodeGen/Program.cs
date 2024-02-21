@@ -44,7 +44,7 @@ foreach (var assemblyDir in assemblyDirs)
     if (!assemblyAllowList.Contains(assemblyName))
         continue;
     
-    Console.WriteLine("Processing assembly: " + assemblyName);
+    Console.WriteLine($"Processing assembly: {assemblyName}");
 
     var assemblyDirFull = Path.GetFullPath(assemblyDir);
     var files = Directory.GetFiles(assemblyDirFull, "*.cs", SearchOption.AllDirectories);
@@ -61,15 +61,27 @@ foreach (var assemblyDir in assemblyDirs)
 // ---------------------------------------------------------------------------------------------------------------------
 
 Console.WriteLine($"\nAnalysis complete!");
-Console.WriteLine(" • Found RPC Managers: " + results.RpcManagers.Count);
-Console.WriteLine(" • Found RPC Definitions: " + results.Rpcs.Count);
-Console.WriteLine(" • Found NetSerializables: " + results.NetSerializables.Count);
-Console.WriteLine(" • Found Enums: " + results.Enums.Count);
-Console.WriteLine(" • Found CPM Packets: " + results.Packets.Count);
+Console.WriteLine(" Found CPM Packets: " + results.Packets.Count);
+Console.WriteLine(" Found NetSerializables: " + results.NetSerializables.Count);
+Console.WriteLine(" Found Enums: " + results.Enums.Count);
+Console.WriteLine(" Found RPC Managers: " + results.RpcManagers.Count);
+Console.WriteLine(" Found RPC Definitions: " + results.Rpcs.Count);
+Console.WriteLine(" ");
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-Console.WriteLine($"\nGenerating output files...");
+Console.WriteLine($"Emptying output directory...");
+
+foreach (var file in Directory.GetFiles(dirDst, "*", SearchOption.AllDirectories))
+{
+    if (file.StartsWith(dirDst))
+        File.Delete(file);
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+Console.WriteLine($"Generating output files...");
+Console.WriteLine(" ");
 
 var gs = new GeneratorSettings()
 {

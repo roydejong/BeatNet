@@ -24,11 +24,15 @@ public sealed class MultiplayerAvatarData : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		// MultiplayerAvatarDataFixedImpl
+		writer.WriteUInt(AvatarTypeIdentifierHash);
+		writer.WriteByteArray(Data);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		// MultiplayerAvatarDataFixedImpl
+		AvatarTypeIdentifierHash = reader.ReadUInt();
+		Data = reader.ReadByteArray();
 	}
 }

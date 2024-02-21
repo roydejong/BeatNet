@@ -8,6 +8,7 @@ public class DeserializeParser
 {
     private bool _inDeserialize = false;
     private bool _inStaticDeserialize = false;
+    private bool _inCreateFrom = false;
     private int _deserializeDepth = 0;
     
     public IEnumerable<DeserializeInstruction> FeedNextLine(IResultWithFields item, LineAnalyzer line)
@@ -16,10 +17,12 @@ public class DeserializeParser
         {
             _deserializeDepth = 0;
 
-            if (line.IsMethod && line.DeclaredName!.Contains("Deserialize"))
+            if (line.IsMethod && (line.DeclaredName!.Contains("Deserialize") || line.DeclaredName == "CreateFromSerializedData")
+                              && !line.DeclaredName.EndsWith("AvatarsData") && !line.DeclaredName.EndsWith("Flag"))
             {
                 _inDeserialize = true;
                 _inStaticDeserialize = line.Static;
+                _inCreateFrom = line.DeclaredName == "CreateFromSerializedData";
             }
 
             yield break;
@@ -33,12 +36,8 @@ public class DeserializeParser
         else if (line.IsCloseBracket)
         {
             _deserializeDepth--;
-            yield break;
-        }
-
-        if (_deserializeDepth == 0)
-        {
-            _inDeserialize = false;
+            if (_deserializeDepth == 0)
+                _inDeserialize = false;
             yield break;
         }
 
@@ -50,11 +49,16 @@ public class DeserializeParser
         {
             // Return statements are used by immutable structs
             // e.g. "return new BitMask128(reader.GetULong(), reader.GetULong());"
+
+            if (rawLine.StartsWith($"return {item.GetSelfName()}.Deserialize(reader);"))
+                // BG has some CreateFromSerializedData()s that just call Deserialize() on the same type...
+                yield break;
             
-            var newIdx = rawLine.IndexOf("new", StringComparison.Ordinal);
+            if (rawLine.Count(c => c == ' ') == 1)
+                // Ignore "return list;" and similar
+                yield break;
+            
             var fieldStartIdx = rawLine.IndexOf("(", StringComparison.Ordinal);
-            
-            var newTypeName = rawLine[(newIdx + 3)..fieldStartIdx].Trim();
             var fieldList = rawLine[(fieldStartIdx + 1)..^2].Split(',');
 
             var fieldIndex = 0;
@@ -98,7 +102,7 @@ public class DeserializeParser
                 fieldIndex++;
             }
         }
-        else if (rawLine.Contains("reader.") && !rawLine.Contains(".Add"))
+        else if (rawLine.Contains("reader.") && !rawLine.Contains(".Add") && !_inCreateFrom)
         {
             // Reader assign
             var eqIdx = rawLine.IndexOf('=');
@@ -131,7 +135,7 @@ public class DeserializeParser
             };
             yield break;
         }
-        else if (rawLine.Contains(".Deserialize"))
+        else if (rawLine.Contains(".Deserialize") && !_inCreateFrom)
         {
             // Deserialize assign
             var hasEq = rawLine.Contains('=');
@@ -166,7 +170,7 @@ public class DeserializeParser
             };
             yield break;
         }
-        else if (rawLine.EndsWith("= 1f;"))
+        else if (rawLine.EndsWith("= 1f;") && !_inCreateFrom)
         {
             // Hardcoded alpha for networked colors
             yield return new DeserializeInstruction()
@@ -176,7 +180,7 @@ public class DeserializeParser
             };
             yield break;
         }
-        else if (rawLine.Contains("@byte &"))
+        else if (rawLine.Contains("@byte &") && !_inCreateFrom)
         {
             // Byte shifted flags
             var eqIdx = rawLine.IndexOf('=');

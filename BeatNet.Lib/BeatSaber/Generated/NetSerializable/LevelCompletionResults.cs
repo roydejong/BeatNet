@@ -68,11 +68,55 @@ public sealed class LevelCompletionResults : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		writer.WriteVarInt((int)ModifiedScore);
+		writer.WriteVarInt((int)MultipliedScore);
+		writer.WriteVarInt((int)Rank);
+		writer.WriteBool(FullCombo);
+		writer.WriteFloat((float)LeftSaberMovementDistance);
+		writer.WriteFloat((float)RightSaberMovementDistance);
+		writer.WriteFloat((float)LeftHandMovementDistance);
+		writer.WriteFloat((float)RightHandMovementDistance);
+		writer.WriteVarInt((int)LevelEndStateType);
+		writer.WriteVarInt((int)LevelEndAction);
+		writer.WriteFloat((float)Energy);
+		writer.WriteVarInt((int)GoodCutsCount);
+		writer.WriteVarInt((int)BadCutsCount);
+		writer.WriteVarInt((int)MissedCount);
+		writer.WriteVarInt((int)NotGoodCount);
+		writer.WriteVarInt((int)OkCount);
+		writer.WriteVarInt((int)MaxCutScore);
+		writer.WriteVarInt((int)TotalCutScore);
+		writer.WriteVarInt((int)GoodCutsCountForNotesWithFullScoreScoringType);
+		writer.WriteFloat((float)AverageCenterDistanceCutScoreForNotesWithFullScoreScoringType);
+		writer.WriteFloat((float)AverageCutScoreForNotesWithFullScoreScoringType);
+		writer.WriteVarInt((int)MaxCombo);
+		writer.WriteFloat((float)EndSongTime);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		ModifiedScore = (int)reader.ReadVarInt();
+		MultipliedScore = (int)reader.ReadVarInt();
+		Rank = (Rank)reader.ReadVarInt();
+		FullCombo = (bool)reader.ReadBool();
+		LeftSaberMovementDistance = (float)reader.ReadFloat();
+		RightSaberMovementDistance = (float)reader.ReadFloat();
+		LeftHandMovementDistance = (float)reader.ReadFloat();
+		RightHandMovementDistance = (float)reader.ReadFloat();
+		LevelEndStateType = (LevelEndStateType)reader.ReadVarInt();
+		LevelEndAction = (LevelEndAction)reader.ReadVarInt();
+		Energy = (float)reader.ReadFloat();
+		GoodCutsCount = (int)reader.ReadVarInt();
+		BadCutsCount = (int)reader.ReadVarInt();
+		MissedCount = (int)reader.ReadVarInt();
+		NotGoodCount = (int)reader.ReadVarInt();
+		OkCount = (int)reader.ReadVarInt();
+		MaxCutScore = (int)reader.ReadVarInt();
+		TotalCutScore = (int)reader.ReadVarInt();
+		GoodCutsCountForNotesWithFullScoreScoringType = (int)reader.ReadVarInt();
+		AverageCenterDistanceCutScoreForNotesWithFullScoreScoringType = (float)reader.ReadFloat();
+		AverageCutScoreForNotesWithFullScoreScoringType = (float)reader.ReadFloat();
+		MaxCombo = (int)reader.ReadVarInt();
+		EndSongTime = (float)reader.ReadFloat();
 	}
 }

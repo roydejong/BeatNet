@@ -16,19 +16,25 @@ public sealed class SyncStateId : INetSerializable
 	public const byte kMaxValue = 128;
 
 	public byte Id { get; set; }
+	public bool Flag { get; set; }
 
-	public SyncStateId(byte id)
+	public SyncStateId(byte id, bool flag)
 	{
 		Id = id;
+		Flag = flag;
 	}
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		writer.WriteByte((byte)Id);
+		// SyncStateIdFixedImpl
+		writer.WriteByte((byte)(Id | (Flag ? 128 : 0)));
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		Id = (byte)reader.ReadByte();
+		// SyncStateIdFixedImpl
+		var value = reader.ReadByte();
+		Id = (byte)(value & 127);
+		Flag = (value & 128) != 0;
 	}
 }

@@ -49,10 +49,9 @@ public class NetSerializableAnalyzer : ISubAnalyzer
         }
     }
 
-    // These are tricky to parse / generate, these may end up using predefined code
-    private static readonly string[] SpecialTypesIgnore = { "ByteArrayNetSerializable",
-        "BitMaskArray", "BitMaskSparse", "NodePoseSyncStateDeltaNetSerializable", 
-        "StandardScoreSyncStateDeltaNetSerializable", 
+    private static readonly string[] SpecialTypesIgnore = {
+        // 1. Manual implementation required, per README
+        "ByteArrayNetSerializable", "BitMaskArray", "BitMaskSparse"
     };
 
     private DeserializeParser _deserializeParser = new();
@@ -64,5 +63,11 @@ public class NetSerializableAnalyzer : ISubAnalyzer
         
         foreach (var instr in _deserializeParser.FeedNextLine(_currentResult, line))
             _currentResult.DeserializeInstructions.Add(instr);
+    }
+
+    public void Analyze_AfterFile(Results results)
+    {
+        if (_typeName == "SyncStateId")
+            _currentResult.Fields.Add("flag", new TypedParam() { Name = "flag", TypeName = "bool" });
     }
 }

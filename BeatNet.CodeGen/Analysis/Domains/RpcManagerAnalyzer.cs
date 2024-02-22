@@ -85,4 +85,8 @@ public class RpcManagerAnalyzer : ISubAnalyzer
             }
         }
     }
+
+    public void Analyze_AfterFile(Results results)
+    {
+    }
 }

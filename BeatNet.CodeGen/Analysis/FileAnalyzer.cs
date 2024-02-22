@@ -123,6 +123,8 @@ public class FileAnalyzer
                 }
             }
         }
+        
+        domainAnalyzer?.Analyze_AfterFile(results);
     }
 
     private bool ShouldIgnoreFileName()

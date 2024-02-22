@@ -26,11 +26,19 @@ public sealed class NodePoseSyncStateDeltaNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		// SyncStateDeltaFixedImpl
+		writer.WriteSerializable(BaseId);
+		writer.WriteInt(TimeOffsetMs);
+		if (!BaseId.Flag)
+			writer.WriteSerializable(Delta);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		// SyncStateDeltaFixedImpl
+		BaseId = reader.ReadSerializable<SyncStateId>();
+		TimeOffsetMs = reader.ReadInt();
+		if (!BaseId.Flag)
+			Delta = reader.ReadSerializable<NodePoseSyncState>();
 	}
 }

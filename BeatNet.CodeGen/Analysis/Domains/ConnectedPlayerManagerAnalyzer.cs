@@ -8,7 +8,8 @@ namespace BeatNet.CodeGen.Analysis.Domains;
 public class ConnectedPlayerManagerAnalyzer : ISubAnalyzer
 {
     private PacketResult? _currentPacket = null;
-    private DeserializeParser _deserializeParser = new();
+    private readonly FieldParser _fieldParser = new();
+    private readonly DeserializeParser _deserializeParser = new();
     
     public void AnalyzeLine_FirstPass(LineAnalyzer line, Results results)
     {
@@ -31,7 +32,7 @@ public class ConnectedPlayerManagerAnalyzer : ISubAnalyzer
         if (_currentPacket == null)
             return;
         
-        var field = FieldParser.TryParse(line);
+        var field = _fieldParser.TryParse(line);
         if (field != null)
             _currentPacket.Fields[field.Name] = field;
         

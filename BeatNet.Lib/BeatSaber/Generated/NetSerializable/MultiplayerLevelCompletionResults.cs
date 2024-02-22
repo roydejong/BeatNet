@@ -16,16 +16,12 @@ public sealed class MultiplayerLevelCompletionResults : INetSerializable
 	public MultiplayerPlayerLevelEndState PlayerLevelEndState { get; set; }
 	public MultiplayerPlayerLevelEndReason PlayerLevelEndReason { get; set; }
 	public LevelCompletionResults LevelCompletionResults { get; set; }
-	public bool HasAnyResults { get; set; }
-	public bool FailedOrGivenUp { get; set; }
 
-	public MultiplayerLevelCompletionResults(MultiplayerPlayerLevelEndState playerLevelEndState, MultiplayerPlayerLevelEndReason playerLevelEndReason, LevelCompletionResults levelCompletionResults, bool hasAnyResults, bool failedOrGivenUp)
+	public MultiplayerLevelCompletionResults(MultiplayerPlayerLevelEndState playerLevelEndState, MultiplayerPlayerLevelEndReason playerLevelEndReason, LevelCompletionResults levelCompletionResults)
 	{
 		PlayerLevelEndState = playerLevelEndState;
 		PlayerLevelEndReason = playerLevelEndReason;
 		LevelCompletionResults = levelCompletionResults;
-		HasAnyResults = hasAnyResults;
-		FailedOrGivenUp = failedOrGivenUp;
 	}
 
 	public void WriteTo(ref NetWriter writer)

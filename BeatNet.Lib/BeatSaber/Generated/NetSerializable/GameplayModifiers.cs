@@ -28,12 +28,9 @@ public sealed class GameplayModifiers : INetSerializable
 	public bool ProMode { get; set; }
 	public bool ZenMode { get; set; }
 	public bool SmallCubes { get; set; }
-	public float SongSpeedMul { get; set; }
-	public float CutAngleTolerance { get; set; }
-	public float NotesUniformScale { get; set; }
 	public GameplayModifiers NoModifiers { get; set; }
 
-	public GameplayModifiers(EnergyType energyType, bool noFailOn0Energy, bool instaFail, bool failOnSaberClash, EnabledObstacleType enabledObstacleType, bool fastNotes, bool strictAngles, bool disappearingArrows, bool ghostNotes, bool noBombs, SongSpeed songSpeed, bool noArrows, bool proMode, bool zenMode, bool smallCubes, float songSpeedMul, float cutAngleTolerance, float notesUniformScale, GameplayModifiers noModifiers)
+	public GameplayModifiers(EnergyType energyType, bool noFailOn0Energy, bool instaFail, bool failOnSaberClash, EnabledObstacleType enabledObstacleType, bool fastNotes, bool strictAngles, bool disappearingArrows, bool ghostNotes, bool noBombs, SongSpeed songSpeed, bool noArrows, bool proMode, bool zenMode, bool smallCubes, GameplayModifiers noModifiers)
 	{
 		EnergyType = energyType;
 		NoFailOn0Energy = noFailOn0Energy;
@@ -50,9 +47,6 @@ public sealed class GameplayModifiers : INetSerializable
 		ProMode = proMode;
 		ZenMode = zenMode;
 		SmallCubes = smallCubes;
-		SongSpeedMul = songSpeedMul;
-		CutAngleTolerance = cutAngleTolerance;
-		NotesUniformScale = notesUniformScale;
 		NoModifiers = noModifiers;
 	}
 

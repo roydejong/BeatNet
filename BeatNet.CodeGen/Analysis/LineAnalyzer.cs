@@ -24,6 +24,7 @@ public class LineAnalyzer
     public readonly bool IsMethod;
     public readonly bool IsConstructor;
     public readonly bool IsField;
+    public readonly bool IsProperty;
     public readonly string? DeclaredName;
     public readonly List<ClassInheritor>? ClassInheritors;
     public readonly string? DeclaredType;
@@ -50,6 +51,8 @@ public class LineAnalyzer
         IsClass = false;
         IsMethod = false;
         IsConstructor = false;
+        IsField = false;
+        IsProperty = false;
         DeclaredName = null;
         ClassInheritors = null;
         DeclaredType = null;
@@ -371,10 +374,11 @@ public class LineAnalyzer
         // -------------------------------------------------------------------------------------------------------------
         // Field / prop declaration
 
-        if ((IsDeclaration && RawLine.EndsWith(';')) || (IsDeclaration && Words.Length == 2))
+        IsField = IsDeclaration && RawLine.EndsWith(';');
+        IsProperty = !IsField && IsDeclaration && Words.Length == 2;
+        
+        if (IsField || IsProperty)
         {
-            IsField = true;
-            
             DeclaredType = Words[0];
             DeclaredName = Words[1].Trim(';');
 

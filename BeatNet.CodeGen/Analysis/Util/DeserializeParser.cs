@@ -64,7 +64,15 @@ public class DeserializeParser
             var fieldIndex = 0;
             foreach (var field in fieldList)
             {
-                var linkedField = item.GetFields().Where(f => !f.IsConst).ElementAt(fieldIndex);
+                var linkedField = item.GetFields().Where(f => !f.IsConst).ElementAtOrDefault(fieldIndex);
+
+                if (linkedField == null)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("WARNING: Deserialize instruction count does not match field count / missing element");
+                    Console.ResetColor();
+                    yield break;
+                }
                 
                 if (field.Contains("reader."))
                 {

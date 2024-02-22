@@ -18,22 +18,20 @@ public sealed class SongPackMask : INetSerializable
 	public const string kToStringPrefix = "[SongPackMask ";
 	public const string kToStringSuffix = "]";
 
-	public SongPackMask All { get; set; }
 	public BitMask256 BloomFilter { get; set; }
 
-	public SongPackMask(SongPackMask all, BitMask256 bloomFilter)
+	public SongPackMask(BitMask256 bloomFilter)
 	{
-		All = all;
 		BloomFilter = bloomFilter;
 	}
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		writer.WriteSerializable<SongPackMask>(All);
+		writer.WriteSerializable<BitMask256>(BloomFilter);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		All = reader.ReadSerializable<SongPackMask>();
+		BloomFilter = reader.ReadSerializable<BitMask256>();
 	}
 }

@@ -8,6 +8,7 @@ namespace BeatNet.CodeGen.Analysis.Domains;
 public class NetSerializableAnalyzer : ISubAnalyzer
 {
     private string? _typeName = null;
+    private readonly FieldParser _fieldParser = new();
     private NetSerializableResult _currentResult = null;
     
     public void AnalyzeLine_FirstPass(LineAnalyzer line, Results results)
@@ -38,8 +39,7 @@ public class NetSerializableAnalyzer : ISubAnalyzer
         if (_typeName is null or "ColorSerializable" or "Color32Serializable" or "ColorNoAlphaSerializable")
             return;
 
-        var field = FieldParser.TryParse(line);
-        
+        var field = _fieldParser.TryParse(line);
         if (field != null)
         {
             if (_typeName.Contains("BitMask") && field.Name is "bitCount" or "maxValue")

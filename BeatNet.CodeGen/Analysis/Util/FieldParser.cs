@@ -2,12 +2,50 @@
 
 namespace BeatNet.CodeGen.Analysis.Util;
 
-public static class FieldParser
+public class FieldParser
 {
-    public static TypedParam? TryParse(LineAnalyzer line)
+    private bool _evaluatingProperty = false;
+    private TypedParam? _curProperty = null;
+    private int _scopeLevel = 0;
+    private int? _propertyScopeLevel = null;
+    private bool _foundGetter = false;
+    private bool _foundSetter = false;
+    
+    public TypedParam? TryParse(LineAnalyzer line)
     {
-        if (!line.IsField)
+        if (line.IsOpenBracket)
+        {
+            _scopeLevel++;
             return null;
+        }
+        else if (line.IsCloseBracket)
+        {
+            _scopeLevel--;
+            if (_evaluatingProperty && _scopeLevel <= _propertyScopeLevel!.Value && _foundGetter && _foundSetter)
+            {
+                _evaluatingProperty = false;
+                return _curProperty;
+            }
+            return null;
+        }
+        else if (line.RawLine.EndsWith("get"))
+        {
+            if (_evaluatingProperty) 
+                _foundGetter = true;
+            return null;
+        }
+        else if (line.RawLine.EndsWith("set"))
+        {
+            if (_evaluatingProperty) 
+                _foundSetter = true;
+            return null;
+        }
+
+        if (line is { IsField: false, IsProperty: false })
+            return null;
+        
+        if (_evaluatingProperty) 
+            _evaluatingProperty = false;
         
         var name = line.DeclaredName!;
         var type = line.DeclaredType!;
@@ -19,8 +57,8 @@ public static class FieldParser
             return null;
 
         if (type.Contains("IReadOnly"))
-            // Ignore read only lists
-            return null;
+            // Convert read only list types (IReadOnlyList -> List)
+            type = type.Replace("IReadOnly", "");
 
         if (type.Contains("PacketPool") || name == "pool")
             // Ignore packet pools
@@ -28,13 +66,25 @@ public static class FieldParser
 
         if (name == "sliderType")
             type = "SliderType"; // BG called this "Type" which, well, isn't ideal - so explicit fix
-
-        return new TypedParam()
+        
+        var result = new TypedParam()
         {
             TypeName = type,
             Name = name,
             IsConst = line.Const,
             DefaultValue = line.DefaultValue
         };
+
+        if (line.IsProperty)
+        {
+            _evaluatingProperty = true;
+            _curProperty = result;
+            _propertyScopeLevel = _scopeLevel;
+            _foundGetter = false;
+            _foundSetter = false;
+            return null;
+        }
+
+        return result;
     }
 }

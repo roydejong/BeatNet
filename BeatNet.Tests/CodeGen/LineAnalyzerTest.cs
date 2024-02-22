@@ -109,4 +109,17 @@ public class LineAnalyzerTest
         Assert.That(line.DeclaredName, Is.EqualTo("kBitCount"));
         Assert.That(line.DefaultValue, Is.EqualTo("16384"));
     }
+    
+    [Test]
+    public void TestParsesPropertyDeclare()
+    {
+        var text = "public List<IConnectedPlayer> activePlayersAtGameStart";
+        var line = new LineAnalyzer(text, contextInEnum: false);
+        
+        Assert.That(line.IsDeclaration, Is.True);
+        Assert.That(line.Modifier, Is.EqualTo("public"));
+        Assert.That(line.IsProperty, Is.True);
+        Assert.That(line.DeclaredType, Is.EqualTo("List<IConnectedPlayer>"));
+        Assert.That(line.DeclaredName, Is.EqualTo("activePlayersAtGameStart"));
+    }
 }

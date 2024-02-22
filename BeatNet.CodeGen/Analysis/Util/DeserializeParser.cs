@@ -9,35 +9,37 @@ public class DeserializeParser
     private bool _inDeserialize = false;
     private bool _inStaticDeserialize = false;
     private bool _inCreateFrom = false;
-    private int _deserializeDepth = 0;
+    private int _curScopeLevel = 0;
+    private int _deserializeScopeLevel = 0;
     
     public IEnumerable<DeserializeInstruction> FeedNextLine(IResultWithFields item, LineAnalyzer line)
     {
-        if (!_inDeserialize)
-        {
-            _deserializeDepth = 0;
-
-            if (line.IsMethod && (line.DeclaredName!.Contains("Deserialize") || line.DeclaredName == "CreateFromSerializedData")
-                              && !line.DeclaredName.EndsWith("AvatarsData") && !line.DeclaredName.EndsWith("Flag"))
-            {
-                _inDeserialize = true;
-                _inStaticDeserialize = line.Static;
-                _inCreateFrom = line.DeclaredName == "CreateFromSerializedData";
-            }
-
-            yield break;
-        }
-
         if (line.IsOpenBracket)
         {
-            _deserializeDepth++;
+            _curScopeLevel++;
             yield break;
         } 
         else if (line.IsCloseBracket)
         {
-            _deserializeDepth--;
-            if (_deserializeDepth == 0)
+            _curScopeLevel--;
+            if (_curScopeLevel <= _deserializeScopeLevel)
                 _inDeserialize = false;
+            yield break;
+        }
+        
+        if (!_inDeserialize)
+        {
+            _deserializeScopeLevel = 0;
+
+            if (line.IsMethod && (line.DeclaredName!.Contains("Deserialize") || line.DeclaredName == "CreateFromSerializedData")
+                              && !line.DeclaredName.EndsWith("Flag") && line.DeclaredName != "DeserializeAvatarsData")
+            {
+                _inDeserialize = true;
+                _inStaticDeserialize = line.Static;
+                _inCreateFrom = line.DeclaredName == "CreateFromSerializedData";
+                _deserializeScopeLevel = _curScopeLevel;
+            }
+
             yield break;
         }
 

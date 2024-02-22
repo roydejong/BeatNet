@@ -321,7 +321,7 @@ public class LineAnalyzer
                     // We don't care about events (so far)
                     return;
                 
-                if (RawLine.Contains('<') && RawLine.Contains('>'))
+                if (DeclaredName.Contains('<') && DeclaredName.Contains('>'))
                     // We don't care about generic methods (so far)
                     return;
 

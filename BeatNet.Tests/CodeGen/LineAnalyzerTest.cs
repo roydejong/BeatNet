@@ -96,6 +96,19 @@ public class LineAnalyzerTest
     }
     
     [Test]
+    public void TestParsesComplexMethodDeclare()
+    {
+        var text = "private static List<MultiplayerAvatarData> DeserializeAvatarsData(NetDataReader reader)";
+        var line = new LineAnalyzer(text, contextInEnum: false);
+        
+        Assert.That(line.IsDeclaration, Is.True);
+        Assert.That(line.Modifier, Is.EqualTo("private"));
+        Assert.That(line.IsMethod, Is.True);
+        Assert.That(line.DeclaredType, Is.EqualTo("List<MultiplayerAvatarData>"));
+        Assert.That(line.DeclaredName, Is.EqualTo("DeserializeAvatarsData"));
+    }
+    
+    [Test]
     public void TestParsesConstsWithValues()
     {
         var text = "private const int kBitCount = 16384;";

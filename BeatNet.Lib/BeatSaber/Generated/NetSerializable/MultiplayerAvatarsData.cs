@@ -26,17 +26,11 @@ public sealed class MultiplayerAvatarsData : INetSerializable
 	{
 		writer.WriteSerializableList<List<MultiplayerAvatarData>, MultiplayerAvatarData>(MultiplayerAvatarsDataValue);
 		writer.WriteSerializable<BitMask128>(SupportedAvatarTypeIdHashesBloomFilter);
-		// TODO Bad Field Ref: int @int / GetInt(); / 
-		// TODO Bad Field Ref: uint @uint / GetUInt(); / 
-		// TODO Bad Field Ref: byte[] byteArray / GetByteArray(); / 
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
 		MultiplayerAvatarsDataValue = reader.ReadSerializableList<List<MultiplayerAvatarData>, MultiplayerAvatarData>();
 		SupportedAvatarTypeIdHashesBloomFilter = reader.ReadSerializable<BitMask128>();
-		// TODO Bad Field Ref: int @int / GetInt(); / 
-		// TODO Bad Field Ref: uint @uint / GetUInt(); / 
-		// TODO Bad Field Ref: byte[] byteArray / GetByteArray(); / 
 	}
 }

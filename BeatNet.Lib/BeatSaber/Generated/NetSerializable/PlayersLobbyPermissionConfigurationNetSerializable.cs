@@ -22,13 +22,13 @@ public sealed class PlayersLobbyPermissionConfigurationNetSerializable : INetSer
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		// TODO Bad Field Ref: int @int / GetInt(); / 
-		// TODO Bad Field Ref: playerLobbyPermissionConfigurationNetSerializable / Deserialize(); / 
+		// GenericListTypesFixedImpl
+		writer.WriteSerializableList<List<PlayerLobbyPermissionConfigurationNetSerializable>, PlayerLobbyPermissionConfigurationNetSerializable>(PlayersPermission);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		// TODO Bad Field Ref: int @int / GetInt(); / 
-		// TODO Bad Field Ref: playerLobbyPermissionConfigurationNetSerializable / Deserialize(); / 
+		// GenericListTypesFixedImpl
+		PlayersPermission = reader.ReadSerializableList<List<PlayerLobbyPermissionConfigurationNetSerializable>, PlayerLobbyPermissionConfigurationNetSerializable>();
 	}
 }

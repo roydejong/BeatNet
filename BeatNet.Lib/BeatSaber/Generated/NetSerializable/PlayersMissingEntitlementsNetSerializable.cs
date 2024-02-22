@@ -22,11 +22,13 @@ public sealed class PlayersMissingEntitlementsNetSerializable : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		// TODO Bad Field Ref: int @int / GetInt(); / 
+		// GenericListTypesFixedImpl
+		writer.WriteStringList(PlayersWithoutEntitlements);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		// TODO Bad Field Ref: int @int / GetInt(); / 
+		// GenericListTypesFixedImpl
+		PlayersWithoutEntitlements = reader.ReadStringList();
 	}
 }

@@ -256,6 +256,20 @@ public ref struct NetReader
     }
     
     #endregion
+
+    #region BeatSaber Lists
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public List<string> ReadStringList()
+    {
+        var count = ReadInt();
+        var list = new List<string>(count);
+        for (var i = 0; i < count; i++)
+            list.Add(ReadString());
+        return list;
+    }
+    
+    #endregion
     
     #region Enum
 

@@ -240,6 +240,18 @@ public ref struct NetWriter
     
     #endregion
 
+    #region BeatSaber Lists
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteStringList(List<string> value)
+    {
+        WriteInt(value.Count);
+        foreach (var item in value)
+            WriteString(item);
+    }
+    
+    #endregion
+
     #region Enum
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -13,7 +13,8 @@ public class GenericListTypesFixedImpl : FixedImpl
     
     public override bool AppliesToType(string typeName)
     {
-        return typeName is "PlayersLobbyPermissionConfigurationNetSerializable";
+        return typeName is "PlayersLobbyPermissionConfigurationNetSerializable"
+            or "PlayersMissingEntitlementsNetSerializable";
     }
 
     public override void GenerateWriteTo(IResultWithFields item, StringBuilder buffer)
@@ -23,8 +24,15 @@ public class GenericListTypesFixedImpl : FixedImpl
 
         if (genericType == null)
             throw new Exception("Expection failed: could not get generic type from list field");
-        
-        buffer.AppendLine($"\t\twriter.WriteSerializableList<List<{genericType}>, {genericType}>({listField.NameForField});");
+
+        if (genericType == "string")
+        {
+            buffer.AppendLine($"\t\twriter.WriteStringList({listField.NameForField});");
+        }
+        else
+        {
+            buffer.AppendLine($"\t\twriter.WriteSerializableList<List<{genericType}>, {genericType}>({listField.NameForField});");   
+        }
     }
 
     public override void GenerateReadFrom(IResultWithFields item, StringBuilder buffer)
@@ -35,7 +43,14 @@ public class GenericListTypesFixedImpl : FixedImpl
         if (genericType == null)
             throw new Exception("Expection failed: could not get generic type from list field");
         
-        buffer.AppendLine($"\t\t{listField.NameForField} = reader.ReadSerializableList<List<{genericType}>, {genericType}>();");
+        if (genericType == "string")
+        {
+            buffer.AppendLine($"\t\t{listField.NameForField} = reader.ReadStringList();");
+        }
+        else
+        {
+            buffer.AppendLine($"\t\t{listField.NameForField} = reader.ReadSerializableList<List<{genericType}>, {genericType}>();");   
+        }
     }
 
     private static TypedParam GetListField(IResultWithFields item) =>

@@ -14,23 +14,21 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 public sealed class PlayerSpecificSettingsAtStartNetSerializable : INetSerializable
 {
 	public List<PlayerSpecificSettingsNetSerializable> ActivePlayerSpecificSettingsAtGameStart { get; set; }
-	public List<IConnectedPlayer> ActivePlayersAtGameStart { get; set; }
 
-	public PlayerSpecificSettingsAtStartNetSerializable(List<PlayerSpecificSettingsNetSerializable> activePlayerSpecificSettingsAtGameStart, List<IConnectedPlayer> activePlayersAtGameStart)
+	public PlayerSpecificSettingsAtStartNetSerializable(List<PlayerSpecificSettingsNetSerializable> activePlayerSpecificSettingsAtGameStart)
 	{
 		ActivePlayerSpecificSettingsAtGameStart = activePlayerSpecificSettingsAtGameStart;
-		ActivePlayersAtGameStart = activePlayersAtGameStart;
 	}
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		// TODO Bad Field Ref: int @int / GetInt(); / 
-		// TODO Bad Field Ref: playerSpecificSettingsNetSerializable / Deserialize(); / 
+		// GenericListTypesFixedImpl
+		writer.WriteSerializableList<List<PlayerSpecificSettingsNetSerializable>, PlayerSpecificSettingsNetSerializable>(ActivePlayerSpecificSettingsAtGameStart);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		// TODO Bad Field Ref: int @int / GetInt(); / 
-		// TODO Bad Field Ref: playerSpecificSettingsNetSerializable / Deserialize(); / 
+		// GenericListTypesFixedImpl
+		ActivePlayerSpecificSettingsAtGameStart = reader.ReadSerializableList<List<PlayerSpecificSettingsNetSerializable>, PlayerSpecificSettingsNetSerializable>();
 	}
 }

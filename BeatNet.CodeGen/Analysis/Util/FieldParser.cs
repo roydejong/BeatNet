@@ -64,6 +64,10 @@ public class FieldParser
             // Ignore packet pools
             return null;
 
+        if (type == "List<IConnectedPlayer>")
+            // PlayerSpecificSettingsAtStartNetSerializable specific (works as general rule because IConnectedPlayer cannot serialize over network)
+            return null;
+
         if (name == "sliderType")
             type = "SliderType"; // BG called this "Type" which, well, isn't ideal - so explicit fix
         

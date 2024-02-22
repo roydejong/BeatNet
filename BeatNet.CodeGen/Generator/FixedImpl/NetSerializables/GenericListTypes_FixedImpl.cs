@@ -14,7 +14,8 @@ public class GenericListTypesFixedImpl : FixedImpl
     public override bool AppliesToType(string typeName)
     {
         return typeName is "PlayersLobbyPermissionConfigurationNetSerializable"
-            or "PlayersMissingEntitlementsNetSerializable";
+            or "PlayersMissingEntitlementsNetSerializable"
+            or "PlayerSpecificSettingsAtStartNetSerializable";
     }
 
     public override void GenerateWriteTo(IResultWithFields item, StringBuilder buffer)

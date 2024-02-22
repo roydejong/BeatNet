@@ -43,6 +43,9 @@ public class FieldParser
 
         if (line is { IsField: false, IsProperty: false })
             return null;
+
+        if (line is { Static: true, ReadOnly: true })
+            return null;
         
         if (_evaluatingProperty) 
             _evaluatingProperty = false;

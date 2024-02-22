@@ -28,9 +28,8 @@ public sealed class GameplayModifiers : INetSerializable
 	public bool ProMode { get; set; }
 	public bool ZenMode { get; set; }
 	public bool SmallCubes { get; set; }
-	public GameplayModifiers NoModifiers { get; set; }
 
-	public GameplayModifiers(EnergyType energyType, bool noFailOn0Energy, bool instaFail, bool failOnSaberClash, EnabledObstacleType enabledObstacleType, bool fastNotes, bool strictAngles, bool disappearingArrows, bool ghostNotes, bool noBombs, SongSpeed songSpeed, bool noArrows, bool proMode, bool zenMode, bool smallCubes, GameplayModifiers noModifiers)
+	public GameplayModifiers(EnergyType energyType, bool noFailOn0Energy, bool instaFail, bool failOnSaberClash, EnabledObstacleType enabledObstacleType, bool fastNotes, bool strictAngles, bool disappearingArrows, bool ghostNotes, bool noBombs, SongSpeed songSpeed, bool noArrows, bool proMode, bool zenMode, bool smallCubes)
 	{
 		EnergyType = energyType;
 		NoFailOn0Energy = noFailOn0Energy;
@@ -47,16 +46,48 @@ public sealed class GameplayModifiers : INetSerializable
 		ProMode = proMode;
 		ZenMode = zenMode;
 		SmallCubes = smallCubes;
-		NoModifiers = noModifiers;
 	}
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		// GameplayModifiersFixedImpl
+		var packed = 0;
+		packed |= (int)(EnergyType & (EnergyType)15) << 0;
+		packed |= InstaFail ? 1 << 6 : 0;
+		packed |= FailOnSaberClash ? 1 << 7 : 0;
+		packed |= (int)(EnabledObstacleType & (EnabledObstacleType)15) << 8;
+		packed |= NoBombs ? 1 << 13 : 0;
+		packed |= FastNotes ? 1 << 14 : 0;
+		packed |= StrictAngles ? 1 << 15 : 0;
+		packed |= DisappearingArrows ? 1 << 16 : 0;
+		packed |= GhostNotes ? 1 << 17 : 0;
+		packed |= (int)(SongSpeed & (SongSpeed)15) << 18;
+		packed |= NoArrows ? 1 << 22 : 0;
+		packed |= NoFailOn0Energy ? 1 << 23 : 0;
+		packed |= ProMode ? 1 << 24 : 0;
+		packed |= ZenMode ? 1 << 25 : 0;
+		packed |= SmallCubes ? 1 << 26 : 0;
+		writer.WriteInt(packed);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		// GameplayModifiersFixedImpl
+		var packed = reader.ReadInt();
+		EnergyType = (EnergyType)((packed >> 0) & 15);
+		InstaFail = (packed & (1 << 6)) != 0;
+		FailOnSaberClash = (packed & (1 << 7)) != 0;
+		EnabledObstacleType = (EnabledObstacleType)((packed >> 8) & 15);
+		NoBombs = (packed & (1 << 13)) != 0;
+		FastNotes = (packed & (1 << 14)) != 0;
+		StrictAngles = (packed & (1 << 15)) != 0;
+		DisappearingArrows = (packed & (1 << 16)) != 0;
+		GhostNotes = (packed & (1 << 17)) != 0;
+		SongSpeed = (SongSpeed)((packed >> 18) & 15);
+		NoArrows = (packed & (1 << 22)) != 0;
+		NoFailOn0Energy = (packed & (1 << 23)) != 0;
+		ProMode = (packed & (1 << 24)) != 0;
+		ZenMode = (packed & (1 << 25)) != 0;
+		SmallCubes = (packed & (1 << 26)) != 0;
 	}
 }

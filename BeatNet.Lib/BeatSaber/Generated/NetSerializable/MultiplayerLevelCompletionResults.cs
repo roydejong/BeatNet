@@ -26,11 +26,21 @@ public sealed class MultiplayerLevelCompletionResults : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
-		throw new NotImplementedException(); // TODO
+		// MultiplayerLevelCompletionResultsFixedImpl
+		writer.WriteVarInt((int)PlayerLevelEndState);
+		writer.WriteVarInt((int)PlayerLevelEndReason);
+		var hasAnyResults = (PlayerLevelEndState is MultiplayerPlayerLevelEndState.SongFinished or MultiplayerPlayerLevelEndState.NotFinished);
+		if (hasAnyResults)
+			writer.WriteSerializable(LevelCompletionResults);
 	}
 
 	public void ReadFrom(ref NetReader reader)
 	{
-		throw new NotImplementedException(); // TODO
+		// MultiplayerLevelCompletionResultsFixedImpl
+		PlayerLevelEndState = (MultiplayerPlayerLevelEndState)reader.ReadVarInt();
+		PlayerLevelEndReason = (MultiplayerPlayerLevelEndReason)reader.ReadVarInt();
+		var hasAnyResults = (PlayerLevelEndState is MultiplayerPlayerLevelEndState.SongFinished or MultiplayerPlayerLevelEndState.NotFinished);
+		if (hasAnyResults)
+			LevelCompletionResults = reader.ReadSerializable<LevelCompletionResults>();
 	}
 }

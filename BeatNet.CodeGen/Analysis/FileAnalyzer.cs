@@ -143,7 +143,8 @@ public class FileAnalyzer
         var allowList = new string[] { "Serializable", "SyncState", "EntitlementsStatus", "CannotStartGameReason",
             "MultiplayerGameState", "ColorType", "NoteCutDirection", "NoteLineLayer", "SliderMidAnchorMode",
             "NoteData", "DiscoveryPolicy", "InvitePolicy", "GameplayServerMode", "SongSelectionMode",
-            "GameplayServerControlSettings", "MultiplayerAvatarData", "SliderData", "MultiplayerSessionManager"
+            "GameplayServerControlSettings", "MultiplayerAvatarData", "SliderData", "MultiplayerSessionManager",
+            "PacketOption"
         };
         foreach (var allow in allowList)
         {

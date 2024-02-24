@@ -33,7 +33,7 @@ public class FileAnalyzer
             domainAnalyzer = new RpcManagerAnalyzer();
         else if (FileNameNoExt == "ConnectedPlayerManager")
             domainAnalyzer = new ConnectedPlayerManagerAnalyzer();
-        else if (FileNameNoExt is "SliderData" or "MultiplayerSessionManager" or "NoteData" or "GameplayServerConfiguration")
+        else if (FileNameNoExt is "SliderData" or "MultiplayerSessionManager" or "NoteData" or "GameplayServerConfiguration" or "PacketOption")
             domainAnalyzer = null; // Enum extraction only
         else
             domainAnalyzer = new NetSerializableAnalyzer();
@@ -47,6 +47,7 @@ public class FileAnalyzer
             currentType = null;
             EnumResult? currentEnum = null;
             int enumValueGen = 0;
+            var enumFlags = false;
 
             foreach (var line in File.ReadAllLines(FullPath))
             {
@@ -70,7 +71,12 @@ public class FileAnalyzer
                 {
                     domainAnalyzer?.AnalyzeLine_FirstPass(lineAnalyzer, results);
 
-                    if (lineAnalyzer.IsEnum)
+                    if (lineAnalyzer.IsAttribute)
+                    {
+                        if (lineAnalyzer.DeclaredName == "Flags")
+                            enumFlags = true;
+                    }
+                    else if (lineAnalyzer.IsEnum)
                     {
                         var enumName = lineAnalyzer.DeclaredName;
                         
@@ -81,7 +87,8 @@ public class FileAnalyzer
                         {
                             ContainingType = baseType,
                             EnumName = enumName,
-                            EnumBackingType = lineAnalyzer.DeclaredType ?? "int"
+                            EnumBackingType = lineAnalyzer.DeclaredType ?? "int",
+                            Flags = enumFlags
                         };
                         results.Enums.Add(currentEnum);
                     }
@@ -115,6 +122,10 @@ public class FileAnalyzer
                         {
                             Debugger.Break();
                         }
+                    }
+                    else
+                    {
+                        enumFlags = false;
                     }
                 }
                 else if (pass == 2)

@@ -33,6 +33,7 @@ public class LineAnalyzer
     public bool IsCloseBracket;
     public bool IsEnumCase;
     public string? DefaultValue;
+    public bool IsAttribute;
 
     public LineAnalyzer(string line, string? contextTypeName = null, bool? contextInEnum = false)
     {
@@ -59,10 +60,31 @@ public class LineAnalyzer
         MethodParams = null;
         IsOpenBracket = false;
         IsCloseBracket = false;
+        IsAttribute = false;
         
         if (RawLine.Contains("<>") || RawLine.Contains(">5__2"))
             // Weird DisplayClass compiler-generated stuff - skip
             return;
+        
+        // -------------------------------------------------------------------------------------------------------------
+        // Attributes
+
+        if (RawLine.StartsWith("["))
+        {
+            IsAttribute = true;
+
+            var idxStart = RawLine.IndexOf('[');
+            var idxEnd = RawLine.IndexOf(']');
+            var attributeContent = RawLine[(idxStart + 1)..idxEnd];
+            
+            var idxPropStarts = attributeContent.IndexOf('(');
+            if (idxPropStarts == -1)
+                DeclaredName = attributeContent;
+            else
+                DeclaredName = attributeContent[..idxPropStarts];
+
+            return;
+        }
         
         // -------------------------------------------------------------------------------------------------------------
         // Access modifiers

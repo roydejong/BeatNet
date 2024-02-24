@@ -8,4 +8,5 @@ public class EnumResult
     public string EnumName;
     public string EnumBackingType;
     public Dictionary<int, string> Cases = new();
+    public bool Flags;
 }

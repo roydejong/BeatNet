@@ -4,10 +4,9 @@
 namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
 [Flags]
-public enum GameplayServerControlSettings : int
+public enum PacketOption : int
 {
 	None = 0,
-	AllowModifierSelection = 1,
-	AllowSpectate = 2,
-	All = 3
+	Encrypted = 1,
+	OnlyFirstDegreeConnections = 2
 }

@@ -46,6 +46,9 @@ public class EnumGenerator
         if (Enum.ContainingType != null)
             sw.WriteLine($"// Context: {Enum.ContainingType}\n");
         
+        if (Enum.Flags)
+            sw.WriteLine("[Flags]");
+        
         sw.WriteLine($"public enum {Enum.EnumName} : {Enum.EnumBackingType}");
         sw.WriteLine("{");
 

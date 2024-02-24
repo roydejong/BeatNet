@@ -135,4 +135,24 @@ public class LineAnalyzerTest
         Assert.That(line.DeclaredType, Is.EqualTo("List<IConnectedPlayer>"));
         Assert.That(line.DeclaredName, Is.EqualTo("activePlayersAtGameStart"));
     }
+    
+    [Test]
+    public void TestParsesSimpleAttributes()
+    {
+        var text = "[Flags]";
+        var line = new LineAnalyzer(text, contextInEnum: false);
+        
+        Assert.That(line.IsAttribute, Is.True);
+        Assert.That(line.DeclaredName, Is.EqualTo("Flags"));
+    }
+    
+    [Test]
+    public void TestParsesLessSimpleAttributes()
+    {
+        var text = "[AttributeUsage(AttributeTargets.Enum, Inherited = false)]";
+        var line = new LineAnalyzer(text, contextInEnum: false);
+        
+        Assert.That(line.IsAttribute, Is.True);
+        Assert.That(line.DeclaredName, Is.EqualTo("AttributeUsage"));
+    }
 }

@@ -1,11 +1,11 @@
-﻿using BeatNet.Lib.Net;
+﻿using BeatNet.Lib.Net.Interfaces;
 using BeatNet.Lib.Net.IO;
 
-namespace BeatNet.Lib.BeatSaber.Rpc;
+namespace BeatNet.Lib.BeatSaber.Common;
 
 public abstract class BaseRpc : INetSerializable
 {
-    public abstract byte RpcType { get; }
+    public abstract byte RpcTypeValue { get; }
     
     public long SyncTime { get; set; }
 

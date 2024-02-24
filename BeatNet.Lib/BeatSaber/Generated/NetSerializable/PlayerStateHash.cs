@@ -2,15 +2,14 @@
 // Do not modify manually
 
 using System;
-using BeatNet.Lib.Net;
+using BeatNet.Lib.Net.Interfaces;
 using BeatNet.Lib.Net.IO;
 using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
 
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
-// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global
-
+// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
 public sealed class PlayerStateHash : INetSerializable
 {
 	public const string kToStringPrefix = "[PlayerStateMask ";

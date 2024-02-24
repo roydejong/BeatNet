@@ -34,23 +34,39 @@ public class RpcGenerator
         sw.WriteLine();
         if (hasParams)
         {
+            sw.WriteLine("using BeatNet.Lib.Net.Interfaces;");
             sw.WriteLine("using BeatNet.Lib.Net.IO;");
-            sw.WriteLine("using BeatNet.Lib.BeatSaber.Rpc;");
+            sw.WriteLine("using BeatNet.Lib.BeatSaber.Common;");
             sw.WriteLine("using BeatNet.Lib.BeatSaber.Generated.Enum;");
             sw.WriteLine("using BeatNet.Lib.BeatSaber.Generated.NetSerializable;");
         }
         else
         {
-            sw.WriteLine("using BeatNet.Lib.BeatSaber.Rpc;");
+            sw.WriteLine("using BeatNet.Lib.BeatSaber.Common;");
             sw.WriteLine("using BeatNet.Lib.BeatSaber.Generated.Enum;");
         }
         sw.WriteLine();
         sw.WriteLine($"namespace {targetNamespace};");
         sw.WriteLine();
-        sw.WriteLine($"// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global");
-        sw.WriteLine();
+        sw.WriteLine($"// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global");
         
-        var baseType = "BaseRpc";
+        string baseType;
+        string messageTypeType;
+        
+        if (Rpc.RpcManagerName.Contains("Gameplay")) 
+        {
+            baseType = "BaseGameplayRpc";
+            messageTypeType = "GameplayRpcType";
+        }
+        else if (Rpc.RpcManagerName.Contains("Menu"))
+        {
+            baseType = "BaseMenuRpc";
+            messageTypeType = "MenuRpcType";
+        }
+        else
+        {
+            throw new Exception($"Not supported RPC manager type: {Rpc.RpcManagerName}");
+        }
         
         sw.WriteLine($"public sealed class {Rpc.RpcName} : {baseType}");
         sw.WriteLine("{");
@@ -59,7 +75,7 @@ public class RpcGenerator
         if (weirdRpcCaseMap.TryGetValue(rpcTypeCase, out var rpcTypeCaseMapped))
             rpcTypeCase = rpcTypeCaseMapped;
         
-        sw.WriteLine($"\tpublic override byte RpcType => (byte){managerNamePlain}RpcType.{rpcTypeCase};");
+        sw.WriteLine($"\tpublic override {messageTypeType} RpcType => {messageTypeType}.{rpcTypeCase};");
         sw.WriteLine();
         
         if (hasParams)

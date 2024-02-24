@@ -1,4 +1,5 @@
 ﻿using BeatNet.Lib.Net;
+using BeatNet.Lib.Net.Interfaces;
 using BeatNet.Lib.Net.IO;
 
 namespace BeatNet.Lib.BeatSaber.Common;

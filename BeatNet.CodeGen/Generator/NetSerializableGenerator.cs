@@ -34,15 +34,14 @@ public class NetSerializableGenerator
         sw.WriteLine("// Do not modify manually");
         sw.WriteLine();
         sw.WriteLine("using System;");
-        sw.WriteLine("using BeatNet.Lib.Net;");
+        sw.WriteLine("using BeatNet.Lib.Net.Interfaces;");
         sw.WriteLine("using BeatNet.Lib.Net.IO;");
         sw.WriteLine("using BeatNet.Lib.BeatSaber.Common;");
         sw.WriteLine("using BeatNet.Lib.BeatSaber.Generated.Enum;");
         sw.WriteLine();
         sw.WriteLine($"namespace {targetNamespace};");
         sw.WriteLine();
-        sw.WriteLine($"// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global");
-        sw.WriteLine();
+        sw.WriteLine($"// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global");
         sw.WriteLine($"public sealed class {NetSerializable.TypeName} : INetSerializable");
         sw.WriteLine("{");
         sw.WriteLine(

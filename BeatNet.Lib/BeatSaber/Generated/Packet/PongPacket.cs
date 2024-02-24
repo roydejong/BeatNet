@@ -10,8 +10,10 @@ using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 namespace BeatNet.Lib.BeatSaber.Generated.Packet;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
-public sealed class PongPacket : INetSerializable
+public sealed class PongPacket : BaseCpmPacket
 {
+	public override InternalMessageType MessageType => InternalMessageType.Pong;
+
 	public long PingTime { get; set; }
 
 	public PongPacket(long pingTime)
@@ -19,12 +21,12 @@ public sealed class PongPacket : INetSerializable
 		PingTime = pingTime;
 	}
 
-	public void WriteTo(ref NetWriter writer)
+	public override void WriteTo(ref NetWriter writer)
 	{
 		writer.WriteVarULong((ulong)PingTime);
 	}
 
-	public void ReadFrom(ref NetReader reader)
+	public override void ReadFrom(ref NetReader reader)
 	{
 		PingTime = (long)reader.ReadVarULong();
 	}

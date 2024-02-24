@@ -10,8 +10,10 @@ using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 namespace BeatNet.Lib.BeatSaber.Generated.Packet;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
-public sealed class KickPlayerPacket : INetSerializable
+public sealed class KickPlayerPacket : BaseCpmPacket
 {
+	public override InternalMessageType MessageType => InternalMessageType.KickPlayer;
+
 	public DisconnectedReason DisconnectedReason { get; set; }
 
 	public KickPlayerPacket(DisconnectedReason disconnectedReason)
@@ -19,12 +21,12 @@ public sealed class KickPlayerPacket : INetSerializable
 		DisconnectedReason = disconnectedReason;
 	}
 
-	public void WriteTo(ref NetWriter writer)
+	public override void WriteTo(ref NetWriter writer)
 	{
 		writer.WriteVarInt((int)DisconnectedReason);
 	}
 
-	public void ReadFrom(ref NetReader reader)
+	public override void ReadFrom(ref NetReader reader)
 	{
 		DisconnectedReason = (DisconnectedReason)reader.ReadVarInt();
 	}

@@ -10,8 +10,10 @@ using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 namespace BeatNet.Lib.BeatSaber.Generated.Packet;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
-public sealed class PlayerSortOrderPacket : INetSerializable
+public sealed class PlayerSortOrderPacket : BaseCpmPacket
 {
+	public override InternalMessageType MessageType => InternalMessageType.PlayerSortOrderUpdate;
+
 	public string UserId { get; set; }
 	public int SortIndex { get; set; }
 
@@ -21,13 +23,13 @@ public sealed class PlayerSortOrderPacket : INetSerializable
 		SortIndex = sortIndex;
 	}
 
-	public void WriteTo(ref NetWriter writer)
+	public override void WriteTo(ref NetWriter writer)
 	{
 		writer.WriteString(UserId);
 		writer.WriteVarInt(SortIndex);
 	}
 
-	public void ReadFrom(ref NetReader reader)
+	public override void ReadFrom(ref NetReader reader)
 	{
 		UserId = reader.ReadString();
 		SortIndex = reader.ReadVarInt();

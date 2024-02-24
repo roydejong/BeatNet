@@ -9,16 +9,18 @@ namespace BeatNet.CodeGen.Generator.Util;
 
 public static class ReadWriteMethodGenerator
 {
-    public static string GenerateMethods(IResultSerializable item)
+    public static string GenerateMethods(IResultSerializable item, bool overrideKeyword = false)
     {
+        var keywordPrefix = overrideKeyword ? "override " : "";
+        
         var comboBuffer = new StringBuilder();
         
         var writeCodeBuffer = new StringBuilder();
-        writeCodeBuffer.AppendLine("\tpublic void WriteTo(ref NetWriter writer)");
+        writeCodeBuffer.AppendLine($"\tpublic {keywordPrefix}void WriteTo(ref NetWriter writer)");
         writeCodeBuffer.AppendLine("\t{");
 
         var readCodeBuffer = new StringBuilder();
-        readCodeBuffer.AppendLine("\tpublic void ReadFrom(ref NetReader reader)");
+        readCodeBuffer.AppendLine($"\tpublic {keywordPrefix}void ReadFrom(ref NetReader reader)");
         readCodeBuffer.AppendLine("\t{");
 
         var fixedImpl = FixedImplManager.TryFindFixedImpl(item.GetSelfName());

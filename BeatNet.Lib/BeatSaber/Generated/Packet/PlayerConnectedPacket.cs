@@ -10,8 +10,10 @@ using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 namespace BeatNet.Lib.BeatSaber.Generated.Packet;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
-public sealed class PlayerConnectedPacket : INetSerializable
+public sealed class PlayerConnectedPacket : BaseCpmPacket
 {
+	public override InternalMessageType MessageType => InternalMessageType.PlayerConnected;
+
 	public byte RemoteConnectionId { get; set; }
 	public string UserId { get; set; }
 	public string UserName { get; set; }
@@ -25,7 +27,7 @@ public sealed class PlayerConnectedPacket : INetSerializable
 		IsConnectionOwner = isConnectionOwner;
 	}
 
-	public void WriteTo(ref NetWriter writer)
+	public override void WriteTo(ref NetWriter writer)
 	{
 		writer.WriteByte(RemoteConnectionId);
 		writer.WriteString(UserId);
@@ -33,7 +35,7 @@ public sealed class PlayerConnectedPacket : INetSerializable
 		writer.WriteBool(IsConnectionOwner);
 	}
 
-	public void ReadFrom(ref NetReader reader)
+	public override void ReadFrom(ref NetReader reader)
 	{
 		RemoteConnectionId = reader.ReadByte();
 		UserId = reader.ReadString();

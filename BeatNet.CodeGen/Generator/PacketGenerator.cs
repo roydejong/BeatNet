@@ -40,8 +40,16 @@ public class PacketGenerator
         sw.WriteLine($"namespace {targetNamespace};");
         sw.WriteLine();
         sw.WriteLine($"// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global");
-        sw.WriteLine($"public sealed class {Packet.PacketName} : INetSerializable");
+        sw.WriteLine($"public sealed class {Packet.PacketName} : BaseCpmPacket");
         sw.WriteLine("{");
+        
+        var messageTypeType = "InternalMessageType";
+        var packetTypeCase = Packet.PacketName.Replace("Packet", "");
+        if (weirdPacketCaseMap.TryGetValue(packetTypeCase, out var packetTypeCaseMapped))
+            packetTypeCase = packetTypeCaseMapped;
+        sw.WriteLine("\t" + $"public override {messageTypeType} MessageType => {messageTypeType}.{packetTypeCase};");
+        
+        sw.WriteLine();
         sw.WriteLine(
             FieldGenerator.GenerateFields(Packet)
         );
@@ -49,9 +57,16 @@ public class PacketGenerator
             ConstructorGenerator.GenerateConstructor(Packet)
         );
         sw.Write(
-            ReadWriteMethodGenerator.GenerateMethods(Packet)
+            ReadWriteMethodGenerator.GenerateMethods(Packet, overrideKeyword: true)
         );
         sw.Write("}");
         sw.Close();
     }
+
+    private static readonly Dictionary<string, string> weirdPacketCaseMap = new()
+    {
+        { "PlayerAvatar", "PlayerAvatarUpdate" },
+        { "PlayerState", "PlayerStateUpdate" },
+        { "PlayerSortOrder", "PlayerSortOrderUpdate" }
+    };
 }

@@ -10,8 +10,10 @@ using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 namespace BeatNet.Lib.BeatSaber.Generated.Packet;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
-public sealed class PlayerAvatarPacket : INetSerializable
+public sealed class PlayerAvatarPacket : BaseCpmPacket
 {
+	public override InternalMessageType MessageType => InternalMessageType.PlayerAvatarUpdate;
+
 	public MultiplayerAvatarsData PlayerAvatar { get; set; }
 
 	public PlayerAvatarPacket(MultiplayerAvatarsData playerAvatar)
@@ -19,12 +21,12 @@ public sealed class PlayerAvatarPacket : INetSerializable
 		PlayerAvatar = playerAvatar;
 	}
 
-	public void WriteTo(ref NetWriter writer)
+	public override void WriteTo(ref NetWriter writer)
 	{
 		writer.WriteSerializable<MultiplayerAvatarsData>(PlayerAvatar);
 	}
 
-	public void ReadFrom(ref NetReader reader)
+	public override void ReadFrom(ref NetReader reader)
 	{
 		PlayerAvatar = reader.ReadSerializable<MultiplayerAvatarsData>();
 	}

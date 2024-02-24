@@ -10,8 +10,10 @@ using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 namespace BeatNet.Lib.BeatSaber.Generated.Packet;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
-public sealed class SyncTimePacket : INetSerializable
+public sealed class SyncTimePacket : BaseCpmPacket
 {
+	public override InternalMessageType MessageType => InternalMessageType.SyncTime;
+
 	public long SyncTime { get; set; }
 
 	public SyncTimePacket(long syncTime)
@@ -19,12 +21,12 @@ public sealed class SyncTimePacket : INetSerializable
 		SyncTime = syncTime;
 	}
 
-	public void WriteTo(ref NetWriter writer)
+	public override void WriteTo(ref NetWriter writer)
 	{
 		writer.WriteVarULong((ulong)SyncTime);
 	}
 
-	public void ReadFrom(ref NetReader reader)
+	public override void ReadFrom(ref NetReader reader)
 	{
 		SyncTime = (long)reader.ReadVarULong();
 	}

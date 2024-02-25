@@ -47,7 +47,7 @@ public class PacketGenerator
         var packetTypeCase = Packet.PacketName.Replace("Packet", "");
         if (weirdPacketCaseMap.TryGetValue(packetTypeCase, out var packetTypeCaseMapped))
             packetTypeCase = packetTypeCaseMapped;
-        sw.WriteLine("\t" + $"public override {messageTypeType} MessageType => {messageTypeType}.{packetTypeCase};");
+        sw.WriteLine("\t" + $"public override {messageTypeType} InternalMessageType => {messageTypeType}.{packetTypeCase};");
         
         sw.WriteLine();
         sw.WriteLine(

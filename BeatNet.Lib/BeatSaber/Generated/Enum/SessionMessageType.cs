@@ -13,5 +13,8 @@ public enum SessionMessageType : byte
 	ScoreSyncState = 3,
 	NodePoseSyncStateDelta = 4,
 	ScoreSyncStateDelta = 5,
-	OptionalAvatarData = 6
+	OptionalAvatarData = 6,
+
+	// Modded
+	MultiplayerCore = 100
 }

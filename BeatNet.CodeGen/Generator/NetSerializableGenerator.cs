@@ -21,7 +21,9 @@ public class NetSerializableGenerator
 
         var isMultiplayerSessionPacket = NetSerializable.TypeName.Contains("Packet")
                                          || NetSerializable.TypeName.Contains("SyncStateNet");
+        
         var subPath = isMultiplayerSessionPacket ? "MultiplayerSession" : "NetSerializable";
+        var baseType = isMultiplayerSessionPacket ? "BaseSessionPacket" : "INetSerializable";
         
         var targetNamespace = $"{gs.BaseNamespace}.{subPath}";
         var targetDir = Path.Combine(gs.OutputPath, subPath);
@@ -48,8 +50,22 @@ public class NetSerializableGenerator
         sw.WriteLine($"namespace {targetNamespace};");
         sw.WriteLine();
         sw.WriteLine($"// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global");
-        sw.WriteLine($"public sealed class {NetSerializable.TypeName} : INetSerializable");
+        sw.WriteLine($"public sealed class {NetSerializable.TypeName} : {baseType}");
         sw.WriteLine("{");
+
+        if (isMultiplayerSessionPacket)
+        {
+            var messageTypeType = "SessionMessageType";
+            var packetTypeCase = NetSerializable.TypeName
+                .Replace("Packet", "")
+                .Replace("NetSerializable", "")
+                .Replace("Standard", "");
+            if (weirdPacketCaseMap.TryGetValue(packetTypeCase, out var packetTypeCaseMapped))
+                packetTypeCase = packetTypeCaseMapped;
+            sw.WriteLine("\t" + $"public override {messageTypeType} SessionMessageType => {messageTypeType}.{packetTypeCase};");
+            sw.WriteLine();
+        }
+        
         sw.WriteLine(
             FieldGenerator.GenerateFields(NetSerializable)
         );
@@ -57,9 +73,13 @@ public class NetSerializableGenerator
             ConstructorGenerator.GenerateConstructor(NetSerializable)
         );
         sw.Write(
-            ReadWriteMethodGenerator.GenerateMethods(NetSerializable)
+            ReadWriteMethodGenerator.GenerateMethods(NetSerializable, overrideKeyword: (baseType != "INetSerializable"))
         );
         sw.Write("}");
         sw.Close();
     }
+
+    private static readonly Dictionary<string, string> weirdPacketCaseMap = new()
+    {
+    };
 }

@@ -28,6 +28,7 @@ public class EnumGenerator
         else if (Enum is { EnumName: "MessageType", ContainingType: "MultiplayerSessionManager" })
         {
             Enum.EnumName = "SessionMessageType";
+            Enum.Cases.Add(100, "MultiplayerCore");
         }
         
         var targetNamespace = $"{gs.BaseNamespace}.Enum";
@@ -63,8 +64,14 @@ public class EnumGenerator
                 firstEnum = false;
             else
                 sw.WriteLine(',');
-            sw.Write("\t");
-            sw.Write($"{enumCase.Value} = {enumCase.Key}");
+
+            if (enumCase.Value == "MultiplayerCore")
+            {
+                sw.WriteLine();
+                sw.WriteLine("\t// Modded");
+            }
+            
+            sw.Write($"\t{enumCase.Value} = {enumCase.Key}");
         }
         sw.WriteLine();
         

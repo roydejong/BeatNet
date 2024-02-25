@@ -11,8 +11,10 @@ using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 namespace BeatNet.Lib.BeatSaber.Generated.MultiplayerSession;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
-public sealed class OptionalAvatarDataPacket : INetSerializable
+public sealed class OptionalAvatarDataPacket : BaseSessionPacket
 {
+	public override SessionMessageType SessionMessageType => SessionMessageType.OptionalAvatarData;
+
 	public uint DataType { get; set; }
 	public ByteArrayNetSerializable Data { get; set; }
 
@@ -22,13 +24,13 @@ public sealed class OptionalAvatarDataPacket : INetSerializable
 		Data = data;
 	}
 
-	public void WriteTo(ref NetWriter writer)
+	public override void WriteTo(ref NetWriter writer)
 	{
 		writer.WriteUInt(DataType);
 		writer.WriteSerializable<ByteArrayNetSerializable>(Data);
 	}
 
-	public void ReadFrom(ref NetReader reader)
+	public override void ReadFrom(ref NetReader reader)
 	{
 		DataType = reader.ReadUInt();
 		Data = reader.ReadSerializable<ByteArrayNetSerializable>();

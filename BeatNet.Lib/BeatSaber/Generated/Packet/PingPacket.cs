@@ -12,7 +12,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.Packet;
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
 public sealed class PingPacket : BaseCpmPacket
 {
-	public override InternalMessageType MessageType => InternalMessageType.Ping;
+	public override InternalMessageType InternalMessageType => InternalMessageType.Ping;
 
 	public long PingTime { get; set; }
 

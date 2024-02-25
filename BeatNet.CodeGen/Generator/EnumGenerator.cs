@@ -25,6 +25,10 @@ public class EnumGenerator
             // Ignore this enum, it's not used
             return;
         }
+        else if (Enum is { EnumName: "MessageType", ContainingType: "MultiplayerSessionManager" })
+        {
+            Enum.EnumName = "SessionMessageType";
+        }
         
         var targetNamespace = $"{gs.BaseNamespace}.Enum";
         var targetDir = Path.Combine(gs.OutputPath, "Enum");

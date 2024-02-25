@@ -6,8 +6,9 @@ using BeatNet.Lib.Net.Interfaces;
 using BeatNet.Lib.Net.IO;
 using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
+using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
-namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
+namespace BeatNet.Lib.BeatSaber.Generated.MultiplayerSession;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
 public sealed class OptionalAvatarDataPacket : INetSerializable

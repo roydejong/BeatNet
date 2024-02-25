@@ -12,7 +12,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.Packet;
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
 public sealed class SyncTimePacket : BaseCpmPacket
 {
-	public override InternalMessageType MessageType => InternalMessageType.SyncTime;
+	public override InternalMessageType InternalMessageType => InternalMessageType.SyncTime;
 
 	public long SyncTime { get; set; }
 

@@ -6,7 +6,7 @@ namespace BeatNet.Lib.BeatSaber.Common;
 
 public abstract class BaseCpmPacket : INetSerializable
 {
-    public abstract InternalMessageType MessageType { get; }
+    public abstract InternalMessageType InternalMessageType { get; }
     
     public abstract void WriteTo(ref NetWriter writer);
     public abstract void ReadFrom(ref NetReader reader);

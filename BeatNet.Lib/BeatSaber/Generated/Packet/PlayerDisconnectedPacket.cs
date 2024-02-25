@@ -12,7 +12,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.Packet;
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
 public sealed class PlayerDisconnectedPacket : BaseCpmPacket
 {
-	public override InternalMessageType MessageType => InternalMessageType.PlayerDisconnected;
+	public override InternalMessageType InternalMessageType => InternalMessageType.PlayerDisconnected;
 
 	public DisconnectedReason DisconnectedReason { get; set; }
 

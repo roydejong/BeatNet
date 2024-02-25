@@ -5,7 +5,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.Enum;
 
 // Context: MultiplayerSessionManager
 
-public enum MessageType : byte
+public enum SessionMessageType : byte
 {
 	MenuRpc = 0,
 	GameplayRpc = 1,

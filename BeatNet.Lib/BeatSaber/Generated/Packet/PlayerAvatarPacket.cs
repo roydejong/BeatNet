@@ -12,7 +12,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.Packet;
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
 public sealed class PlayerAvatarPacket : BaseCpmPacket
 {
-	public override InternalMessageType MessageType => InternalMessageType.PlayerAvatarUpdate;
+	public override InternalMessageType InternalMessageType => InternalMessageType.PlayerAvatarUpdate;
 
 	public MultiplayerAvatarsData PlayerAvatar { get; set; }
 

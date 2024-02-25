@@ -12,7 +12,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.Packet;
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
 public sealed class PlayerSortOrderPacket : BaseCpmPacket
 {
-	public override InternalMessageType MessageType => InternalMessageType.PlayerSortOrderUpdate;
+	public override InternalMessageType InternalMessageType => InternalMessageType.PlayerSortOrderUpdate;
 
 	public string UserId { get; set; }
 	public int SortIndex { get; set; }

@@ -18,9 +18,13 @@ public class NetSerializableGenerator
     {
         if (NetSerializable.Fields.Count == 0)
             return;
+
+        var isMultiplayerSessionPacket = NetSerializable.TypeName.Contains("Packet")
+                                         || NetSerializable.TypeName.Contains("SyncStateNet");
+        var subPath = isMultiplayerSessionPacket ? "MultiplayerSession" : "NetSerializable";
         
-        var targetNamespace = $"{gs.BaseNamespace}.NetSerializable";
-        var targetDir = Path.Combine(gs.OutputPath, "NetSerializable");
+        var targetNamespace = $"{gs.BaseNamespace}.{subPath}";
+        var targetDir = Path.Combine(gs.OutputPath, subPath);
         
         if (!Directory.Exists(targetDir))
             Directory.CreateDirectory(targetDir);
@@ -38,6 +42,8 @@ public class NetSerializableGenerator
         sw.WriteLine("using BeatNet.Lib.Net.IO;");
         sw.WriteLine("using BeatNet.Lib.BeatSaber.Common;");
         sw.WriteLine("using BeatNet.Lib.BeatSaber.Generated.Enum;");
+        if (isMultiplayerSessionPacket)
+            sw.WriteLine("using BeatNet.Lib.BeatSaber.Generated.NetSerializable;");
         sw.WriteLine();
         sw.WriteLine($"namespace {targetNamespace};");
         sw.WriteLine();

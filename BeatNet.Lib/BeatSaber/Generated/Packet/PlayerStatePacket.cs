@@ -12,7 +12,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.Packet;
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
 public sealed class PlayerStatePacket : BaseCpmPacket
 {
-	public override InternalMessageType MessageType => InternalMessageType.PlayerStateUpdate;
+	public override InternalMessageType InternalMessageType => InternalMessageType.PlayerStateUpdate;
 
 	public PlayerStateHash PlayerState { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿using BeatNet.Lib.Net.IO;
 
-namespace BeatNet.Lib.Net;
+namespace BeatNet.Lib.Net.Interfaces;
 
 public interface INetSerializable
 {

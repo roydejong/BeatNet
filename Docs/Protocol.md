@@ -76,7 +76,7 @@ From the perspective of reading a packet, the recursive logic looks like this:
 
 ```
 While there are bytes left in the buffer:
- 1. Read the length prefix (VarInt)
+ 1. Read the length prefix (VarUInt)
  2. Slice out the next sub packet given the length
  
 Then, within each sub packet slice:
@@ -84,7 +84,7 @@ Then, within each sub packet slice:
  2. Use the appropriate (sub)serializer to read the rest of the sub packet
 ```
 
-⚠️ Consideration for implementation: When writing packets, you need to know the length of the sub packets ahead of time. The length identifier itself is a variable length (VarInt) too. This means you'll likely need to use a (temporary) sub buffer.
+⚠️ Consideration for implementation: When writing packets, you need to know the length of the sub packets ahead of time. The length identifier itself is a variable length (VarUInt) too. This means you'll likely need to use a (temporary) sub buffer.
 
 
 ## Message types
@@ -234,8 +234,9 @@ This layer only applies if `MultiplayerCore` is installed, and custom packet typ
 
 Unlike other sub-serializers, `MultiplayerCore` uses a `string` prefix to denote its sub message type. Specifically, the fully qualified type name of the packet type.
 
-Known active mods that provide custom packets:
+Known mods that provide custom packets:
 
+- **MultiplayerCore** itself (`MpBeatmapPacket`, `MpPlayerData`)
 - [MultiplayerChat](https://github.com/roydejong/BeatSaberMultiplayerChat) (in development)
 - [MultiplayerAvatars](https://github.com/Goobwabber/MultiplayerAvatars) (outdated, unmaintained)
 - [Emoter](https://github.com/Auros/Emoter) (outdated, unmaintained)

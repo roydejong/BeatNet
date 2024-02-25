@@ -4,10 +4,16 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="BeatSaber\Generated\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ENet-CSharp" Version="2.4.8" />
+    <PackageReference Include="Serilog" Version="3.1.1" />
   </ItemGroup>
 
 </Project>

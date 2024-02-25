@@ -2,12 +2,14 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using BeatNet.Lib.Net.Interfaces;
 
 namespace BeatNet.Lib.Net.IO;
 
 public ref struct NetWriter
 {
     public readonly Span<byte> Data;
+    public readonly Span<byte> Content => Data[..Position];
     public int Position { get; private set; }
     
     public NetWriter(Span<byte> data)
@@ -234,7 +236,7 @@ public ref struct NetWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteByteArray(byte[] value)
     {
-        WriteUInt((uint)value.Length);
+        WriteUShort((ushort)value.Length);
         WriteBytes(value);
     }
     

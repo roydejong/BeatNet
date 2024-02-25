@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatNet.Server", "BeatNet.Server\BeatNet.Server.csproj", "{D24B2AF0-932D-4D7A-B1CD-82CF633C39C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatNet.GameServer", "BeatNet.GameServer\BeatNet.GameServer.csproj", "{D24B2AF0-932D-4D7A-B1CD-82CF633C39C9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatNet.Lib", "BeatNet.Lib\BeatNet.Lib.csproj", "{44FD8BC5-9FBF-453F-B4A1-F188DF9271BE}"
 EndProject

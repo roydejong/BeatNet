@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using BeatNet.Lib.BeatSaber.Common;
+using BeatNet.Lib.Net.Interfaces;
 
 namespace BeatNet.Lib.Net.IO;
 

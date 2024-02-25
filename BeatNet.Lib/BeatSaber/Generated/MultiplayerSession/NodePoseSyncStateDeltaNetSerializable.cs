@@ -6,24 +6,27 @@ using BeatNet.Lib.Net.Interfaces;
 using BeatNet.Lib.Net.IO;
 using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
+using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
-namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
+namespace BeatNet.Lib.BeatSaber.Generated.MultiplayerSession;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
-public sealed class StandardScoreSyncStateDeltaNetSerializable : INetSerializable
+public sealed class NodePoseSyncStateDeltaNetSerializable : BaseSessionPacket
 {
+	public override SessionMessageType SessionMessageType => SessionMessageType.NodePoseSyncStateDelta;
+
 	public SyncStateId BaseId { get; set; }
 	public int TimeOffsetMs { get; set; }
-	public StandardScoreSyncState Delta { get; set; }
+	public NodePoseSyncState Delta { get; set; }
 
-	public StandardScoreSyncStateDeltaNetSerializable(SyncStateId baseId, int timeOffsetMs, StandardScoreSyncState delta)
+	public NodePoseSyncStateDeltaNetSerializable(SyncStateId baseId, int timeOffsetMs, NodePoseSyncState delta)
 	{
 		BaseId = baseId;
 		TimeOffsetMs = timeOffsetMs;
 		Delta = delta;
 	}
 
-	public void WriteTo(ref NetWriter writer)
+	public override void WriteTo(ref NetWriter writer)
 	{
 		// SyncStateDeltaFixedImpl
 		writer.WriteSerializable(BaseId);
@@ -32,12 +35,12 @@ public sealed class StandardScoreSyncStateDeltaNetSerializable : INetSerializabl
 			writer.WriteSerializable(Delta);
 	}
 
-	public void ReadFrom(ref NetReader reader)
+	public override void ReadFrom(ref NetReader reader)
 	{
 		// SyncStateDeltaFixedImpl
 		BaseId = reader.ReadSerializable<SyncStateId>();
 		TimeOffsetMs = reader.ReadInt();
 		if (!BaseId.Flag)
-			Delta = reader.ReadSerializable<StandardScoreSyncState>();
+			Delta = reader.ReadSerializable<NodePoseSyncState>();
 	}
 }

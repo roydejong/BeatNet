@@ -20,7 +20,8 @@ public class NetSerializableGenerator
             return;
 
         var isMultiplayerSessionPacket = NetSerializable.TypeName.Contains("Packet")
-                                         || NetSerializable.TypeName.Contains("SyncStateNet");
+                                         || NetSerializable.TypeName.Contains("SyncStateNet")
+                                         || NetSerializable.TypeName.Contains("SyncStateDeltaNet");
         
         var subPath = isMultiplayerSessionPacket ? "MultiplayerSession" : "NetSerializable";
         var baseType = isMultiplayerSessionPacket ? "BaseSessionPacket" : "INetSerializable";

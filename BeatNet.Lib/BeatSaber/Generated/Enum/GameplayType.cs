@@ -10,6 +10,5 @@ public enum GameplayType : int
 	Normal = 0,
 	Bomb = 1,
 	BurstSliderHead = 2,
-	BurstSliderElement = 3,
-	BurstSliderElementFill = 4
+	BurstSliderElement = 3
 }

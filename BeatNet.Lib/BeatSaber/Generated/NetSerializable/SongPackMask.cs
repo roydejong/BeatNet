@@ -13,7 +13,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 public sealed class SongPackMask : INetSerializable
 {
 	public const int kHashCount = 2;
-	public const int kHashBits = 13;
+	public const int kHashBits = 15;
 	public const string kToStringPrefix = "[SongPackMask ";
 	public const string kToStringSuffix = "]";
 

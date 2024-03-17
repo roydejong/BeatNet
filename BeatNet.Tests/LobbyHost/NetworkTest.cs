@@ -122,7 +122,8 @@ public class NetworkTest
         }
 
         // Stop
-        _ = lobbyHost.Stop();
+        var stopTask = lobbyHost.Stop();
+        stopTask.Wait();
         Assert.That(lobbyHost.IsRunning, Is.False);
     }
 }

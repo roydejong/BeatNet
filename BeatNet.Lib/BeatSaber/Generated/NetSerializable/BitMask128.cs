@@ -15,6 +15,9 @@ public sealed class BitMask128 : INetSerializable
 	public ulong D0 { get; set; }
 	public ulong D1 { get; set; }
 
+	public static BitMask128 MinValue => new(0, 0);
+	public static BitMask128 MaxValue => new(ulong.MaxValue, ulong.MaxValue);
+
 	public BitMask128(ulong d0, ulong d1)
 	{
 		D0 = d0;

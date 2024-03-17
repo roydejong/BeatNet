@@ -70,9 +70,38 @@ public class NetSerializableGenerator
         sw.WriteLine(
             FieldGenerator.GenerateFields(NetSerializable)
         );
+        
+        // BitMasks: "MinValue" / "MaxValue" util
+        if (NetSerializable.TypeName.StartsWith("BitMask"))
+        {
+            var bitCount = int.Parse(NetSerializable.TypeName.Substring("BitMask".Length));
+            var ulongCount = bitCount / 64;
+            
+            sw.Write($"\tpublic static {NetSerializable.TypeName} MinValue => new(");
+            for (var i = 0; i < ulongCount; i++)
+            {
+                sw.Write("0");
+                if (i < ulongCount - 1)
+                    sw.Write(", ");
+            }
+            sw.WriteLine(");");
+            
+            sw.Write($"\tpublic static {NetSerializable.TypeName} MaxValue => new(");
+            for (var i = 0; i < ulongCount; i++)
+            {
+                sw.Write("ulong.MaxValue");
+                if (i < ulongCount - 1)
+                    sw.Write(", ");
+            }
+            sw.WriteLine(");");
+            
+            sw.WriteLine();
+        }
+        
         sw.WriteLine(
             ConstructorGenerator.GenerateConstructor(NetSerializable)
         );
+        
         sw.Write(
             ReadWriteMethodGenerator.GenerateMethods(NetSerializable, overrideKeyword: (baseType != "INetSerializable"))
         );

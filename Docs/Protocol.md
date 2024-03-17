@@ -3,7 +3,7 @@ This document describes the network protocol used by Beat Saber multiplayer.
 
 To understand the terms and types in this document, you should refer to the game's decompiled source code.
 
-🕐 Last updated / reviewed on 2024-02-24 for Beat Saber 1.34.6.
+🕐 Last updated / reviewed on 2024-02-25 for Beat Saber 1.34.6.
 
 ## Transport 
 The transport layer is UDP via [ENet](http://enet.bespin.org/).

@@ -22,4 +22,20 @@ public abstract class GameMode
     /// Called every second.
     /// </summary>
     public abstract void Tick();
+
+    /// <summary>
+    /// Fired when a player connects to the lobby.
+    /// The player will not have a sort index yet, so will not be visible in the lobby.
+    /// </summary>
+    public abstract void OnPlayerConnect(LobbyPlayer player);
+
+    /// <summary>
+    /// Fired when a player has updated their state (e.g. state hash, avatar).
+    /// </summary>
+    public abstract void OnPlayerUpdate(LobbyPlayer player);
+
+    /// <summary>
+    /// Fired when a player has disconnected from the lobby.
+    /// </summary>
+    public abstract void OnPlayerDisconnect(LobbyPlayer player);
 }

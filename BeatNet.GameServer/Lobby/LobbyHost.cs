@@ -13,26 +13,31 @@ public class LobbyHost
 {
     public readonly ushort PortNumber;
 
-    private NetServer _server;
-    private Thread _thread;
+    private readonly NetServer _server;
+    private readonly Thread _thread;
     private bool _threadRunning;
     private ILogger? _logger;
 
-    private List<byte> _availableConnectionIds;
-    private Dictionary<ushort, LobbyPlayer> _players;
-    private Dictionary<uint, LobbyPlayer> _playersByPeer;
+    private readonly List<byte> _availableConnectionIds;
+    private readonly Dictionary<ushort, LobbyPlayer> _players;
+    private readonly Dictionary<uint, LobbyPlayer> _playersByPeer;
 
     public List<LobbyPlayer> PlayerList => _players.Values.ToList();
 
-    public GameMode GameMode { get; set; } = null!;
-    public int MaxPlayerCount { get; set; }
-    public string? Password { get; set; }
+    public SyncTimeProvider TimeProvider { get; private set; }
+    public GameMode GameMode { get; private set; } = null!;
+    public int MaxPlayerCount { get; private set; }
+    public string? Password { get; private set; }
 
+    public string ServerName { get; set; } = "BeatNet Server";
+    public string GameModeName => GameMode.GetType().Name;
     public bool IsRunning => _server.IsRunning;
     public int PlayerCount => _players.Count;
     public bool IsEmpty => PlayerCount == 0;
     public bool IsFull => PlayerCount >= MaxPlayerCount;
     public bool IsPublic => string.IsNullOrEmpty(Password);
+    public long RunTime => TimeProvider.GetRunTimeMs();
+    public long SyncTime => RunTime;
 
     public LobbyHost(ushort portNumber, int maxPlayerCount = DefaultMaxPlayerCount, GameMode? gameMode = null,
         string? password = null)
@@ -48,6 +53,8 @@ public class LobbyHost
         _players = new();
         _playersByPeer = new();
 
+        TimeProvider = new SyncTimeProvider();
+        
         SetMaxPlayerCount(maxPlayerCount);
         SetGameMode(gameMode ?? new QuickPlayGameMode(this));
         SetPassword(password);
@@ -105,6 +112,7 @@ public class LobbyHost
             return false;
 
         // Initial state
+        TimeProvider.Reset();
         GameMode.Reset();
 
         // TODO Server browser update (fire and forget async)
@@ -129,6 +137,7 @@ public class LobbyHost
         {
             // Kick all players with "server shutting down" message
             KickAllPlayers(DisconnectedReason.ServerTerminated);
+            await Task.Delay(10);
         }
 
         // TODO Server browser update (fire and forget async)
@@ -174,6 +183,8 @@ public class LobbyHost
 
                         _logger?.Debug("({Port}) Player #{Slot} connected ({UserId}, {UserName}, {EndPoint})",
                             PortNumber, newConnectionId, player.UserId, player.UserName, logEndPoint);
+                        
+                        HandlePlayerConnect(player);
                     }
                     else
                     {
@@ -199,6 +210,8 @@ public class LobbyHost
                         var logEndPoint = $"[{connectEvent.Peer.IP}]:{connectEvent.Peer.Port}";
                         _logger?.Debug("({Port}) Player #{Slot} disconnected ({UserId}, {UserName}, {EndPoint})",
                             PortNumber, player.ConnectionId, player.UserId, player.UserName, logEndPoint);
+                        
+                        HandlePlayerDisconnect(player);
                     }
                 }
                 
@@ -317,6 +330,16 @@ public class LobbyHost
             _logger?.Information("TEMP: Received message from player {PlayerId} ({MessageType})",
                 player.ConnectionId, message.GetType().Name);
         }
+    }
+    
+    private void HandlePlayerConnect(LobbyPlayer player)
+    {
+        GameMode.OnPlayerConnect(player);
+    }
+
+    private void HandlePlayerDisconnect(LobbyPlayer player)
+    {
+        GameMode.OnPlayerDisconnect(player);
     }
 
     public const int DefaultMaxPlayerCount = 5;

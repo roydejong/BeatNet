@@ -14,6 +14,25 @@ public class Config
     /// The upper bound (inclusive) of the UDP port range to use for lobby instances.
     /// </summary>
     [JsonProperty] public ushort PortRangeMax = 8888;
+
+    /// <summary>
+    /// Enable local network discovery for server browser clients.
+    /// </summary>
+    [JsonProperty] public bool EnableLocalDiscovery = true;
+    
+    /// <summary>
+    /// The server's public WAN (IPv4 or IPv6) address.
+    /// Used in server browser announces, must be the address WAN users will use to connect.
+    /// If null, WAN address will be automatically detected.
+    /// </summary>
+    [JsonProperty] public string? WanAddress = null;
+    
+    /// <summary>
+    /// The server's private LAN (IPv4 or IPv6) address.
+    /// Used in local network discovery, must be the address LAN users will use to connect.
+    /// If null, LAN address will be automatically detected.
+    /// </summary>
+    [JsonProperty] public string? LanAddress = null;
     
     /// <summary>
     /// The amount of spare lobby instances to keep ready at all times.

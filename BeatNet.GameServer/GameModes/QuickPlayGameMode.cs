@@ -15,4 +15,16 @@ public class QuickPlayGameMode : GameMode
     public override void Tick()
     {
     }
+
+    public override void OnPlayerConnect(LobbyPlayer player)
+    {
+    }
+    
+    public override void OnPlayerUpdate(LobbyPlayer player)
+    {
+    }
+
+    public override void OnPlayerDisconnect(LobbyPlayer player)
+    {
+    }
 }

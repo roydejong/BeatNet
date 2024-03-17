@@ -1,4 +1,5 @@
 ﻿using System.Buffers.Binary;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -252,6 +253,17 @@ public ref struct NetWriter
             WriteString(item);
     }
     
+    #endregion
+
+    #region IPEndPoint
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteIpEndPoint(IPEndPoint endPoint)
+    {
+        WriteString(endPoint.Address.ToString());
+        WriteInt(endPoint.Port);
+    }
+
     #endregion
 
     #region Enum

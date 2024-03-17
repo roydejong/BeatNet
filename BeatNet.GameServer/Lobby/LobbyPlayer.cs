@@ -46,13 +46,6 @@ public class LobbyPlayer : IConnectedPlayer
         UserName = connectEventConnectionRequest.UserName;
         PlayerSessionId = connectEventConnectionRequest.PlayerSessionId;
     }
-
-    public void SetPlayerConnected(PlayerConnectedPacket connectedPacket)
-    {
-        RemoteConnectionId = connectedPacket.RemoteConnectionId;
-        UserId = connectedPacket.UserId;
-        UserName = connectedPacket.UserName;
-    }
     
     public void SetPlayerIdentity(PlayerIdentityPacket identityPacket)
     {

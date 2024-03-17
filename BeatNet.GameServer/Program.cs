@@ -32,7 +32,7 @@ using var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddSingleton(Config.LoadOrInitializeFile("config/server.json"));
-        services.AddHostedService<Service>();
+        services.AddHostedService<BeatSaberService>();
     })
     .UseSerilog(log)
     .UseSystemd()

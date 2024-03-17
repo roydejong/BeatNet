@@ -39,6 +39,11 @@ public class DeserializeParser
                 _inCreateFrom = line.DeclaredName == "CreateFromSerializedData";
                 _deserializeScopeLevel = _curScopeLevel;
             }
+            
+            
+        
+            if (item.GetSelfName() == "BeatmapLevelSelectionMask")
+                Debugger.Break();
 
             yield break;
         }

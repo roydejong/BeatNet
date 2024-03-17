@@ -33,7 +33,7 @@ public class FileAnalyzer
             domainAnalyzer = new RpcManagerAnalyzer();
         else if (FileNameNoExt == "ConnectedPlayerManager")
             domainAnalyzer = new ConnectedPlayerManagerAnalyzer();
-        else if (FileNameNoExt is "SliderData" or "MultiplayerSessionManager" or "NoteData" or "GameplayServerConfiguration" or "PacketOption")
+        else if (FileNameNoExt is "SliderData" or "MultiplayerSessionManager" or "NoteData" or "PacketOption")
             domainAnalyzer = null; // Enum extraction only
         else
             domainAnalyzer = new NetSerializableAnalyzer();
@@ -155,7 +155,7 @@ public class FileAnalyzer
             "MultiplayerGameState", "ColorType", "NoteCutDirection", "NoteLineLayer", "SliderMidAnchorMode",
             "NoteData", "DiscoveryPolicy", "InvitePolicy", "GameplayServerMode", "SongSelectionMode",
             "GameplayServerControlSettings", "MultiplayerAvatarData", "SliderData", "MultiplayerSessionManager",
-            "PacketOption"
+            "PacketOption", "BeatmapLevelSelectionMask", "GameplayModifierMask", "BeatmapDifficultyMask"
         };
         foreach (var allow in allowList)
         {

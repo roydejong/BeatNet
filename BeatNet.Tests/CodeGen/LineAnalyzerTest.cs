@@ -96,7 +96,7 @@ public class LineAnalyzerTest
     }
     
     [Test]
-    public void TestParsesComplexMethodDeclare()
+    public void TestParsesComplexMethodDeclare_ListType()
     {
         var text = "private static List<MultiplayerAvatarData> DeserializeAvatarsData(NetDataReader reader)";
         var line = new LineAnalyzer(text, contextInEnum: false);
@@ -104,8 +104,23 @@ public class LineAnalyzerTest
         Assert.That(line.IsDeclaration, Is.True);
         Assert.That(line.Modifier, Is.EqualTo("private"));
         Assert.That(line.IsMethod, Is.True);
+        Assert.That(line.Static, Is.True);
         Assert.That(line.DeclaredType, Is.EqualTo("List<MultiplayerAvatarData>"));
         Assert.That(line.DeclaredName, Is.EqualTo("DeserializeAvatarsData"));
+    }
+    
+    [Test]
+    public void TestParsesComplexMethodDeclare_WithDefaultParam()
+    {
+        var text = "public static BeatmapLevelSelectionMask Deserialize(NetDataReader reader, uint version = 0U)";
+        var line = new LineAnalyzer(text, contextInEnum: false);
+        
+        Assert.That(line.IsDeclaration, Is.True);
+        Assert.That(line.Modifier, Is.EqualTo("public"));
+        Assert.That(line.IsMethod, Is.True);
+        Assert.That(line.Static, Is.True);
+        Assert.That(line.DeclaredType, Is.EqualTo("BeatmapLevelSelectionMask"));
+        Assert.That(line.DeclaredName, Is.EqualTo("Deserialize"));
     }
     
     [Test]

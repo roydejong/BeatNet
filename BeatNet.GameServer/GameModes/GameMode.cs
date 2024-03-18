@@ -1,4 +1,6 @@
 ﻿using BeatNet.GameServer.Lobby;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
+using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 namespace BeatNet.GameServer.GameModes;
 
@@ -10,6 +12,17 @@ public abstract class GameMode
     {
         Host = host;
     }
+    
+    public abstract GameplayServerMode GameplayServerMode { get; }
+    public abstract SongSelectionMode SongSelectionMode { get; }
+    public abstract bool AllowModifierSelection { get; }
+    public abstract bool AllowSpectate { get; }
+
+    /// <summary>
+    /// Gets the name/description of the game mode.
+    /// Users may see this in the server browser.
+    /// </summary>
+    public abstract string GetName();
     
     /// <summary>
     /// Called when the lobby is started or transitioned to this game mode.

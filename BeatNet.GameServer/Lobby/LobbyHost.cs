@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using BeatNet.GameServer.GameModes;
+using BeatNet.GameServer.Util;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
+using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.BeatSaber.Generated.Packet;
 using BeatNet.Lib.Net;
 using BeatNet.Lib.Net.Events;
@@ -12,6 +14,7 @@ namespace BeatNet.GameServer.Lobby;
 public class LobbyHost
 {
     public readonly ushort PortNumber;
+    public readonly string ServerUserId;
 
     private readonly NetServer _server;
     private readonly Thread _thread;
@@ -30,7 +33,8 @@ public class LobbyHost
     public string? Password { get; private set; }
 
     public string ServerName { get; set; } = "BeatNet Server";
-    public string GameModeName => GameMode.GetType().Name;
+    public string GameModeType => GameMode.GetType().Name;
+    public string GameModeName => GameMode.GetName();
     public bool IsRunning => _server.IsRunning;
     public int PlayerCount => _players.Count;
     public bool IsEmpty => PlayerCount == 0;
@@ -43,6 +47,7 @@ public class LobbyHost
         string? password = null)
     {
         PortNumber = portNumber;
+        ServerUserId = "beatnet:" + RandomId.Generate(8);
 
         _server = new NetServer(portNumber);
         _thread = new Thread(__LobbyThread);
@@ -340,6 +345,31 @@ public class LobbyHost
     private void HandlePlayerDisconnect(LobbyPlayer player)
     {
         GameMode.OnPlayerDisconnect(player);
+    }
+    
+    public BeatmapLevelSelectionMask GetBeatmapLevelSelectionMask()
+    {
+        return new BeatmapLevelSelectionMask(BeatmapDifficultyMask.All, GameplayModifierMask.All,
+            new SongPackMask(BitMask256.MaxValue));
+    }
+
+    public GameplayServerConfiguration GetGameplayServerConfiguration()
+    {
+        return new GameplayServerConfiguration(MaxPlayerCount, DiscoveryPolicy.Public, InvitePolicy.AnyoneCanInvite,
+            GameMode.GameplayServerMode, GameMode.SongSelectionMode, GetGameplayServerControlSettings());
+    }
+    
+    public bool SpectateAllowed => GameMode.AllowSpectate;
+    public bool ModifierSelectionAllowed => GameMode.AllowModifierSelection;
+    
+    public GameplayServerControlSettings GetGameplayServerControlSettings()
+    {
+        var flags = GameplayServerControlSettings.None;
+        if (SpectateAllowed)
+            flags |= GameplayServerControlSettings.AllowModifierSelection;
+        if (ModifierSelectionAllowed)
+            flags |= GameplayServerControlSettings.AllowSpectate;
+        return flags;
     }
 
     public const int DefaultMaxPlayerCount = 5;

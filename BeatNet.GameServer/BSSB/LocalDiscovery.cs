@@ -2,6 +2,8 @@
 using System.Net.Sockets;
 using BeatNet.GameServer.Main;
 using BeatNet.GameServer.Management;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
+using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.Net.IO;
 using Serilog;
 
@@ -109,10 +111,12 @@ public class LocalDiscovery
                     var packet = new LocalDiscoveryPacket
                     {
                         ServerEndPoint = new IPEndPoint(lanAddress, lobby.PortNumber),
-                        PlayerCount = lobby.PlayerCount,
-                        PlayerLimit = lobby.MaxPlayerCount,
                         ServerName = lobby.ServerName,
-                        GameModeName = lobby.GameModeName
+                        ServerUserId = lobby.ServerUserId,
+                        GameModeName = lobby.GameModeName,
+                        PlayerCount = lobby.PlayerCount,
+                        BeatmapLevelSelectionMask = lobby.GetBeatmapLevelSelectionMask(),
+                        GameplayServerConfiguration = lobby.GetGameplayServerConfiguration()
                     };
                     
                     writer.Reset();

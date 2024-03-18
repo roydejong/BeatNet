@@ -38,18 +38,19 @@ public class Config
     /// The amount of spare lobby instances to keep ready at all times.
     /// Will never exceed the amount of available ports in the configured range.
     /// </summary>
-    [JsonProperty] public int SpareLobbyCount => 1;
+    [JsonProperty] public int SpareLobbyCount = 1;
     
     /// <summary>
     /// The absolute maximum amount lobbies this server will host.
     /// </summary>
-    [JsonProperty] public int MaxLobbyCount => 32;
+    [JsonProperty] public int MaxLobbyCount = 32;
     
     /// <summary>
     /// The absolute maximum amount of players per lobby instance.
     /// Should never exceed 127 due to the limitations of the multiplayer protocol.
     /// </summary>
-    [JsonProperty] public int MaxPlayerCount => 32;
+    [JsonProperty] public int MaxPlayerCount = 32;
+    
 
     public string ToJson() =>
         JsonConvert.SerializeObject(this, Formatting.Indented);

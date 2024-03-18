@@ -31,6 +31,16 @@ public class ByteArrayNetSerializable : INetSerializable
         // TODO Buffer pool - release
     }
 
+    public byte[]? GetData(bool emptyAsNull = false)
+    {
+        if (_length == 0)
+            return emptyAsNull ? null : Array.Empty<byte>();
+        
+        var alloc = new byte[_length];
+        Array.Copy(_data!, alloc, _length);
+        return alloc;
+    }
+
     private void Resize(int length)
     {
         if (_data != null && _length >= length)

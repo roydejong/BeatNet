@@ -1,9 +1,12 @@
 ﻿using System.Diagnostics;
 using BeatNet.GameServer.GameModes;
 using BeatNet.GameServer.Util;
+using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
+using BeatNet.Lib.BeatSaber.Generated.MultiplayerSession;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.BeatSaber.Generated.Packet;
+using BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 using BeatNet.Lib.Net;
 using BeatNet.Lib.Net.Events;
 using BeatNet.Lib.Net.Interfaces;
@@ -22,10 +25,12 @@ public class LobbyHost
     private ILogger? _logger;
 
     private readonly List<byte> _availableConnectionIds;
+    private readonly List<int> _availableSortIndices;
     private readonly Dictionary<ushort, LobbyPlayer> _players;
     private readonly Dictionary<uint, LobbyPlayer> _playersByPeer;
 
-    public List<LobbyPlayer> PlayerList => _players.Values.ToList();
+    public IReadOnlyList<LobbyPlayer> PlayerList => _players.Values.ToList();
+    public IReadOnlyList<LobbyPlayer> ConnectedPlayers => _players.Values.Where(p => !p.Disconnected).ToList();
 
     public SyncTimeProvider TimeProvider { get; private set; }
     public GameMode GameMode { get; private set; } = null!;
@@ -40,8 +45,9 @@ public class LobbyHost
     public bool IsEmpty => PlayerCount == 0;
     public bool IsFull => PlayerCount >= MaxPlayerCount;
     public bool IsPublic => string.IsNullOrEmpty(Password);
-    public long RunTime => TimeProvider.GetRunTimeMs();
-    public long SyncTime => RunTime;
+    public long SyncTime => TimeProvider.GetRunTimeMs();
+
+    private long _lastPingTime = 0;
 
     public LobbyHost(ushort portNumber, int maxPlayerCount = DefaultMaxPlayerCount, GameMode? gameMode = null,
         string? password = null)
@@ -54,9 +60,10 @@ public class LobbyHost
         _threadRunning = false;
         _logger = null;
 
-        _availableConnectionIds = new();
-        _players = new();
-        _playersByPeer = new();
+        _availableConnectionIds = new(maxPlayerCount);
+        _availableSortIndices = new(maxPlayerCount);
+        _players = new(maxPlayerCount);
+        _playersByPeer = new(maxPlayerCount);
 
         TimeProvider = new SyncTimeProvider();
         
@@ -83,6 +90,10 @@ public class LobbyHost
         _availableConnectionIds.Clear();
         for (byte i = 0; i < maxPlayerCount; i++)
             _availableConnectionIds.Add(i);
+        
+        _availableSortIndices.Clear();
+        for (int i = 0; i < maxPlayerCount; i++)
+            _availableSortIndices.Add(i);
 
         // TODO Server browser update
     }
@@ -159,6 +170,11 @@ public class LobbyHost
         _playersByPeer.Clear();
     }
 
+    #region Lobby Update
+    
+    private const int GameModeTickMs = 1000;
+    private const int PingIntervalMs = 2000;
+
     private void __LobbyThread()
     {
         _threadRunning = true;
@@ -170,73 +186,22 @@ public class LobbyHost
 
             while (IsRunning)
             {
-                // Receive: connections
-                if (_server.ConnectQueue.TryDequeue(out var connectEvent))
-                {
-                    if (!connectEvent.Peer.IsSet)
-                        continue;
-
-                    var logEndPoint = $"[{connectEvent.Peer.IP}]:{connectEvent.Peer.Port}";
-
-                    if (TryGetNextConnectionId(out var newConnectionId))
-                    {
-                        var player = new LobbyPlayer(this, connectEvent.Peer.ID, newConnectionId);
-                        player.SetConnectionRequest(connectEvent.ConnectionRequest);
-                        
-                        _players[newConnectionId] = player;
-                        _playersByPeer[connectEvent.Peer.ID] = player;
-
-                        _logger?.Debug("({Port}) Player #{Slot} connected ({UserId}, {UserName}, {EndPoint})",
-                            PortNumber, newConnectionId, player.UserId, player.UserName, logEndPoint);
-                        
-                        HandlePlayerConnect(player);
-                    }
-                    else
-                    {
-                        KickPeer(connectEvent.Peer.ID, immediate: false, DisconnectedReason.ServerAtCapacity);
-
-                        _logger?.Warning("({Port}) Lobby full, rejecting new connection: {EndPoint}",
-                            PortNumber, logEndPoint);
-                    }
-                }
-
-                // Receive: disconnections
-                if (_server.DisconnectQueue.TryDequeue(out var disconnectEvent))
-                {
-                    if (_playersByPeer.TryGetValue(disconnectEvent.PeerId, out var player))
-                    {
-                        player.Disconnected = true;
-                        
-                        _players.Remove(player.ConnectionId);
-                        _playersByPeer.Remove(disconnectEvent.PeerId);
-
-                        _availableConnectionIds.Add(player.ConnectionId);
-
-                        var logEndPoint = $"[{connectEvent.Peer.IP}]:{connectEvent.Peer.Port}";
-                        _logger?.Debug("({Port}) Player #{Slot} disconnected ({UserId}, {UserName}, {EndPoint})",
-                            PortNumber, player.ConnectionId, player.UserId, player.UserName, logEndPoint);
-                        
-                        HandlePlayerDisconnect(player);
-                    }
-                }
-                
-                // Receive: messages
-                if (_server.ReceiveQueue.TryDequeue(out var packetEvent))
-                    if (_playersByPeer.TryGetValue(packetEvent.PeerId, out var player) && !player.Disconnected)
-                        HandleReceive(player, packetEvent.Payload);
-                
-                // TODO Ping check players / timeout
+                _UpdateConnectQueue();
+                _UpdateDisconnectQueue();
+                _UpdateReceiveQueue();
+                _UpdatePingChecks();
+                _UpdateSortIndexes();
                 
                 // Game mode tick
-                if (swLastTick.ElapsedMilliseconds > 1000)
+                if (swLastTick.ElapsedMilliseconds >= GameModeTickMs)
                 {
                     GameMode.Tick();
                     swLastTick.Restart();
                 }
 
-                // TODO Periodic server browser update
+                _UpdateServerBrowser();
 
-                // Wait for network events up to 100ms
+                // Wait for new network events, up to 100ms
                 _server.EventWaitHandle.WaitOne(100);
             }
         }
@@ -250,6 +215,124 @@ public class LobbyHost
         }
     }
 
+    private void _UpdateConnectQueue()
+    {
+        // Receive: incoming connections
+        while (_server.ConnectQueue.TryDequeue(out var connectEvent))
+        {
+            if (!connectEvent.Peer.IsSet)
+                continue;
+
+            var logEndPoint = $"[{connectEvent.Peer.IP}]:{connectEvent.Peer.Port}";
+
+            if (TryGetNextConnectionId(out var newConnectionId))
+            {
+                var player = new LobbyPlayer(this, connectEvent.Peer.ID, newConnectionId);
+                player.SetConnectionRequest(connectEvent.ConnectionRequest);
+                        
+                _players[newConnectionId] = player;
+                _playersByPeer[connectEvent.Peer.ID] = player;
+
+                _logger?.Debug("({Port}) Player #{Slot} connected ({UserId}, {UserName}, {EndPoint})",
+                    PortNumber, newConnectionId, player.UserId, player.UserName, logEndPoint);
+                        
+                HandlePlayerConnect(player);
+            }
+            else
+            {
+                KickPeer(connectEvent.Peer.ID, immediate: false, DisconnectedReason.ServerAtCapacity);
+
+                _logger?.Warning("({Port}) Lobby full, rejecting new connection: {EndPoint}",
+                    PortNumber, logEndPoint);
+            }
+        }
+    }
+
+    private void _UpdateDisconnectQueue()
+    {
+        // Receive: disconnections
+        while (_server.DisconnectQueue.TryDequeue(out var disconnectEvent))
+        {
+            if (!_playersByPeer.TryGetValue(disconnectEvent.PeerId, out var player))
+                continue;
+            
+            player.Disconnected = true;
+                        
+            _players.Remove(player.ConnectionId);
+            _playersByPeer.Remove(disconnectEvent.PeerId);
+
+            _availableConnectionIds.Add(player.ConnectionId);
+            if (player.SortIndex != null)
+                _availableSortIndices.Add(player.SortIndex.Value);
+
+            _logger?.Debug("({Port}) Player #{Slot} disconnected ({UserId}, {UserName})",
+                PortNumber, player.ConnectionId, player.UserId, player.UserName);
+                        
+            HandlePlayerDisconnect(player);
+        }
+    }
+
+    private void _UpdateReceiveQueue()
+    {
+        // Receive: packets
+        while (_server.ReceiveQueue.TryDequeue(out var packetEvent))
+        {
+            if (!_playersByPeer.TryGetValue(packetEvent.PeerId, out var player) || player.Disconnected)
+                continue;
+            
+            HandleReceive(player, packetEvent.Payload);
+        }
+    }
+
+    private void _UpdatePingChecks()
+    {
+        if (PlayerCount == 0)
+            return;
+        
+        var timeSinceLastPing = SyncTime - _lastPingTime;
+        if (timeSinceLastPing < PingIntervalMs)
+            return;
+        
+        _lastPingTime = SyncTime;
+        SendToAll(new PingPacket(_lastPingTime));
+        
+        // TODO: Disconnect players that are not responding to pings / have very high latency
+    }
+
+    private void _UpdateSortIndexes()
+    {
+        // Find valid players without a sort index, assign next available index
+        // Players must have valid ping and must have sent identity with valid state
+        var playersWithoutSort = _players.Values
+            .Where(p => p is
+            {
+                Disconnected: false,
+                HasValidLatency: true,
+                SortIndex: null,
+                StatePlayer: true
+            })
+            .ToList();
+
+        foreach (var player in playersWithoutSort)
+        {
+            if (!TryGetNextSortIndex(out var sortIndex))
+                continue;
+            
+            player.SortIndex = sortIndex;
+            SendToAll(player.GetPlayerSortOrderPacket());
+            GameMode.OnPlayerSpawn(player);
+        }
+    }
+
+    private void _UpdateServerBrowser()
+    {
+        // TODO Periodic server browser update
+    }
+
+    #endregion
+
+    #region Player Management
+    
     private bool TryGetNextConnectionId(out byte connectionId)
     {
         if (_availableConnectionIds.Count == 0)
@@ -262,6 +345,19 @@ public class LobbyHost
         connectionId = _availableConnectionIds.Min();
         return true;
     }
+    
+    private bool TryGetNextSortIndex(out int sortIndex)
+    {
+        if (_availableSortIndices.Count == 0)
+        {
+            sortIndex = -1;
+            return false;
+        }
+
+        // Get lowest available index
+        sortIndex = _availableSortIndices.Min();
+        return true;
+    }
 
     private void KickPlayer(LobbyPlayer player, DisconnectedReason reason)
     {
@@ -272,7 +368,7 @@ public class LobbyHost
         KickPeer(player.PeerId, immediate: false, reason);
 
         // Notify all other players in the lobby
-        SendAll(new PlayerDisconnectedPacket(reason), senderId: player.ConnectionId);
+        SendToAllFrom(new PlayerDisconnectedPacket(reason), player.ConnectionId);
     }
 
     private void KickPeer(uint peerId, bool immediate, DisconnectedReason reason = DisconnectedReason.Unknown)
@@ -283,7 +379,7 @@ public class LobbyHost
         if (!immediate)
         {
             // Send kick request / disconnect reason to peer (will only arrive if not immediate)
-            Send(peerId, new KickPlayerPacket(reason));
+            _Send(peerId, new KickPlayerPacket(reason));
         }
 
         _server.PendingDisconnectQueue.Enqueue(new DisconnectEvent(
@@ -298,24 +394,44 @@ public class LobbyHost
         foreach (var player in _players.Values)
             KickPlayer(player, reason);
     }
+    
+    #endregion
 
-    private void SendAll(INetSerializable message, NetChannel channel = NetChannel.Reliable, byte senderId = 0)
+    #region Send APIs
+
+    public void SendTo(INetSerializable message, LobbyPlayer to, NetChannel channel = NetChannel.Reliable)
+        => _Send(to.PeerId, message, channel);
+    
+    public void SendToFrom(INetSerializable message, LobbyPlayer to, byte from, NetChannel channel = NetChannel.Reliable)
+        => _Send(to.PeerId, message, channel, from);
+
+    public void SendToAll(INetSerializable message, NetChannel channel = NetChannel.Reliable)
     {
-        foreach (var player in _players.Values.Where(player => !player.Disconnected))
-            SendDirect(player, message, channel);
+        foreach (var player in ConnectedPlayers)
+            SendTo(message, player, channel);
     }
 
-    private void SendDirect(LobbyPlayer player, INetSerializable message, NetChannel channel = NetChannel.Reliable,
-        byte senderId = 0)
-        => Send(player.PeerId, message, channel, senderId);
-
-    private void Send(uint peerId, INetSerializable message, NetChannel channel = NetChannel.Reliable,
-        byte senderId = 0, byte receiverId = 0)
+    public void SendToAllFrom(INetSerializable message, byte from, NetChannel channel = NetChannel.Reliable)
     {
+        foreach (var to in ConnectedPlayers)
+            SendToFrom(message, to, from, channel);
+    }
+    
+    public void SendToAllExcluding(INetSerializable message, byte? excluding = null, NetChannel channel = NetChannel.Reliable)
+    {
+        foreach (var to in ConnectedPlayers.Where(player => player.ConnectionId != excluding))
+            SendTo(message, to, channel);
+    }
+
+    private void _Send(uint peerId, INetSerializable message, NetChannel channel = NetChannel.Reliable,
+        byte senderId = 0)
+    {
+        _logger?.Information("TEMP: Sending message to peer {PeerId} ({MessageType})", peerId, message.GetType().Name);
+        
         var payload = new NetPayload(
             message: message,
             senderId: senderId,
-            receiverId: receiverId,
+            receiverId: 0,
             packetOptions: PacketOption.None
         );
         _server.SendQueue.Enqueue(new PacketEvent(
@@ -324,28 +440,145 @@ public class LobbyHost
             payload: payload
         ));
     }
+    
+    #endregion
 
+    #region Receive
+    
     private void HandleReceive(LobbyPlayer player, NetPayload payload)
     {
         if (payload.Messages == null)
             return;
+
+        var neverRelay = payload.PacketOptions.HasFlag(PacketOption.OnlyFirstDegreeConnections);
+        var isBroadcast = !neverRelay && payload.ReceiverId == 127;
+        var isUnicast = !neverRelay && payload.ReceiverId is >= 1 and <= 126;
+        var shouldProcess = payload.ReceiverId is 0 or 127; 
+        
+        LobbyPlayer? unicastPlayer = null;
+        if (isUnicast)
+            unicastPlayer = ConnectedPlayers.FirstOrDefault(p => p.ConnectionId == payload.ReceiverId);
         
         foreach (var message in payload.Messages)
         {
             _logger?.Information("TEMP: Received message from player {PlayerId} ({MessageType})",
                 player.ConnectionId, message.GetType().Name);
+
+            // Message blacklist: clients may not send these
+            switch (message)
+            {
+                case PlayerConnectedPacket:
+                case PlayerDisconnectedPacket:
+                case PlayerSortOrderPacket:
+                case SyncTimePacket:
+                case KickPlayerPacket:
+                    // These are server-to-client only packets, client should never send these
+                    // Either a misbehaving client or protocol error, kick the player
+                    HandlePlayerSentIllegalMessage(player, message);
+                    break;
+            }
+
+            // Relay messages if requested
+            if (isBroadcast)
+                SendToAllFrom(message, player.ConnectionId);
+            else if (unicastPlayer != null)
+                SendToFrom(message, unicastPlayer, player.ConnectionId);
+
+            // Process and handle message if server was among the intended recipients
+            if (!shouldProcess)
+                continue;
+            switch (message)
+            {
+                case PlayerIdentityPacket identityPacket:
+                    player.SetPlayerIdentity(identityPacket);
+                    break;
+                case PlayerAvatarPacket avatarPacket:
+                    player.SetPlayerAvatar(avatarPacket.PlayerAvatar);
+                    break;
+                case PlayerStatePacket statePacket:
+                    player.SetPlayerState(statePacket.PlayerState);
+                    break;
+                case PingPacket pingPacket:
+                    SendTo(new PongPacket(pingPacket.PingTime), player);
+                    SendTo(new SyncTimePacket(SyncTime), player);
+                    break;
+                case PongPacket pongPacket:
+                    player.LatencyAverage.Update(SyncTime - pongPacket.PingTime);
+                    break;
+                case BaseMenuRpc menuRpc:
+                    if (menuRpc is GetPlayersPermissionConfigurationRpc)
+                        SendTo(new SetPlayersPermissionConfigurationRpc(GetPermissionsConfiguration()), player);
+                    else
+                        GameMode.HandleMenuRpc(menuRpc, player);
+                    break;
+                case BaseGameplayRpc gameplayRpc:
+                    GameMode.HandleGameplayRpc(gameplayRpc, player);
+                    break;
+                default:
+                    _logger?.Warning("Player {PlayerId} sent unimplemented message ({PacketType})",
+                        player.ConnectionId, message.GetType().Name);
+                    break;
+            }
         }
     }
     
-    private void HandlePlayerConnect(LobbyPlayer player)
+    private void HandlePlayerSentIllegalMessage(LobbyPlayer player, INetSerializable message)
     {
-        GameMode.OnPlayerConnect(player);
+        _logger?.Warning("Player {PlayerId} sent illegal message ({PacketType}), this may indicate a protocol error",
+            player.ConnectionId, message.GetType().Name);
+        KickPlayer(player, DisconnectedReason.Kicked);
+    }
+    
+    #endregion
+
+    #region Player connection events
+    
+    private void HandlePlayerConnect(LobbyPlayer newPlayer)
+    {
+        // Broadcast ping
+        _lastPingTime = SyncTime;
+        SendToAll(new PingPacket(_lastPingTime));
+        
+        // Broadcast new player join
+        SendToAllExcluding(newPlayer.GetPlayerConnectedPacket(), excluding: newPlayer.ConnectionId);
+
+        // Send existing player data to new player
+        var otherPlayers = PlayerList
+            .Where(p => p.ConnectionId != newPlayer.ConnectionId && !p.Disconnected)
+            .ToList();
+        
+        foreach (var otherPlayer in otherPlayers)
+        {
+            SendTo(otherPlayer.GetPlayerConnectedPacket(), newPlayer);
+            
+            if (newPlayer.SortIndex.HasValue)
+                SendTo(otherPlayer.GetPlayerSortOrderPacket(), newPlayer);
+            
+            var identityPacket = otherPlayer.GetPlayerIdentityPacket();
+            if (identityPacket != null)
+                SendToFrom(identityPacket, newPlayer, otherPlayer.ConnectionId);
+        }
+        
+        // Send host player data (hidden server player)
+        SendToFrom(new PlayerIdentityPacket(
+            new PlayerStateHash(BitMask128.MinValue),
+            new MultiplayerAvatarsData(new List<MultiplayerAvatarData>(), BitMask128.MinValue),
+            new ByteArrayNetSerializable(""),
+            new ByteArrayNetSerializable("")
+        ), newPlayer, 0);
+        
+        // Allow game mode to handle new player
+        GameMode.OnPlayerConnect(newPlayer);
     }
 
     private void HandlePlayerDisconnect(LobbyPlayer player)
     {
         GameMode.OnPlayerDisconnect(player);
     }
+    
+    #endregion
+    
+    #region Lobby config data
     
     public BeatmapLevelSelectionMask GetBeatmapLevelSelectionMask()
     {
@@ -357,6 +590,20 @@ public class LobbyHost
     {
         return new GameplayServerConfiguration(MaxPlayerCount, DiscoveryPolicy.Public, InvitePolicy.AnyoneCanInvite,
             GameMode.GameplayServerMode, GameMode.SongSelectionMode, GetGameplayServerControlSettings());
+    }
+
+    public PlayersLobbyPermissionConfigurationNetSerializable GetPermissionsConfiguration()
+    {
+        var list = ConnectedPlayers.Select(player =>
+            new PlayerLobbyPermissionConfigurationNetSerializable(
+                userId: player.UserId!,
+                isServerOwner: false,
+                hasRecommendBeatmapsPermission: true,
+                hasRecommendGameplayModifiersPermission: true,
+                hasKickVotePermission: false,
+                hasInvitePermission: true)
+        ).ToList();
+        return new PlayersLobbyPermissionConfigurationNetSerializable(list);
     }
     
     public bool SpectateAllowed => GameMode.AllowSpectate;
@@ -373,4 +620,6 @@ public class LobbyHost
     }
 
     public const int DefaultMaxPlayerCount = 5;
+    
+    #endregion
 }

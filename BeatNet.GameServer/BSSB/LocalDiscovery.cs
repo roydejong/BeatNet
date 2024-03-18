@@ -75,7 +75,8 @@ public class LocalDiscovery
             return;
         }
         
-        _logger?.Information("Started local network discovery (LAN address: {LanAddress})", lanAddress);
+        _logger?.Information("Started local network discovery (LAN: {LanAddress}, Broadcast port: {Port})",
+            lanAddress, BroadcastPort);
         
         // Init write buffer
         var writeBuffer = GC.AllocateArray<byte>(1024, true);
@@ -102,7 +103,7 @@ public class LocalDiscovery
                     _logger?.Warning("Received discovery packet with unknown version {Version} ({Source})",
                         version, clientEp);
                 
-                _logger?.Information("Got discovery packet from {ClientEp}!", clientEp);
+                _logger?.Debug("Sending local network discovery response to {ClientEp}", clientEp);
                 
                 // Helper: If the LAN address it the same as ours, treat as localhost
                 var effectiveLanAddress = lanAddress;
@@ -127,8 +128,6 @@ public class LocalDiscovery
                     writer.Reset();
                     packet.WriteTo(ref writer);
                     _udpClient.Send(writer.Data.ToArray(), writer.Position, clientEp);
-                
-                    _logger?.Information("Sent discovery packet for a lobby!");
                 }
             }
             catch (Exception ex)

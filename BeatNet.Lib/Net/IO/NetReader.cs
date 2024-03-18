@@ -273,12 +273,11 @@ public ref struct NetReader
     #endregion
     
     #region Enum
-
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T ReadEnum<T>() where T : Enum
     {
-        throw new NotImplementedException(); // TODO
+        return (T)Enum.ToObject(typeof(T), ReadVarLong());
     }
 
     #endregion

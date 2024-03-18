@@ -5,6 +5,8 @@ namespace BeatNet.Lib.BeatSaber.Util;
 
 public static class BitMaskUtils
 {
+    #region Contains
+    
     public static bool Contains(this PlayerStateHash playerState, string value)
     {
         const int hashCount = 3;
@@ -33,13 +35,6 @@ public static class BitMaskUtils
         return true;
     }
     
-    public static ulong GetBits(this BitMask128 bitMask, int offset, int count)
-    {
-        var num = (1UL << count) - 1UL;
-        var num2 = offset - 64;
-        return (bitMask.D0.ShiftRight(num2) | bitMask.D1.ShiftRight(offset)) & num;
-    }
-    
     public static bool Contains(this BitMask256 bitMask, uint hash, int hashCount = 3, int hashBits = 8)
     {
         for (var i = 0; i < hashCount; i++)
@@ -53,6 +48,17 @@ public static class BitMaskUtils
         return true;
     }
     
+    #endregion
+
+    #region GetBits
+    
+    public static ulong GetBits(this BitMask128 bitMask, int offset, int count)
+    {
+        var num = (1UL << count) - 1UL;
+        var num2 = offset - 64;
+        return (bitMask.D0.ShiftRight(num2) | bitMask.D1.ShiftRight(offset)) & num;
+    }
+    
     public static ulong GetBits(this BitMask256 bitMask, int offset, int count)
     {
         var num = (1UL << count) - 1UL;
@@ -63,6 +69,10 @@ public static class BitMaskUtils
         var num6 = offset - 64;
         return (num5 | bitMask.D2.ShiftRight(num6) | bitMask.D3.ShiftRight(offset)) & num;
     }
+    
+    #endregion
+    
+    #region ulong shift
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong ShiftLeft(this ulong value, in int shift)
@@ -93,4 +103,6 @@ public static class BitMaskUtils
         }
         return 0UL;
     }
+    
+    #endregion
 }

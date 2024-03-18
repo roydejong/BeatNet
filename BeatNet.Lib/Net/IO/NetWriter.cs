@@ -271,7 +271,7 @@ public ref struct NetWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteEnum<T>(T value) where T : Enum
     {
-        throw new NotImplementedException(); // TODO
+        WriteVarLong(Convert.ToInt64(value));
     }
 
     #endregion

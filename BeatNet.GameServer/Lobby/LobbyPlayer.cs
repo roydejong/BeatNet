@@ -1,4 +1,5 @@
-﻿using BeatNet.Lib.BeatSaber;
+﻿using BeatNet.GameServer.Util;
+using BeatNet.Lib.BeatSaber;
 using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
@@ -20,10 +21,18 @@ public class LobbyPlayer : IConnectedPlayer
     public string? PlayerSessionId { get; set; }
     public int? SortIndex { get; set; }
     public PlayerStateHash? State { get; set; }
+    public MultiplayerAvatarsData? Avatars { get; set; }
+    private byte[]? PublicEncryptionKey { get; set; }
+    private byte[]? Random { get; set; }
     public bool Disconnected { get; set; }
 
     public bool PendingConnection => UserId == null;
     public bool PendingSpawn => SortIndex == null;
+
+    private PlayerIdentityPacket? _playerIdentityPacket = null;
+    
+    public readonly LongRollingAverage LatencyAverage = new(30);
+    public bool HasValidLatency => LatencyAverage.HasValue;
 
     public LobbyPlayer(LobbyHost lobbyHost, uint peerId, byte connectionId)
     {
@@ -38,8 +47,14 @@ public class LobbyPlayer : IConnectedPlayer
         SortIndex = null;
         State = null;
         Disconnected = false;
+        PublicEncryptionKey = null;
+        Random = null;
+
+        _playerIdentityPacket = null;
     }
 
+    #region State updates
+    
     public void SetConnectionRequest(ConnectionRequest connectEventConnectionRequest)
     {
         UserId = connectEventConnectionRequest.UserId;
@@ -49,13 +64,25 @@ public class LobbyPlayer : IConnectedPlayer
     
     public void SetPlayerIdentity(PlayerIdentityPacket identityPacket)
     {
-        SetPlayerState(identityPacket.PlayerState);
+        State = identityPacket.PlayerState;
+        Avatars = identityPacket.PlayerAvatar;
+        PublicEncryptionKey = identityPacket.PublicEncryptionKey.GetData(true);
+        Random = identityPacket.Random.GetData(true);
+        
+        _playerIdentityPacket = identityPacket;
     }
 
     public void SetPlayerState(PlayerStateHash state)
     {
         State = state;
     }
+
+    public void SetPlayerAvatar(MultiplayerAvatarsData avatarsData)
+    {
+        Avatars = avatarsData;
+    }
+    
+    #endregion
 
     #region State helpers
 
@@ -128,6 +155,34 @@ public class LobbyPlayer : IConnectedPlayer
     /// State added by all MultiplayerCore users.
     /// </summary>
     public bool StateModded => State?.Contains("modded") ?? false;
+
+    #endregion
+
+    #region Packet helpers
+    
+    public PlayerConnectedPacket GetPlayerConnectedPacket()
+    {
+        return new PlayerConnectedPacket(ConnectionId, UserId!, UserName!, false);
+    }
+
+    public PlayerSortOrderPacket GetPlayerSortOrderPacket()
+    {
+        return new PlayerSortOrderPacket(UserId!, SortIndex!.Value);
+    }
+
+    public PlayerIdentityPacket? GetPlayerIdentityPacket()
+    {
+        return _playerIdentityPacket;
+    }
+    
+    #endregion
+
+    #region Send util
+
+    public void Send(BaseRpc rpc)
+    {
+        LobbyHost.SendTo(rpc, this);
+    }
 
     #endregion
 }

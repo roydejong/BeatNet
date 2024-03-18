@@ -161,7 +161,7 @@ public class NetServer
                     var packetFlags = e.Channel == NetChannel.Unreliable
                         ? PacketFlags.Unsequenced
                         : PacketFlags.Reliable;
-                    packet.Create(buffer.ToArray(), packetFlags); // :(
+                    packet.Create(buffer[..writer.Position].ToArray(), packetFlags); // :(
                     peer.Send((byte)e.Channel, ref packet);
                 }
 

@@ -294,10 +294,10 @@ public ref struct NetReader
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TList ReadSerializableList<TList, TItem>() where TList : IList<TItem> where TItem : INetSerializable
+    public TList ReadSerializableList<TList, TItem>() where TList : IList<TItem>, new() where TItem : INetSerializable
     {
         var count = ReadInt();
-        var instance = (TList)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(TList));
+        var instance = new TList();
         for (var i = 0; i < count; i++)
             instance.Add(ReadSerializable<TItem>());
         return instance;

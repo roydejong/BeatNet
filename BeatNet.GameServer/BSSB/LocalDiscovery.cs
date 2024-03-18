@@ -104,13 +104,18 @@ public class LocalDiscovery
                 
                 _logger?.Information("Got discovery packet from {ClientEp}!", clientEp);
                 
+                // Helper: If the LAN address it the same as ours, treat as localhost
+                var effectiveLanAddress = lanAddress;
+                if (clientEp.Address.Equals(lanAddress))
+                    effectiveLanAddress = IPAddress.Loopback;
+                
                 // Send response packet for every public lobby
                 var publicLobbies = _service.GetPublicLobbies();
                 foreach (var lobby in publicLobbies)
                 {
                     var packet = new LocalDiscoveryPacket
                     {
-                        ServerEndPoint = new IPEndPoint(lanAddress, lobby.PortNumber),
+                        ServerEndPoint = new IPEndPoint(effectiveLanAddress, lobby.PortNumber),
                         ServerName = lobby.ServerName,
                         ServerUserId = lobby.ServerUserId,
                         GameModeName = lobby.GameModeName,

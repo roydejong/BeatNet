@@ -30,9 +30,9 @@ public class SyncStateIdFixedImpl : FixedImpl
         var fValue = GetValueField(item);
         var fFlag = GetFlagField(item);
         
-        buffer.AppendLine("\t\tvar value = reader.ReadByte();");
-        buffer.AppendLine($"\t\t{fValue.NameForField} = (byte)(value & 127);");
-        buffer.AppendLine($"\t\t{fFlag.NameForField} = (value & 128) != 0;");
+        buffer.AppendLine("\t\tvar @byte = reader.ReadByte();");
+        buffer.AppendLine($"\t\t{fFlag.NameForField} = ((@byte & 128) > 0);");
+        buffer.AppendLine($"\t\t{fValue.NameForField} = (byte)((int)@byte & -129);");
     }
     
     private static TypedParam GetValueField(IResultWithFields item) =>

@@ -32,8 +32,8 @@ public sealed class SyncStateId : INetSerializable
 	public void ReadFrom(ref NetReader reader)
 	{
 		// SyncStateIdFixedImpl
-		var value = reader.ReadByte();
-		Id = (byte)(value & 127);
-		Flag = (value & 128) != 0;
+		var @byte = reader.ReadByte();
+		Flag = ((@byte & 128) > 0);
+		Id = (byte)((int)@byte & -129);
 	}
 }

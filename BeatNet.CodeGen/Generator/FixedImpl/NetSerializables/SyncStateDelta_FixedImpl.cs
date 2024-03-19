@@ -24,7 +24,7 @@ public class SyncStateDeltaFixedImpl : FixedImpl
         var fDelta = GetDeltaField(item);
         
         buffer.AppendLine($"\t\twriter.WriteSerializable({fId.NameForField});");
-        buffer.AppendLine($"\t\twriter.WriteInt({fTime.NameForField});");
+        buffer.AppendLine($"\t\twriter.WriteVarInt({fTime.NameForField});");
         buffer.AppendLine($"\t\tif (!{fId.NameForField}.Flag)");
         buffer.AppendLine($"\t\t\twriter.WriteSerializable({fDelta.NameForField});");
     }
@@ -36,7 +36,7 @@ public class SyncStateDeltaFixedImpl : FixedImpl
         var fDelta = GetDeltaField(item);
         
         buffer.AppendLine($"\t\t{fId.NameForField} = reader.ReadSerializable<SyncStateId>();");
-        buffer.AppendLine($"\t\t{fTime.NameForField} = reader.ReadInt();");
+        buffer.AppendLine($"\t\t{fTime.NameForField} = reader.ReadVarInt();");
         buffer.AppendLine($"\t\tif (!{fId.NameForField}.Flag)");
         buffer.AppendLine($"\t\t\t{fDelta.NameForField} = reader.ReadSerializable<{fDelta.TypeName}>();");
     }

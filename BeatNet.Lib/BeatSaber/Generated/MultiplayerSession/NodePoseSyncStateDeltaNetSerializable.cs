@@ -30,7 +30,7 @@ public sealed class NodePoseSyncStateDeltaNetSerializable : BaseSessionPacket
 	{
 		// SyncStateDeltaFixedImpl
 		writer.WriteSerializable(BaseId);
-		writer.WriteInt(TimeOffsetMs);
+		writer.WriteVarInt(TimeOffsetMs);
 		if (!BaseId.Flag)
 			writer.WriteSerializable(Delta);
 	}
@@ -39,7 +39,7 @@ public sealed class NodePoseSyncStateDeltaNetSerializable : BaseSessionPacket
 	{
 		// SyncStateDeltaFixedImpl
 		BaseId = reader.ReadSerializable<SyncStateId>();
-		TimeOffsetMs = reader.ReadInt();
+		TimeOffsetMs = reader.ReadVarInt();
 		if (!BaseId.Flag)
 			Delta = reader.ReadSerializable<NodePoseSyncState>();
 	}

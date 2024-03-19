@@ -37,7 +37,7 @@ public class LobbyHost
     public int MaxPlayerCount { get; private set; }
     public string? Password { get; private set; }
 
-    public string ServerName { get; set; } = "BeatNet Server";
+    public string ServerName { get; set; } = "its me your magic lan server";
     public string GameModeType => GameMode.GetType().Name;
     public string GameModeName => GameMode.GetName();
     public bool IsRunning => _server.IsRunning;

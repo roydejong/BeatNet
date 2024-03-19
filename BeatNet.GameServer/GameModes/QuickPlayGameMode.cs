@@ -13,12 +13,20 @@ public class QuickPlayGameMode : GameMode
     public MultiplayerGameState GameState { get; private set; }
 
     private readonly LevelVoting _levelVoting;
+    private readonly Countdown _countdown;
     
     public QuickPlayGameMode(LobbyHost host) : base(host)
     {
         _levelVoting = new();
+        _countdown = new(host);
+        
         _levelVoting.TopVotedBeatmapChanged += HandleTopVotedBeatmapChanged;
         _levelVoting.TopVotedModifiersChanged += HandleTopVotedModifiersChanged;
+        
+        _countdown.CountdownEndTimeSet += HandleCountdownEndTimeSet;
+        _countdown.CountdownCancelled += HandleCountdownCancelled;
+        _countdown.CountdownLockedIn += HandleCountdownLockedIn;
+        _countdown.CountdownFinished += HandleCountdownFinished;
     }
 
     public override GameplayServerMode GameplayServerMode => GameplayServerMode.Countdown;
@@ -39,10 +47,12 @@ public class QuickPlayGameMode : GameMode
     
     public override void Tick()
     {
+        _countdown.Update();
     }
 
     public override void OnPlayerConnect(LobbyPlayer player)
     {
+        _countdown.SetPlayerReady(player, false);
     }
     
     public override void OnPlayerSpawn(LobbyPlayer player)
@@ -56,6 +66,7 @@ public class QuickPlayGameMode : GameMode
     public override void OnPlayerDisconnect(LobbyPlayer player)
     {
         _levelVoting.ClearPlayer(player);
+        _countdown.SetPlayerReady(player, false);
     }
 
     public override void HandleMenuRpc(BaseMenuRpc menuRpc, LobbyPlayer player)
@@ -74,6 +85,8 @@ public class QuickPlayGameMode : GameMode
                     player.Send(new SetSelectedBeatmapRpc(selectedBeatmap.ToBeatmapKey()));
                 else
                     player.Send(new ClearSelectedBeatmapRpc());
+                if (selectedBeatmap != null)
+                    player.Send(new GetIsEntitledToLevelRpc(selectedBeatmap.LevelId));
                 break;
             case GetSelectedGameplayModifiersRpc:
                 var selectedModifiers = _levelVoting.TopVotedModifiers;
@@ -92,6 +105,9 @@ public class QuickPlayGameMode : GameMode
                 break;
             case ClearRecommendedGameplayModifiersRpc:
                 _levelVoting.ClearRecommendedModifiers(player);
+                break;
+            case SetIsReadyRpc setPlayerReadyRpc:
+                _countdown.SetPlayerReady(player, setPlayerReadyRpc.IsReady ?? false);
                 break;
             
             // Countdown / level start
@@ -114,11 +130,41 @@ public class QuickPlayGameMode : GameMode
             Host.SendToAll(new SetSelectedBeatmapRpc(level.ToBeatmapKey()));
         else
             Host.SendToAll(new ClearSelectedBeatmapRpc());
+        
+        _countdown.SetSelectedLevel(level, _levelVoting.TopVotedModifiers ?? DefaultModifiers);
+        
+        if (level != null)
+            Host.SendToAll(new GetIsEntitledToLevelRpc(level.LevelId));
     }
 
     private void HandleTopVotedModifiersChanged(GameplayModifiers? modifiers)
     {
         Host.SendToAll(new SetSelectedGameplayModifiersRpc(modifiers ?? DefaultModifiers));
+    }
+    
+    private void HandleCountdownFinished()
+    {
+        GameState = MultiplayerGameState.Game;
+        Host.SendToAll(new SetMultiplayerGameStateRpc(MultiplayerGameState.Game));
+    }
+
+    private void HandleCountdownLockedIn(BeatmapLevel level, GameplayModifiers? modifiers, long levelStartTime)
+    {
+        Host.SendToAll(new StartLevelRpc(level.ToBeatmapKey(), modifiers ?? DefaultModifiers, levelStartTime));
+    }
+
+    private void HandleCountdownEndTimeSet(long endTime)
+    {
+        Host.SendToAll(new SetCountdownEndTimeRpc(endTime));
+    }
+
+    private void HandleCountdownCancelled()
+    {
+        if (GameState != MultiplayerGameState.Lobby)
+            return;
+        
+        Host.SendToAll(new CancelCountdownRpc());
+        Host.SendToAll(new CancelLevelStartRpc());
     }
 
     public static GameplayModifiers DefaultModifiers =>

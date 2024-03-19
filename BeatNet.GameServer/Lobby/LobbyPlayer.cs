@@ -14,6 +14,8 @@ public class LobbyPlayer : IConnectedPlayer
     public readonly LobbyHost LobbyHost;
     public readonly uint PeerId;
     public readonly byte ConnectionId;
+
+    public byte Id => ConnectionId;
     
     public byte? RemoteConnectionId { get; set; }
     public string? UserId { get; set; }

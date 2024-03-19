@@ -413,7 +413,7 @@ public class LobbyHost
 
     public void SendToAllFrom(INetSerializable message, byte from, NetChannel channel = NetChannel.Reliable)
     {
-        foreach (var to in ConnectedPlayers)
+        foreach (var to in ConnectedPlayers.Where(player => player.ConnectionId != from))
             SendToFrom(message, to, from, channel);
     }
     
@@ -513,6 +513,12 @@ public class LobbyHost
                     break;
                 case BaseGameplayRpc gameplayRpc:
                     GameMode.HandleGameplayRpc(gameplayRpc, player);
+                    break;
+                case NodePoseSyncStateNetSerializable:
+                case NodePoseSyncStateDeltaNetSerializable:
+                case StandardScoreSyncStateNetSerializable:
+                case StandardScoreSyncStateDeltaNetSerializable:
+                    // The messages are only for relaying; ignore them
                     break;
                 default:
                     _logger?.Warning("Player {PlayerId} sent unimplemented message ({PacketType})",

@@ -153,15 +153,14 @@ public class NetServer
                         continue;
 
                     var payload = e.Payload;
-                    var buffer = new Span<byte>(_sendBufferMemory, 0, _sendBufferMemory.Length);
-                    var writer = new NetWriter(buffer);
+                    var writer = new NetWriter(_sendBufferMemory);
                     writer.WriteSerializable(payload);
 
                     var packet = default(Packet);
                     var packetFlags = e.Channel == NetChannel.Unreliable
                         ? PacketFlags.Unsequenced
                         : PacketFlags.Reliable;
-                    packet.Create(buffer[..writer.Position].ToArray(), packetFlags); // :(
+                    packet.Create(_sendBufferMemory, writer.Position, packetFlags);
                     peer.Send((byte)e.Channel, ref packet);
                 }
 

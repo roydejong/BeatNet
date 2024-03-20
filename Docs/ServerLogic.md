@@ -248,10 +248,10 @@ On level load completion:
 
 ## Gameplay start
 
-Scene transition will occur and the `MultiplayerController` will start:
-
 ### 1. Game state transition
-The server sends a `SetMultiplayerGameStateRpc` (with `MultiplayerGameState.Game`) to all clients. The clients will enter the `WaitingForPlayers` state and start the "sync scene load" process.
+Scene transition will occur and the `MultiplayerController` will start.  The client will send a `GetMultiplayerGameStateRpc` 
+
+The server will reply with a `SetMultiplayerGameStateRpc` (with `MultiplayerGameState.Game`) to all clients. The clients will enter the `WaitingForPlayers` state and start the "sync scene load" process.
 
 ### 2. Sync scene load
 The server will generate a Session Game ID (`Guid.NewGuid()`) and send `GetGameplaySceneReadyRpc` to all players.

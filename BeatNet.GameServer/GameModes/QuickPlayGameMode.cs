@@ -4,6 +4,7 @@ using BeatNet.GameServer.Lobby;
 using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
+using BeatNet.Lib.BeatSaber.Generated.Rpc.Gameplay;
 using BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 
 namespace BeatNet.GameServer.GameModes;
@@ -12,21 +13,30 @@ public class QuickPlayGameMode : GameMode
 {
     public MultiplayerGameState GameState { get; private set; }
 
-    private readonly LevelVoting _levelVoting;
-    private readonly Countdown _countdown;
+    private readonly VoteManager _voteManager;
+    private readonly CountdownManager _countdownManager;
+    private readonly GameplayManager _gameplayManager;
+
+    private BeatmapLevel? _currentLevel;
+    private GameplayModifiers? _currentModifiers;
+    private long? _levelStartTime;
     
     public QuickPlayGameMode(LobbyHost host) : base(host)
     {
-        _levelVoting = new();
-        _countdown = new(host);
+        _voteManager = new();
+        _countdownManager = new(host);
+        _gameplayManager = new(host);
         
-        _levelVoting.TopVotedBeatmapChanged += HandleTopVotedBeatmapChanged;
-        _levelVoting.TopVotedModifiersChanged += HandleTopVotedModifiersChanged;
+        _voteManager.TopVotedBeatmapChanged += HandleTopVotedBeatmapChanged;
+        _voteManager.TopVotedModifiersChanged += HandleTopVotedModifiersChanged;
         
-        _countdown.CountdownEndTimeSet += HandleCountdownEndTimeSet;
-        _countdown.CountdownCancelled += HandleCountdownCancelled;
-        _countdown.CountdownLockedIn += HandleCountdownLockedIn;
-        _countdown.CountdownFinished += HandleCountdownFinished;
+        _countdownManager.CountdownEndTimeSet += HandleCountdownManagerEndTimeSet;
+        _countdownManager.CountdownCancelled += HandleCountdownManagerCancelled;
+        _countdownManager.CountdownLockedIn += HandleCountdownManagerLockedIn;
+        _countdownManager.CountdownFinished += HandleCountdownManagerFinished;
+        
+        _gameplayManager.GameplayCancelledEvent += HandleGameplayCancelled;
+        _gameplayManager.GameplayFinishedEvent += HandleGameplayFinished;
     }
 
     public override GameplayServerMode GameplayServerMode => GameplayServerMode.Countdown;
@@ -42,17 +52,25 @@ public class QuickPlayGameMode : GameMode
     public override void Reset()
     {
         GameState = MultiplayerGameState.Lobby;
-        _levelVoting.Reset();
+        
+        _voteManager.Reset();
+        _countdownManager.Reset();
+        _gameplayManager.StopImmediately(false);
+        
+        _currentLevel = null;
+        _currentModifiers = null;
+        _levelStartTime = null;
     }
     
     public override void Tick()
     {
-        _countdown.Update();
+        _countdownManager.Update();
+        _gameplayManager.Update();
     }
 
     public override void OnPlayerConnect(LobbyPlayer player)
     {
-        _countdown.SetPlayerReady(player, false);
+        _countdownManager.SetPlayerReady(player, false);
     }
     
     public override void OnPlayerSpawn(LobbyPlayer player)
@@ -61,12 +79,19 @@ public class QuickPlayGameMode : GameMode
     
     public override void OnPlayerUpdate(LobbyPlayer player)
     {
+        if (!player.StateWantsToPlayNextLevel)
+        {
+            // Player wants to spectate, not play
+            _voteManager.ClearPlayer(player);
+            _countdownManager.SetPlayerReady(player, false);
+        }
     }
 
     public override void OnPlayerDisconnect(LobbyPlayer player)
     {
-        _levelVoting.ClearPlayer(player);
-        _countdown.SetPlayerReady(player, false);
+        _voteManager.ClearPlayer(player);
+        _countdownManager.SetPlayerReady(player, false);
+        _gameplayManager.RemovePlayer(player);
     }
 
     public override void HandleMenuRpc(BaseMenuRpc menuRpc, LobbyPlayer player)
@@ -75,12 +100,44 @@ public class QuickPlayGameMode : GameMode
         {
             // Game state
             case GetMultiplayerGameStateRpc:
-                player.Send(new SetMultiplayerGameStateRpc(GameState));
+            {
+                if (GameState == MultiplayerGameState.Lobby && _countdownManager.IsLockedIn &&
+                    _countdownManager.CountdownTimeRemaining < 1f)
+                {
+                    // Prevent possible race condition (seen on local dev):
+                    // Assume we're in gameplay if countdown is very close to finishing
+                    player.Send(new SetMultiplayerGameStateRpc(MultiplayerGameState.Game));
+                }
+                else
+                {
+                    player.Send(new SetMultiplayerGameStateRpc(GameState));
+                }
+
                 break;
-            
+            }
+            case SetIsInLobbyRpc setIsInLobbyRpc:
+            {
+                if (setIsInLobbyRpc.IsBack ?? false)
+                {
+                    // Player has (returned) to lobby, ensure their UI state is synced up
+                    var shownLevel = _voteManager.TopVotedBeatmap;
+                    var shownModifiers = _voteManager.TopVotedModifiers ?? DefaultModifiers;
+                    if (shownLevel != null)
+                        player.Send(new SetSelectedBeatmapRpc(shownLevel.ToBeatmapKey()));
+                    else
+                        player.Send(new ClearSelectedBeatmapRpc());
+                    player.Send(new SetSelectedGameplayModifiersRpc(shownModifiers));
+                    player.Send(new GetRecommendedBeatmapRpc());
+                    player.Send(new GetRecommendedGameplayModifiersRpc());
+                    // (They'll ask for countdown stuff manually but I've seen some issues with recommends)
+                }
+                break;
+            }
+
             // Voting
             case GetSelectedBeatmapRpc:
-                var selectedBeatmap = _levelVoting.TopVotedBeatmap;
+            {
+                var selectedBeatmap = _voteManager.TopVotedBeatmap;
                 if (selectedBeatmap != null)
                     player.Send(new SetSelectedBeatmapRpc(selectedBeatmap.ToBeatmapKey()));
                 else
@@ -88,50 +145,78 @@ public class QuickPlayGameMode : GameMode
                 if (selectedBeatmap != null)
                     player.Send(new GetIsEntitledToLevelRpc(selectedBeatmap.LevelId));
                 break;
+            }
             case GetSelectedGameplayModifiersRpc:
-                var selectedModifiers = _levelVoting.TopVotedModifiers;
+            {
+                var selectedModifiers = _voteManager.TopVotedModifiers;
                 player.Send(new SetSelectedGameplayModifiersRpc(selectedModifiers ?? DefaultModifiers));
                 break;
+            }
             case RecommendBeatmapRpc recommendBeatmapRpc:
+            {
                 if (recommendBeatmapRpc.Key != null)
-                    _levelVoting.SetRecommendedBeatmap(player, BeatmapLevel.FromBeatmapKey(recommendBeatmapRpc.Key));
+                    _voteManager.SetRecommendedBeatmap(player, BeatmapLevel.FromBeatmapKey(recommendBeatmapRpc.Key));
                 break;
+            }
             case ClearRecommendedBeatmapRpc:
-                _levelVoting.ClearRecommendedBeatmap(player);
+            {
+                _voteManager.ClearRecommendedBeatmap(player);
                 break;
+            }
             case RecommendGameplayModifiersRpc recommendGameplayModifiersRpc:
+            {
                 if (recommendGameplayModifiersRpc.GameplayModifiers != null)
-                    _levelVoting.SetRecommendedModifiers(player, recommendGameplayModifiersRpc.GameplayModifiers);
+                    _voteManager.SetRecommendedModifiers(player, recommendGameplayModifiersRpc.GameplayModifiers);
                 break;
+            }
             case ClearRecommendedGameplayModifiersRpc:
-                _levelVoting.ClearRecommendedModifiers(player);
+            {
+                _voteManager.ClearRecommendedModifiers(player);
                 break;
+            }
             case SetIsReadyRpc setPlayerReadyRpc:
-                _countdown.SetPlayerReady(player, setPlayerReadyRpc.IsReady ?? false);
+            {
+                _countdownManager.SetPlayerReady(player, setPlayerReadyRpc.IsReady ?? false);
                 break;
+            }
             
             // Countdown / level start
             case GetCountdownEndTimeRpc:
-                player.Send(new CancelCountdownRpc());
+            {
+                if (_countdownManager.IsCountingDown)
+                    player.Send(new SetCountdownEndTimeRpc(_countdownManager.CountdownEndTime!));
+                else
+                    player.Send(new CancelCountdownRpc());
                 break;
+            }
             case GetStartedLevelRpc:
+            {
+                if (_countdownManager.IsLockedIn || _gameplayManager.Started)
+                    player.Send(new StartLevelRpc(_currentLevel!.ToBeatmapKey(), _currentModifiers ?? DefaultModifiers, 
+                        _levelStartTime!));
+                else
+                    player.Send(new CancelLevelStartRpc());
                 break;
+            }
         }
     }
 
     public override void HandleGameplayRpc(BaseGameplayRpc gameplayRpc, LobbyPlayer player)
     {
-        
+        _gameplayManager.HandleGameplayRpc(gameplayRpc, player);
     }
 
     private void HandleTopVotedBeatmapChanged(BeatmapLevel? level)
     {
+        if (_countdownManager.IsLockedIn || _gameplayManager.Started)
+            return;
+        
         if (level != null)
             Host.SendToAll(new SetSelectedBeatmapRpc(level.ToBeatmapKey()));
         else
             Host.SendToAll(new ClearSelectedBeatmapRpc());
         
-        _countdown.SetSelectedLevel(level, _levelVoting.TopVotedModifiers ?? DefaultModifiers);
+        _countdownManager.SetSelectedLevel(level, _voteManager.TopVotedModifiers ?? DefaultModifiers);
         
         if (level != null)
             Host.SendToAll(new GetIsEntitledToLevelRpc(level.LevelId));
@@ -139,32 +224,67 @@ public class QuickPlayGameMode : GameMode
 
     private void HandleTopVotedModifiersChanged(GameplayModifiers? modifiers)
     {
+        if (_countdownManager.IsLockedIn || _gameplayManager.Started)
+            return;
+        
         Host.SendToAll(new SetSelectedGameplayModifiersRpc(modifiers ?? DefaultModifiers));
     }
     
-    private void HandleCountdownFinished()
+    private void HandleCountdownManagerFinished()
     {
         GameState = MultiplayerGameState.Game;
-        Host.SendToAll(new SetMultiplayerGameStateRpc(MultiplayerGameState.Game));
+        _gameplayManager.Start();
     }
 
-    private void HandleCountdownLockedIn(BeatmapLevel level, GameplayModifiers? modifiers, long levelStartTime)
+    private void HandleCountdownManagerLockedIn(BeatmapLevel level, GameplayModifiers? modifiers, long levelStartTime)
     {
         Host.SendToAll(new StartLevelRpc(level.ToBeatmapKey(), modifiers ?? DefaultModifiers, levelStartTime));
+        
+        _currentLevel = level;
+        _currentModifiers = modifiers;
+        _levelStartTime = levelStartTime;
     }
 
-    private void HandleCountdownEndTimeSet(long endTime)
+    private void HandleCountdownManagerEndTimeSet(long endTime)
     {
         Host.SendToAll(new SetCountdownEndTimeRpc(endTime));
     }
 
-    private void HandleCountdownCancelled()
+    private void HandleCountdownManagerCancelled()
     {
         if (GameState != MultiplayerGameState.Lobby)
             return;
         
         Host.SendToAll(new CancelCountdownRpc());
         Host.SendToAll(new CancelLevelStartRpc());
+    }
+
+    private void HandleGameplayCancelled()
+    {
+        if (GameState != MultiplayerGameState.Game)
+            return;
+
+        GameState = MultiplayerGameState.Lobby;
+        
+        Host.SendToAll(new ReturnToMenuRpc());
+        Host.SendToAll(new SetMultiplayerGameStateRpc(MultiplayerGameState.Lobby));
+        
+        _currentLevel = null;
+        _currentModifiers = null;
+    }
+
+    private void HandleGameplayFinished()
+    {
+        if (GameState != MultiplayerGameState.Game)
+            return;
+
+        GameState = MultiplayerGameState.Lobby;
+        
+        Host.SendToAll(new ReturnToMenuRpc());
+        Host.SendToAll(new SetMultiplayerGameStateRpc(MultiplayerGameState.Lobby));
+        
+        _currentLevel = null;
+        _currentModifiers = null;
     }
 
     public static GameplayModifiers DefaultModifiers =>

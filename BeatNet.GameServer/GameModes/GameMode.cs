@@ -50,7 +50,7 @@ public abstract class GameMode
     public abstract void OnPlayerSpawn(LobbyPlayer player);
 
     /// <summary>
-    /// Fired when a player has updated their state (e.g. state hash, avatar).
+    /// Fired when a player has updated their state (identity, avatar, state changes).
     /// </summary>
     public abstract void OnPlayerUpdate(LobbyPlayer player);
 

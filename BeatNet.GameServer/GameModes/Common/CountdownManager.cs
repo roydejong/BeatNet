@@ -4,7 +4,7 @@ using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 namespace BeatNet.GameServer.GameModes.Common;
 
-public class Countdown
+public class CountdownManager
 {
     public const int LockInTimeMs = 5 * 1000;
     public const int AllReadyTimeMs = 5 * 1000;
@@ -18,13 +18,14 @@ public class Countdown
     public bool IsCountingDown { get; private set; }
     public bool IsLockedIn { get; private set; }
     public long? CountdownEndTime { get; private set; }
+    public long? CountdownTimeRemaining => CountdownEndTime.HasValue ? (CountdownEndTime.Value - _host.SyncTime) : null;
 
     public event Action<long>? CountdownEndTimeSet; 
     public event Action<BeatmapLevel, GameplayModifiers?, long>? CountdownLockedIn;
     public event Action? CountdownFinished;
     public event Action? CountdownCancelled;
 
-    public Countdown(LobbyHost host)
+    public CountdownManager(LobbyHost host)
     {
         _host = host;
         _level = null;
@@ -64,7 +65,7 @@ public class Countdown
     {
         var hasLevelSelected = _level != null;
         var playerCount = _host.ConnectedPlayers.Count;
-        var anyPlayersReady = _readyPlayers.Values.Any(x => x);
+        var anyPlayersReady = _readyPlayers.Values.Where(p => p).Any(x => x);
         var allPlayersReady = _readyPlayers.Values.Count(x => x) == playerCount;
 
         if (!hasLevelSelected || !anyPlayersReady)
@@ -85,8 +86,8 @@ public class Countdown
             CountdownEndTimeSet?.Invoke(CountdownEndTime!.Value);
             return;
         }
-        
-        var remainingTime = CountdownEndTime!.Value - _host.SyncTime;
+
+        var remainingTime = CountdownTimeRemaining!;
         
         if (!IsLockedIn && remainingTime > maxCountdownTime)
         {
@@ -99,7 +100,7 @@ public class Countdown
         {
             // Lock in level and modifiers
             IsLockedIn = true;
-            CountdownLockedIn?.Invoke(_level!, _modifiers, CountdownEndTime.Value);
+            CountdownLockedIn?.Invoke(_level!, _modifiers, CountdownEndTime!.Value);
             return;
         }
 

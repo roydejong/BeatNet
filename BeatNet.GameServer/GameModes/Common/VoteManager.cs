@@ -1,10 +1,11 @@
 ﻿using BeatNet.GameServer.GameModes.Models;
 using BeatNet.GameServer.Lobby;
+using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 namespace BeatNet.GameServer.GameModes.Common;
 
-public class LevelVoting
+public class VoteManager
 {
     private readonly Dictionary<byte, BeatmapLevel> _recommendedBeatmaps = new();
     private readonly Dictionary<byte, GameplayModifiers> _recommendedModifiers = new();
@@ -53,6 +54,12 @@ public class LevelVoting
     
     public void SetRecommendedModifiers(LobbyPlayer player, GameplayModifiers modifiers)
     {
+        if (IsModifiersEmpty(modifiers))
+        {
+            ClearRecommendedModifiers(player);
+            return;
+        }
+        
         _recommendedModifiers[player.Id] = modifiers;
         
         UpdateTopVotedModifiers();
@@ -76,5 +83,24 @@ public class LevelVoting
 
         TopVotedModifiers = topVoted?.Key;
         TopVotedModifiersChanged?.Invoke(TopVotedModifiers);
+    }
+
+    private static bool IsModifiersEmpty(GameplayModifiers modifiers)
+    {
+        return modifiers.EnergyType == EnergyType.Bar
+               && !modifiers.NoFailOn0Energy
+               && !modifiers.InstaFail
+               && !modifiers.FailOnSaberClash
+               && modifiers.EnabledObstacleType == EnabledObstacleType.All
+               && !modifiers.FastNotes
+               && !modifiers.StrictAngles
+               && !modifiers.DisappearingArrows
+               && !modifiers.GhostNotes
+               && !modifiers.NoBombs
+               && modifiers.SongSpeed == SongSpeed.Normal
+               && !modifiers.NoArrows
+               && !modifiers.ProMode
+               && !modifiers.ZenMode
+               && !modifiers.SmallCubes;
     }
 }

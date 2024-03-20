@@ -89,72 +89,73 @@ public class LobbyPlayer : IConnectedPlayer
     #region State helpers
 
     /// <summary>
-    /// The client sets this state on session start. It should always be set.
+    /// Set on multiplayer session start. This should always be set in a client connection.
     /// </summary>
     public bool StateMultiplayerSession => State?.Contains("multiplayer_session") ?? false;
 
     /// <summary>
-    /// The client sets this state if it is a player (not a spectator or dedicated server).
+    /// Indicates session type: Player.
+    /// This should ALWAYS be set in a client connection.
     /// </summary>
     public bool StatePlayer => State?.Contains("player") ?? false;
 
     /// <summary>
-    /// The client does not set this state normally.
-    /// It would be set the client is a dedicated server (not a player or spectator).
+    /// Indicates session type: Dedicated server.
+    /// The client does NOT set this state normally.
     /// </summary>
     public bool StateDedicatedServer => State?.Contains("dedicated_server") ?? false;
 
     /// <summary>
-    /// The client sets this state if it is spectating (not a player or dedicated server).
+    /// Indicates session type: Spectating.
+    /// The client does NOT set this state normally.
     /// </summary>
     public bool StateSpectating => State?.Contains("spectating") ?? false;
 
     /// <summary>
-    /// The client sets this state on session start.
-    /// This state is removed if the client wants to spectate.
-    /// </summary>
-    public bool StateWantsToPlayNextLevel => State?.Contains("wants_to_play_next_level") ?? false;
-
-    /// <summary>
-    /// The client sets this state if the application is paused.
+    /// Indicates that the game is paused / backgrounded for this player.
     /// </summary>
     public bool StateBackgrounded => State?.Contains("backgrounded") ?? false;
-
+    
     /// <summary>
-    /// Indicates whether the player is actively participating in the level.
-    /// The client sets this state when the lobby countdown is finished, if "wants_to_play_next_level" is also set.
-    /// The client removes this state if gameplay ends for any reason (finish, fail, give up, late load/connect, etc.).
-    /// </summary>
-    public bool StateIsActive => State?.Contains("is_active") ?? false;
-
-    /// <summary>
-    /// The clients set this state if "is_active" was set at the start of gameplay.
-    /// This state is removed if the player connects / loads late.
-    /// </summary>
-    public bool StateWasActiveAtLevelStart => State?.Contains("was_active_at_level_start") ?? false;
-
-    /// <summary>
-    /// The client sets this state if its MenuRpcManager is enabled (when in lobby).
-    /// </summary>
-    public bool StateInMenu => State?.Contains("in_menu") ?? false;
-
-    /// <summary>
-    /// The client sets this state if its GameplayRpcManager is enabled (when in gameplay).
-    /// </summary>
-    public bool StateInGameplay => State?.Contains("in_gameplay") ?? false;
-
-    /// <summary>
-    /// The client sets this state once it has finished a level during gameplay.
-    /// </summary>
-    public bool StateFinishedLevel => State?.Contains("finished_level") ?? false;
-
-    /// <summary>
-    /// Special state for dedicated servers that are shutting down.
+    /// Indicates that this server is shutting down (lobby host only).
+    /// If set, clients will disconnect and show an appropriate error.
     /// </summary>
     public bool StateTerminating => State?.Contains("terminating") ?? false;
 
     /// <summary>
-    /// State added by all MultiplayerCore users.
+    /// Indicates that the player wants to play the next level.
+    /// If not set, the player wants to spectate.
+    /// </summary>
+    public bool StateWantsToPlayNextLevel => State?.Contains("wants_to_play_next_level") ?? false;
+
+    /// <summary>
+    /// Indicates that the player is currently participating in gameplay.
+    /// If not set, the player is spectating, or has finished/ended the level in some way.
+    /// </summary>
+    public bool StateIsActive => State?.Contains("is_active") ?? false;
+
+    /// <summary>
+    /// Indicates that player had the `is_active` state when the gameplay level begun.
+    /// </summary>
+    public bool StateWasActiveAtLevelStart => State?.Contains("was_active_at_level_start") ?? false;
+
+    /// <summary>
+    /// Indicates that the player has fully finished a level.
+    /// </summary>
+    public bool StateFinishedLevel => State?.Contains("finished_level") ?? false;
+
+    /// <summary>
+    /// Indicates that the client's `MenuRpcManager` is active and Menu RPCs can be handled.
+    /// </summary>
+    public bool StateInMenu => State?.Contains("in_menu") ?? false;
+
+    /// <summary>
+    /// Indicates that the client's `GameplayRpcManager` is active and Gameplay RPCs can be handled.
+    /// </summary>
+    public bool StateInGameplay => State?.Contains("in_gameplay") ?? false;
+
+    /// <summary>
+    /// Indicates a modded client (MultiplayerCore).
     /// </summary>
     public bool StateModded => State?.Contains("modded") ?? false;
 

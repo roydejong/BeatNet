@@ -255,15 +255,21 @@ public class LobbyHost
         {
             if (!_playersByPeer.TryGetValue(disconnectEvent.PeerId, out var player))
                 continue;
-            
-            player.Disconnected = true;
-                        
+
+            if (!player.Disconnected)
+            {
+                // Player was not already kicked for example, so we need to notify other clients
+                player.Disconnected = true;
+                SendToAllFrom(new PlayerDisconnectedPacket(DisconnectedReason.ClientConnectionClosed), player.ConnectionId);
+            }
+
             _players.Remove(player.ConnectionId);
             _playersByPeer.Remove(disconnectEvent.PeerId);
 
             _availableConnectionIds.Add(player.ConnectionId);
             if (player.SortIndex != null)
                 _availableSortIndices.Add(player.SortIndex.Value);
+            
 
             _logger?.Debug("({Port}) Player #{Slot} disconnected ({UserId}, {UserName})",
                 PortNumber, player.ConnectionId, player.UserId, player.UserName);
@@ -426,7 +432,8 @@ public class LobbyHost
     private void _Send(uint peerId, INetSerializable message, NetChannel channel = NetChannel.Reliable,
         byte senderId = 0)
     {
-        _logger?.Information("TEMP: Sending message to peer {PeerId} ({MessageType})", peerId, message.GetType().Name);
+        if (message is BaseRpc rpc && rpc.SyncTime == 0)
+            rpc.SyncTime = SyncTime;
         
         var payload = new NetPayload(
             message: message,
@@ -461,9 +468,6 @@ public class LobbyHost
         
         foreach (var message in payload.Messages)
         {
-            _logger?.Information("TEMP: Received message from player {PlayerId} ({MessageType})",
-                player.ConnectionId, message.GetType().Name);
-
             // Message blacklist: clients may not send these
             switch (message)
             {
@@ -491,12 +495,15 @@ public class LobbyHost
             {
                 case PlayerIdentityPacket identityPacket:
                     player.SetPlayerIdentity(identityPacket);
+                    GameMode.OnPlayerUpdate(player);
                     break;
                 case PlayerAvatarPacket avatarPacket:
                     player.SetPlayerAvatar(avatarPacket.PlayerAvatar);
+                    GameMode.OnPlayerUpdate(player);
                     break;
                 case PlayerStatePacket statePacket:
                     player.SetPlayerState(statePacket.PlayerState);
+                    GameMode.OnPlayerUpdate(player);
                     break;
                 case PingPacket pingPacket:
                     SendTo(new PongPacket(pingPacket.PingTime), player);

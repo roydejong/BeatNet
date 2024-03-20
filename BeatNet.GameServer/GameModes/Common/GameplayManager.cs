@@ -120,10 +120,9 @@ public class GameplayManager
                         _playerSceneSettings.Values.ToList()
                     );
 
-                    // Notify any late players that can't play, and rebuild the active player list
+                    // Notify any late players, rebuild active players
                     var latePlayers = _host.ConnectedPlayers
-                        .Where(p => !_playerSceneSettings.ContainsKey(p.Id) || !p.StateWasActiveAtLevelStart ||
-                                    !p.StateIsActive)
+                        .Where(p => !_playerSceneSettings.ContainsKey(p.Id) && p.StateWasActiveAtLevelStart)
                         .ToList();
 
                     foreach (var latePlayer in latePlayers)
@@ -165,7 +164,7 @@ public class GameplayManager
                         .Max();
                     _songStartTime = _host.SyncTime + FixedSongStartTimeDelayMs + maxPlayerLatency;
                     
-                    // Notify any late players (that WERE active) that can't play, and rebuild the active player list
+                    // Notify any late players, rebuild active players
                     var latePlayers = _host.ConnectedPlayers
                         .Where(p => !_playerSongReady.Contains(p.Id) && p.StateWasActiveAtLevelStart)
                         .ToList();

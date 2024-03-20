@@ -74,7 +74,7 @@ public class NetworkTest
             writer.WriteSerializable(connRequest);
 
             var packet = new Packet();
-            packet.Create(buffer.ToArray(), PacketFlags.Reliable);
+            packet.Create(buffer[..writer.Position].ToArray(), PacketFlags.Reliable);
             serverPeer.Send((byte)NetChannel.Reliable, ref packet);
             client.Service(100, out _);
 
@@ -89,11 +89,11 @@ public class NetworkTest
             });
 
             // Send identity
-            var stateHash = new PlayerStateHash(new(ulong.MaxValue, ulong.MaxValue));
+            var stateHash = new PlayerStateHash(BitMask128.MaxValue);
             var identity = new PlayerIdentityPacket
             (
                 playerState: stateHash,
-                playerAvatar: new(new(), new(0, 0)),
+                playerAvatar: new(new(), BitMask128.MaxValue),
                 random: new("random", 0, 32, true),
                 publicEncryptionKey: new("publicEncryptionKey", 0, 256, true)
             );
@@ -101,12 +101,18 @@ public class NetworkTest
             writer.Reset();
             writer.WriteSerializable(new NetPayload(identity));
             
-            packet.Create(buffer.ToArray(), PacketFlags.Reliable);
+            packet.Create(buffer[..writer.Position].ToArray(), PacketFlags.Reliable);
             serverPeer.Send((byte)NetChannel.Reliable, ref packet);
             client.Service(100, out _);
+            client.Service(100, out _);
             
-            // Check identity set // TODO
-            // Assert.That(player.State, Is.EqualTo(stateHash));
+            // Check identity set
+            Assert.Multiple(() =>
+            {
+                Assert.That(player.State, Is.Not.Null);
+                Assert.That(player.State!.BloomFilter.D0, Is.EqualTo(identity.PlayerState.BloomFilter.D0));
+                Assert.That(player.State!.BloomFilter.D1, Is.EqualTo(identity.PlayerState.BloomFilter.D1));
+            });
 
             // Disconnect
             serverPeer.DisconnectNow(0);
@@ -119,11 +125,12 @@ public class NetworkTest
         {
             client.Dispose();
             client = null;
+            
+            // Stop
+            var stopTask = lobbyHost.Stop();
+            stopTask.Wait();
         }
 
-        // Stop
-        var stopTask = lobbyHost.Stop();
-        stopTask.Wait();
         Assert.That(lobbyHost.IsRunning, Is.False);
     }
 }

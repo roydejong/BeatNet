@@ -183,7 +183,7 @@ public static class ReadWriteMethodGenerator
                         break;
                     case "1f":
                         rwMethod = null;
-                        writeCodeBuffer.AppendLine($"\t\twriter.WriteFloat(1f);");
+                        // Do not write 1f, but assign it on read
                         readCodeBuffer.AppendLine($"\t\t{linkedField.NameForField} = 1f;");
                         break;
                     case "Deserialize()":

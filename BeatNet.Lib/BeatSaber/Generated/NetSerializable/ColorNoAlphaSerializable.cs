@@ -30,7 +30,6 @@ public sealed class ColorNoAlphaSerializable : INetSerializable
 		writer.WriteFloat(R);
 		writer.WriteFloat(G);
 		writer.WriteFloat(B);
-		writer.WriteFloat(1f);
 	}
 
 	public void ReadFrom(ref NetReader reader)

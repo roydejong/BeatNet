@@ -216,10 +216,10 @@ public class QuickPlayGameMode : GameMode
         else
             Host.SendToAll(new ClearSelectedBeatmapRpc());
         
-        _countdownManager.SetSelectedLevel(level, _voteManager.TopVotedModifiers ?? DefaultModifiers);
-        
         if (level != null)
             Host.SendToAll(new GetIsEntitledToLevelRpc(level.LevelId));
+
+        UpdateCountdownSelectedLevel();
     }
 
     private void HandleTopVotedModifiersChanged(GameplayModifiers? modifiers)
@@ -228,6 +228,13 @@ public class QuickPlayGameMode : GameMode
             return;
         
         Host.SendToAll(new SetSelectedGameplayModifiersRpc(modifiers ?? DefaultModifiers));
+
+        UpdateCountdownSelectedLevel();
+    }
+
+    private void UpdateCountdownSelectedLevel()
+    {
+        _countdownManager.SetSelectedLevel(_voteManager.TopVotedBeatmap, _voteManager.TopVotedModifiers ?? DefaultModifiers);
     }
     
     private void HandleCountdownManagerFinished()
@@ -247,6 +254,9 @@ public class QuickPlayGameMode : GameMode
 
     private void HandleCountdownManagerEndTimeSet(long endTime)
     {
+        if (GameState != MultiplayerGameState.Lobby)
+            return;
+        
         Host.SendToAll(new SetCountdownEndTimeRpc(endTime));
     }
 

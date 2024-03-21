@@ -55,11 +55,11 @@ public class BeatSaberService : IHostedService
         _shuttingDown = true;
         
         _localDiscovery.Stop();
-
+        
+        var stopTasks = new List<Task>();
         foreach (var lobby in _lobbies.Values)
-        {
-            await lobby.Stop();
-        }
+            stopTasks.Add(lobby.Stop());
+        await Task.WhenAll(stopTasks);
         
         _lobbies.Clear();
         _logger.Information("Shutdown complete. Bye!");

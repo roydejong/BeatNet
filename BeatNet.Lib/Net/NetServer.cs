@@ -134,18 +134,6 @@ public class NetServer
             var shutdownCycle = true;
             while (_serverThreadKeepAlive || shutdownCycle)
             {
-                // Send: Pending disconnect actions
-                while (PendingDisconnectQueue.TryDequeue(out var e))
-                {
-                    if (!_peers.TryGetValue(e.PeerId, out var peer))
-                        continue;
-
-                    if (e.Immediate)
-                        peer.DisconnectNow(0);
-                    else
-                        peer.DisconnectLater(0);
-                }
-                
                 // Send: Pending packets
                 while (SendQueue.TryDequeue(out var e))
                 {
@@ -162,6 +150,18 @@ public class NetServer
                         : PacketFlags.Reliable;
                     packet.Create(_sendBufferMemory, writer.Position, packetFlags);
                     peer.Send((byte)e.Channel, ref packet);
+                }
+                
+                // Send: Pending disconnect actions
+                while (PendingDisconnectQueue.TryDequeue(out var e))
+                {
+                    if (!_peers.TryGetValue(e.PeerId, out var peer))
+                        continue;
+
+                    if (e.Immediate)
+                        peer.DisconnectNow(0);
+                    else
+                        peer.DisconnectLater(0);
                 }
 
                 // ENet: Handle any pending events

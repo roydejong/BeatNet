@@ -153,7 +153,7 @@ public class LobbyHost
         {
             // Kick all players with "server shutting down" message
             KickAllPlayers(DisconnectedReason.ServerTerminated);
-            await Task.Delay(10);
+            await Task.Delay(50); // give some time to ensure NetServer completes sends
         }
 
         // TODO Server browser update (fire and forget async)
@@ -171,7 +171,7 @@ public class LobbyHost
     }
 
     #region Lobby Update
-    
+
     private const int GameModeTickMs = 1000;
     private const int PingIntervalMs = 2000;
 
@@ -225,26 +225,24 @@ public class LobbyHost
 
             var logEndPoint = $"[{connectEvent.Peer.IP}]:{connectEvent.Peer.Port}";
 
-            if (TryGetNextConnectionId(out var newConnectionId))
+            if (!TryGetNextConnectionId(out var newConnectionId))
             {
-                var player = new LobbyPlayer(this, connectEvent.Peer.ID, newConnectionId);
-                player.SetConnectionRequest(connectEvent.ConnectionRequest);
-                        
-                _players[newConnectionId] = player;
-                _playersByPeer[connectEvent.Peer.ID] = player;
-
-                _logger?.Debug("({Port}) Player #{Slot} connected ({UserId}, {UserName}, {EndPoint})",
-                    PortNumber, newConnectionId, player.UserId, player.UserName, logEndPoint);
-                        
-                HandlePlayerConnect(player);
-            }
-            else
-            {
-                KickPeer(connectEvent.Peer.ID, immediate: false, DisconnectedReason.ServerAtCapacity);
-
                 _logger?.Warning("({Port}) Lobby full, rejecting new connection: {EndPoint}",
                     PortNumber, logEndPoint);
+                KickPeer(connectEvent.Peer.ID, immediate: false, DisconnectedReason.ServerAtCapacity);
+                return;
             }
+
+            var player = new LobbyPlayer(this, connectEvent.Peer.ID, newConnectionId);
+            player.SetConnectionRequest(connectEvent.ConnectionRequest);
+                    
+            _players[newConnectionId] = player;
+            _playersByPeer[connectEvent.Peer.ID] = player;
+
+            _logger?.Debug("({Port}) Player #{Slot} connected ({UserId}, {UserName}, {EndPoint})",
+                PortNumber, newConnectionId, player.UserId, player.UserName, logEndPoint);
+                    
+            HandlePlayerConnect(player);
         }
     }
 
@@ -258,7 +256,7 @@ public class LobbyHost
 
             if (!player.Disconnected)
             {
-                // Player was not already kicked for example, so we need to notify other clients
+                // Player was not already kicked, so we need to notify other clients
                 player.Disconnected = true;
                 SendToAllFrom(new PlayerDisconnectedPacket(DisconnectedReason.ClientConnectionClosed), player.ConnectionId);
             }

@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using BeatNet.GameServer.Main;
 using BeatNet.GameServer.Management;
+using BeatNet.Lib;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.Net.IO;
@@ -92,17 +93,29 @@ public class LocalDiscovery
 
                 var reader = new NetReader(received);
                 var prefix = reader.ReadString();
+                var protocolVersion = reader.ReadInt();
+                var gameVersion = reader.ReadString();
 
                 if (prefix != PacketPrefix)
                     // Invalid packet: bad prefix
                     continue;
 
-                var version = reader.ReadInt();
-                if (version != ProtocolVersion)
+                if (protocolVersion != ProtocolVersion)
+                {
                     // Warning: possibly incompatible protocol version
-                    _logger?.Warning("Received discovery packet with unknown version {Version} ({Source})",
-                        version, clientEp);
-                
+                    _logger?.Warning("Ignoring discovery packet with unknown protocol version {Version} ({Source})",
+                        protocolVersion, clientEp);
+                    continue;
+                }
+
+                if (!VersionConsts.IsGameVersionCompatible(gameVersion))
+                {
+                    // Unsupported game version
+                    _logger?.Warning("Ignoring discovery packet with incompatible game version {Version} ({Source})",
+                        gameVersion, clientEp);
+                    continue;
+                }
+
                 _logger?.Debug("Sending local network discovery response to {ClientEp}", clientEp);
                 
                 // Helper: If the LAN address it the same as ours, treat as localhost

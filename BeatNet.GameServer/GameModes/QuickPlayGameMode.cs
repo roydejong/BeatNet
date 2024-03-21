@@ -267,6 +267,9 @@ public class QuickPlayGameMode : GameMode
         
         Host.SendToAll(new CancelCountdownRpc());
         Host.SendToAll(new CancelLevelStartRpc());
+        
+        Host.SendToAll(new GetRecommendedBeatmapRpc());
+        Host.SendToAll(new GetRecommendedGameplayModifiersRpc());
     }
 
     private void HandleGameplayCancelled()

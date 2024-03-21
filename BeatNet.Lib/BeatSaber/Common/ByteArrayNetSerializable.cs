@@ -23,6 +23,10 @@ public class ByteArrayNetSerializable : INetSerializable
         _minLength = minLength;
         _maxLength = maxLength;
     }
+    
+    public ByteArrayNetSerializable(string name, int size, bool allowEmpty = false) : this(name, size, size, allowEmpty)
+    {
+    }
 
     public void Clear()
     {

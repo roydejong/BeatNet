@@ -18,10 +18,10 @@ public sealed class OptionalAvatarDataPacket : BaseSessionPacket
 	public uint DataType { get; set; }
 	public ByteArrayNetSerializable Data { get; set; }
 
-	public OptionalAvatarDataPacket(uint dataType, ByteArrayNetSerializable data)
+	public OptionalAvatarDataPacket(uint dataType, ByteArrayNetSerializable? data = null)
 	{
 		DataType = dataType;
-		Data = data;
+		Data = data ?? new ByteArrayNetSerializable("Optional avatar data", 0, 32767, true);
 	}
 
 	public override void WriteTo(ref NetWriter writer)

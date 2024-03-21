@@ -16,7 +16,7 @@ public sealed class PlayerDisconnectedPacket : BaseCpmPacket
 
 	public DisconnectedReason DisconnectedReason { get; set; }
 
-	public PlayerDisconnectedPacket(DisconnectedReason disconnectedReason)
+	public PlayerDisconnectedPacket(DisconnectedReason disconnectedReason = DisconnectedReason.Unknown)
 	{
 		DisconnectedReason = disconnectedReason;
 	}

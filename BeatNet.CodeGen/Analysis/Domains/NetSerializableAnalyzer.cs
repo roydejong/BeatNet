@@ -42,10 +42,14 @@ public class NetSerializableAnalyzer : ISubAnalyzer
         var field = _fieldParser.TryParse(line);
         if (field != null)
         {
-            if (_typeName.Contains("BitMask") && field.Name is "bitCount" or "maxValue")
+            var isBitMask = _typeName.Contains("BitMask");
+            if (isBitMask && field.Name is "bitCount" or "maxValue")
                 return; // Ignore these fields, they're not part of the actual serialized data
             
             _currentResult.Fields[field.Name] = field;
+
+            if (isBitMask)
+                field.DefaultValue = 0;
         }
     }
 

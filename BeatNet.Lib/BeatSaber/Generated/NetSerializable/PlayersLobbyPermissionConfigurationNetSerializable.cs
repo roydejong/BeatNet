@@ -14,9 +14,9 @@ public sealed class PlayersLobbyPermissionConfigurationNetSerializable : INetSer
 {
 	public List<PlayerLobbyPermissionConfigurationNetSerializable> PlayersPermission { get; set; }
 
-	public PlayersLobbyPermissionConfigurationNetSerializable(List<PlayerLobbyPermissionConfigurationNetSerializable> playersPermission)
+	public PlayersLobbyPermissionConfigurationNetSerializable(List<PlayerLobbyPermissionConfigurationNetSerializable>? playersPermission = null)
 	{
-		PlayersPermission = playersPermission;
+		PlayersPermission = playersPermission ?? new List<PlayerLobbyPermissionConfigurationNetSerializable>();
 	}
 
 	public void WriteTo(ref NetWriter writer)

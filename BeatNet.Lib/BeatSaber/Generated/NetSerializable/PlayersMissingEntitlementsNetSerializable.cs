@@ -14,9 +14,9 @@ public sealed class PlayersMissingEntitlementsNetSerializable : INetSerializable
 {
 	public List<string> PlayersWithoutEntitlements { get; set; }
 
-	public PlayersMissingEntitlementsNetSerializable(List<string> playersWithoutEntitlements)
+	public PlayersMissingEntitlementsNetSerializable(List<string>? playersWithoutEntitlements = null)
 	{
-		PlayersWithoutEntitlements = playersWithoutEntitlements;
+		PlayersWithoutEntitlements = playersWithoutEntitlements ?? new List<string>();
 	}
 
 	public void WriteTo(ref NetWriter writer)

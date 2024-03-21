@@ -79,7 +79,8 @@ public class FieldParser
             TypeName = type,
             Name = name,
             IsConst = line.Const,
-            DefaultValue = line.DefaultValue
+            DefaultValue = line.DefaultValue,
+            DefaultNull = line.DefaultValue == "null"
         };
 
         if (line.IsProperty)

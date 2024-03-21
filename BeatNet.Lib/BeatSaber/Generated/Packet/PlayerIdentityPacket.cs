@@ -19,12 +19,12 @@ public sealed class PlayerIdentityPacket : BaseCpmPacket
 	public ByteArrayNetSerializable Random { get; set; }
 	public ByteArrayNetSerializable PublicEncryptionKey { get; set; }
 
-	public PlayerIdentityPacket(PlayerStateHash playerState, MultiplayerAvatarsData playerAvatar, ByteArrayNetSerializable random, ByteArrayNetSerializable publicEncryptionKey)
+	public PlayerIdentityPacket(PlayerStateHash playerState, MultiplayerAvatarsData playerAvatar, ByteArrayNetSerializable? random = null, ByteArrayNetSerializable? publicEncryptionKey = null)
 	{
 		PlayerState = playerState;
 		PlayerAvatar = playerAvatar;
-		Random = random;
-		PublicEncryptionKey = publicEncryptionKey;
+		Random = random ?? new ByteArrayNetSerializable("random", 32, true);
+		PublicEncryptionKey = publicEncryptionKey ?? new ByteArrayNetSerializable("publicEncryptionKey", 0, 256, true);
 	}
 
 	public override void WriteTo(ref NetWriter writer)

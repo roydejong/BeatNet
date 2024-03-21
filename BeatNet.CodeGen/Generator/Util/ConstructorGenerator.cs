@@ -23,8 +23,34 @@ public static class ConstructorGenerator
             if (paramNo > 0)
                 constructorBuffer.Append(", ");
             
-            constructorBuffer.Append($"{field.TypeName} {field.NameForArg}");
-            constructorBodyBuffer.AppendLine($"\t\t{field.NameForField} = {field.NameForArg};");
+
+            var hasComplexDefaultValue = false;
+            if (field.DefaultNull)
+            {
+                constructorBuffer.Append($"{field.TypeName}? {field.NameForArg} = null");
+            }
+            else if (field.DefaultValue != null)
+            {
+                var defaultValueStr = field.DefaultValue.ToString();
+                if (defaultValueStr!.StartsWith("new "))
+                {
+                    constructorBuffer.Append($"{field.TypeName}? {field.NameForArg} = null");
+                    hasComplexDefaultValue = true;
+                }
+                else 
+                {
+                    constructorBuffer.Append($"{field.TypeName} {field.NameForArg} = {field.DefaultValue}");
+                }
+            }
+            else
+            {
+                constructorBuffer.Append($"{field.TypeName} {field.NameForArg}");
+            }
+
+            if (hasComplexDefaultValue)
+                constructorBodyBuffer.AppendLine($"\t\t{field.NameForField} = {field.NameForArg} ?? {field.DefaultValue};");
+            else
+                constructorBodyBuffer.AppendLine($"\t\t{field.NameForField} = {field.NameForArg};");
             
             paramNo++;
         }

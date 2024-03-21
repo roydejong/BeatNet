@@ -20,9 +20,9 @@ public sealed class BeatmapLevelMask : INetSerializable
 
 	public BitMaskSparse BloomFilter { get; set; }
 
-	public BeatmapLevelMask(BitMaskSparse bloomFilter)
+	public BeatmapLevelMask(BitMaskSparse? bloomFilter = null)
 	{
-		BloomFilter = bloomFilter;
+		BloomFilter = bloomFilter ?? new BitMaskSparse(16384);
 	}
 
 	public void WriteTo(ref NetWriter writer)

@@ -5,16 +5,55 @@ namespace BeatNet.Lib.BeatSaber.Util;
 
 public static class BitMaskUtils
 {
-    #region Contains
-    
-    public static bool Contains(this PlayerStateHash playerState, string value)
-    {
-        const int hashCount = 3;
-        const int hashBits = 8;
+    #region Creation
 
-        var valueHash = value.MurmurHash2();
-        return playerState.BloomFilter.Contains(valueHash, hashCount, hashBits);
+    public static BitMask128 CreateBitMask128(IEnumerable<string> strings)
+    {
+        var bitMask = new BitMask128();
+        foreach (var str in strings)
+            bitMask.AddEntry(str);
+        return bitMask;
     }
+    
+    public static BitMask256 CreateBitMask256(IEnumerable<string> strings)
+    {
+        var bitMask = new BitMask256();
+        foreach (var str in strings)
+            bitMask.AddEntry(str);
+        return bitMask;
+    }
+    
+    #endregion
+
+    #region Addition
+    
+    public static void AddEntry(this BitMask128 bitMask, string value, int hashCount = 3, int hashBits = 8)
+        => bitMask.AddEntryHash(value.MurmurHash2(), hashCount, hashBits);
+    
+    public static void AddEntry(this BitMask256 bitMask, string value, int hashCount = 3, int hashBits = 8)
+        => bitMask.AddEntryHash(value.MurmurHash2(), hashCount, hashBits);
+
+    public static void AddEntryHash(this BitMask128 bitMask, uint hash, int hashCount = 3, int hashBits = 8)
+    {
+        for (var i = 0; i < hashCount; i++)
+        {
+            bitMask.SetBits((int)(hash % (ulong)BitMask128.BitCount), 1UL);
+            hash >>= hashBits;
+        }
+    }
+
+    public static void AddEntryHash(this BitMask256 bitMask, uint hash, int hashCount = 3, int hashBits = 8)
+    {
+        for (var i = 0; i < hashCount; i++)
+        {
+            bitMask.SetBits((int)(hash % (ulong)BitMask256.BitCount), 1UL);
+            hash >>= hashBits;
+        }
+    }
+
+    #endregion
+    
+    #region Contains
     
     public static bool Contains(this BitMask128 bitMask, string value, int hashCount = 3, int hashBits = 8) =>
         bitMask.Contains(value.MurmurHash2(), hashCount, hashBits);
@@ -50,6 +89,24 @@ public static class BitMaskUtils
     
     #endregion
 
+    #region SetBits
+    
+    public static void SetBits(this BitMask128 bitMask, int offset, ulong bits)
+    {
+        bitMask.D0 |= bits.ShiftLeft(offset - 64);
+        bitMask.D1 |= bits.ShiftLeft(offset);
+    }
+
+    public static void SetBits(this BitMask256 bitMask, int offset, ulong bits)
+    {
+        bitMask.D0 |= bits.ShiftLeft(offset - 192);
+        bitMask.D1 |= bits.ShiftLeft(offset - 128);
+        bitMask.D2 |= bits.ShiftLeft(offset - 64);
+        bitMask.D3 |= bits.ShiftLeft(offset);
+    }
+
+    #endregion
+    
     #region GetBits
     
     public static ulong GetBits(this BitMask128 bitMask, int offset, int count)
@@ -104,5 +161,15 @@ public static class BitMaskUtils
         return 0UL;
     }
     
+    #endregion
+
+    #region PlayerStateHash helpers
+    
+    public static void Add(this PlayerStateHash playerState, string value)
+        => playerState.BloomFilter.AddEntry(value);
+    
+    public static bool Contains(this PlayerStateHash playerState, string value)
+        => playerState.BloomFilter.Contains(value.MurmurHash2());
+
     #endregion
 }

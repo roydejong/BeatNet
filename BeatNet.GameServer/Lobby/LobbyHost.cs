@@ -7,6 +7,7 @@ using BeatNet.Lib.BeatSaber.Generated.MultiplayerSession;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.BeatSaber.Generated.Packet;
 using BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
+using BeatNet.Lib.BeatSaber.Util;
 using BeatNet.Lib.Net;
 using BeatNet.Lib.Net.Events;
 using BeatNet.Lib.Net.Interfaces;
@@ -572,7 +573,7 @@ public class LobbyHost
         
         // Send host player data (hidden server player)
         SendToFrom(new PlayerIdentityPacket(
-            new PlayerStateHash(BitMask128.MinValue),
+            new PlayerStateHash(BitMaskUtils.CreateBitMask128(new[] { "dedicated_server" })),
             new MultiplayerAvatarsData(new List<MultiplayerAvatarData>(), BitMask128.MinValue),
             new ByteArrayNetSerializable(""),
             new ByteArrayNetSerializable("")

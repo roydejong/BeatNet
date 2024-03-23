@@ -162,7 +162,7 @@ public class GameplayManager
                     var maxPlayerLatency = _playersAtLevelStart
                         .Select(p => p.LatencyAverage.CurrentAverage)
                         .Max();
-                    _songStartTime = _host.SyncTime + FixedSongStartTimeDelayMs + maxPlayerLatency;
+                    _songStartTime = _host.SyncTime + FixedSongStartTimeDelayMs + (maxPlayerLatency * 2);
                     
                     // Notify any late players, rebuild active players
                     var latePlayers = _host.ConnectedPlayers
@@ -199,7 +199,7 @@ public class GameplayManager
             case GameplayState.Gameplay:
             {
                 var activePlayers = _playersRemaining
-                    .Where(p => p.StateIsActive)
+                    .Where(p => p.StateIsActive && p.StateInGameplay)
                     .ToList();
                 
                 var anyCompletionResults = _results.Values.Any(r =>

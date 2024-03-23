@@ -129,6 +129,7 @@ public class QuickPlayGameMode : GameMode
                     player.Send(new SetSelectedGameplayModifiersRpc(shownModifiers));
                     player.Send(new GetRecommendedBeatmapRpc());
                     player.Send(new GetRecommendedGameplayModifiersRpc());
+                    player.Send(new GetIsReadyRpc());
                     // (They'll ask for countdown stuff manually but I've seen some issues with recommends)
                 }
                 break;

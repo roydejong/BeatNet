@@ -33,11 +33,13 @@ public class CountdownManager
         _readyPlayers = new();
     }
 
-    public void Reset()
+    public void Reset(bool resetReadyStates = true)
     {
         _level = null;
         _modifiers = null;
-        _readyPlayers.Clear();
+        
+        if (resetReadyStates)
+            _readyPlayers.Clear();
         
         IsCountingDown = false;
         IsLockedIn = false;
@@ -72,7 +74,7 @@ public class CountdownManager
         {
             if (IsCountingDown)
                 // Cancel countdown - no level selected and/or no players ready
-                Reset();
+                Reset(false);
             return;
         }
         

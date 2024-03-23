@@ -34,6 +34,14 @@ public class NetSerializableGenerator
         
         var targetFile = Path.Combine(targetDir, $"{NetSerializable.TypeName}.cs");
         
+        var useStruct = NetSerializable.TypeName.StartsWith("Vector")
+                        || NetSerializable.TypeName.StartsWith("Quaternion")
+                        || NetSerializable.TypeName.StartsWith("ColorSerializable")
+                        || NetSerializable.TypeName.StartsWith("Color32")
+                        || NetSerializable.TypeName.StartsWith("ColorNoAlpha")
+                        || NetSerializable.TypeName.Contains("BitMask");
+        var classInit = useStruct ? "struct" : "sealed class";
+        
         using var sw = new StreamWriter(targetFile);
         
         // Header, usings, namespace, class declaration
@@ -51,7 +59,7 @@ public class NetSerializableGenerator
         sw.WriteLine($"namespace {targetNamespace};");
         sw.WriteLine();
         sw.WriteLine($"// ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global");
-        sw.WriteLine($"public sealed class {NetSerializable.TypeName} : {baseType}");
+        sw.WriteLine($"public {classInit} {NetSerializable.TypeName} : {baseType}");
         sw.WriteLine("{");
 
         if (isMultiplayerSessionPacket)

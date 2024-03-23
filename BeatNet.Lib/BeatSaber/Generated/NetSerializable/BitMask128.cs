@@ -10,7 +10,7 @@ using BeatNet.Lib.BeatSaber.Generated.Enum;
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
-public sealed class BitMask128 : INetSerializable
+public struct BitMask128 : INetSerializable
 {
 	public ulong D0 { get; set; }
 	public ulong D1 { get; set; }

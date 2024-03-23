@@ -10,7 +10,7 @@ using BeatNet.Lib.BeatSaber.Generated.Enum;
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
-public sealed class QuaternionSerializable : INetSerializable
+public struct QuaternionSerializable : INetSerializable
 {
 	public const float kSqrtTwo = 1.4142135f;
 	public const float kOneOverSqrtTwo = 0.70710677f;

@@ -28,8 +28,7 @@ public class LobbyPlayer : IConnectedPlayer
     private byte[]? Random { get; set; }
     public bool Disconnected { get; set; }
 
-    public bool PendingConnection => UserId == null;
-    public bool PendingSpawn => SortIndex == null;
+    public bool HasIdentity => _playerIdentityPacket != null;
 
     private PlayerIdentityPacket? _playerIdentityPacket = null;
     

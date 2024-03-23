@@ -29,6 +29,7 @@ public class LobbyHost
     private readonly List<int> _availableSortIndices;
     private readonly Dictionary<ushort, LobbyPlayer> _players;
     private readonly Dictionary<uint, LobbyPlayer> _playersByPeer;
+    private bool _sortIndexUpdateNeeded;
 
     public IReadOnlyList<LobbyPlayer> PlayerList => _players.Values.ToList();
     public IReadOnlyList<LobbyPlayer> ConnectedPlayers => _players.Values.Where(p => !p.Disconnected).ToList();
@@ -65,6 +66,7 @@ public class LobbyHost
         _availableSortIndices = new(maxPlayerCount);
         _players = new(maxPlayerCount);
         _playersByPeer = new(maxPlayerCount);
+        _sortIndexUpdateNeeded = false;
 
         TimeProvider = new SyncTimeProvider();
         
@@ -268,7 +270,6 @@ public class LobbyHost
             _availableConnectionIds.Add(player.ConnectionId);
             if (player.SortIndex != null)
                 _availableSortIndices.Add(player.SortIndex.Value);
-            
 
             _logger?.Debug("({Port}) Player #{Slot} disconnected ({UserId}, {UserName})",
                 PortNumber, player.ConnectionId, player.UserId, player.UserName);
@@ -306,8 +307,12 @@ public class LobbyHost
 
     private void _UpdateSortIndexes()
     {
+        if (!_sortIndexUpdateNeeded)
+            return;
+        
         // Find valid players without a sort index, assign next available index
         // Players must have valid ping and must have sent identity with valid state
+        
         var playersWithoutSort = _players.Values
             .Where(p => p is
             {
@@ -327,6 +332,8 @@ public class LobbyHost
             SendToAll(player.GetPlayerSortOrderPacket());
             GameMode.OnPlayerSpawn(player);
         }
+        
+        _sortIndexUpdateNeeded = false;
     }
 
     private void _UpdateServerBrowser()
@@ -493,8 +500,11 @@ public class LobbyHost
             switch (message)
             {
                 case PlayerIdentityPacket identityPacket:
+                    var isIdentityInit = !player.HasIdentity;
                     player.SetPlayerIdentity(identityPacket);
                     GameMode.OnPlayerUpdate(player);
+                    if (isIdentityInit)
+                        _sortIndexUpdateNeeded = true;
                     break;
                 case PlayerAvatarPacket avatarPacket:
                     player.SetPlayerAvatar(avatarPacket.PlayerAvatar);
@@ -509,7 +519,10 @@ public class LobbyHost
                     SendTo(new SyncTimePacket(SyncTime), player);
                     break;
                 case PongPacket pongPacket:
+                    var isLatencyInit = !player.HasValidLatency;
                     player.LatencyAverage.Update(SyncTime - pongPacket.PingTime);
+                    if (isLatencyInit)
+                        _sortIndexUpdateNeeded = true;
                     break;
                 case BaseMenuRpc menuRpc:
                     if (menuRpc is GetPlayersPermissionConfigurationRpc)

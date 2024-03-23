@@ -226,8 +226,17 @@ public static class ReadWriteMethodGenerator
 
                     writeCodeBuffer.AppendLine(
                         $"\t\twriter.Write{rwMethod}({writeCastPrefix}{linkedField.NameForField});");
-                    readCodeBuffer.AppendLine(
-                        $"\t\t{linkedField.NameForField} = {readCastPrefix}reader.Read{rwMethod}();");
+
+                    if (linkedField.IsFixedInit)
+                    {
+                        readCodeBuffer.AppendLine($"\t\t{linkedField.NameForField} ??= {linkedField.DefaultValue};");
+                        readCodeBuffer.AppendLine($"\t\t{linkedField.NameForField}.ReadFrom(ref reader);");
+                    }
+                    else
+                    {
+                        readCodeBuffer.AppendLine(
+                            $"\t\t{linkedField.NameForField} = {readCastPrefix}reader.Read{rwMethod}();");
+                    }
                 }
             }
         }

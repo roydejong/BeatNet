@@ -23,7 +23,7 @@ public class ByteArrayNetSerializable : INetSerializable
         _minLength = minLength;
         _maxLength = maxLength;
     }
-    
+
     public ByteArrayNetSerializable(string name, int size, bool allowEmpty = false) : this(name, size, size, allowEmpty)
     {
     }
@@ -34,8 +34,20 @@ public class ByteArrayNetSerializable : INetSerializable
 
         // TODO Buffer pool - release
     }
+    
+    public void SetData(byte[] data)
+    {
+        if (data.Length < _minLength || data.Length > _maxLength)
+        {
+            throw new ArgumentException(
+                $"{_name} must be between {_minLength} and {_maxLength} long, given an array of length {data.Length}");
+        }
 
-    public byte[]? GetData(bool emptyAsNull = false)
+        Resize(data.Length);
+        Array.Copy(data, _data!, data.Length);
+    }
+
+    public byte[]? CopyData(bool emptyAsNull = false)
     {
         if (_length == 0)
             return emptyAsNull ? null : Array.Empty<byte>();

@@ -17,42 +17,48 @@ public static class ConstructorGenerator
         var paramNo = 0;
         foreach (var field in fields)
         {
-            if (field.IsConst)
+            if (field.IsConst)  
                 continue;
-            
-            if (paramNo > 0)
-                constructorBuffer.Append(", ");
-            
 
-            var hasComplexDefaultValue = false;
-            if (field.DefaultNull)
+            var inArgsList = !field.IsFixedInit;
+            
+            if (paramNo > 0 && inArgsList)
+                constructorBuffer.Append(", ");
+
+            var hasComplexDefaultValue = (field.DefaultValue?.ToString() ?? "").StartsWith("new ");
+            if (inArgsList)
             {
-                constructorBuffer.Append($"{field.TypeName}? {field.NameForArg} = null");
-            }
-            else if (field.DefaultValue != null)
-            {
-                var defaultValueStr = field.DefaultValue.ToString();
-                if (defaultValueStr!.StartsWith("new "))
+                if (field.DefaultNull)
                 {
                     constructorBuffer.Append($"{field.TypeName}? {field.NameForArg} = null");
-                    hasComplexDefaultValue = true;
                 }
-                else 
+                else if (field.DefaultValue != null)
                 {
-                    constructorBuffer.Append($"{field.TypeName} {field.NameForArg} = {field.DefaultValue}");
+                    if (hasComplexDefaultValue)
+                    {
+                        constructorBuffer.Append($"{field.TypeName}? {field.NameForArg} = null");
+                        hasComplexDefaultValue = true;
+                    }
+                    else
+                    {
+                        constructorBuffer.Append($"{field.TypeName} {field.NameForArg} = {field.DefaultValue}");
+                    }
                 }
-            }
-            else
-            {
-                constructorBuffer.Append($"{field.TypeName} {field.NameForArg}");
+                else
+                {
+                    constructorBuffer.Append($"{field.TypeName} {field.NameForArg}");
+                }
             }
 
-            if (hasComplexDefaultValue)
+            if (field.IsFixedInit)
+                constructorBodyBuffer.AppendLine($"\t\t{field.NameForField} = {field.DefaultValue};");
+            else if (hasComplexDefaultValue)
                 constructorBodyBuffer.AppendLine($"\t\t{field.NameForField} = {field.NameForArg} ?? {field.DefaultValue};");
             else
                 constructorBodyBuffer.AppendLine($"\t\t{field.NameForField} = {field.NameForArg};");
             
-            paramNo++;
+            if (inArgsList)
+                paramNo++;
         }
         
         constructorBuffer.AppendLine(")");

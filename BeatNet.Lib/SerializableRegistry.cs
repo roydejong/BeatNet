@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.MultiplayerCore;
 using BeatNet.Lib.Net.Interfaces;
@@ -70,7 +71,7 @@ public static class SerializableRegistry
 
         foreach (var serializableType in exportedPacketTypes)
         {
-            var instance = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(serializableType) as INetSerializable;
+            var instance = RuntimeHelpers.GetUninitializedObject(serializableType) as INetSerializable;
             if (instance is null)
                 return;
 
@@ -81,7 +82,7 @@ public static class SerializableRegistry
     public static INetSerializable? TryInstantiate(PacketLayer packetLayer, byte opcode)
     {
         if (TypeRegistry.ContainsKey(packetLayer) && TypeRegistry[packetLayer].ContainsKey(opcode))
-            return System.Runtime.Serialization.FormatterServices.GetUninitializedObject(TypeRegistry[packetLayer][opcode].GetType()) as INetSerializable;
+            return RuntimeHelpers.GetUninitializedObject(TypeRegistry[packetLayer][opcode].GetType()) as INetSerializable;
 
         return null;
     }

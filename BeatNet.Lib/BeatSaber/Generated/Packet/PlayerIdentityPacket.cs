@@ -19,12 +19,12 @@ public sealed class PlayerIdentityPacket : BaseCpmPacket
 	public ByteArrayNetSerializable Random { get; set; }
 	public ByteArrayNetSerializable PublicEncryptionKey { get; set; }
 
-	public PlayerIdentityPacket(PlayerStateHash playerState, MultiplayerAvatarsData playerAvatar, ByteArrayNetSerializable? random = null, ByteArrayNetSerializable? publicEncryptionKey = null)
+	public PlayerIdentityPacket(PlayerStateHash playerState, MultiplayerAvatarsData playerAvatar)
 	{
 		PlayerState = playerState;
 		PlayerAvatar = playerAvatar;
-		Random = random ?? new ByteArrayNetSerializable("random", 32, true);
-		PublicEncryptionKey = publicEncryptionKey ?? new ByteArrayNetSerializable("publicEncryptionKey", 0, 256, true);
+		Random = new ByteArrayNetSerializable("random", 32, true);
+		PublicEncryptionKey = new ByteArrayNetSerializable("publicEncryptionKey", 0, 256, true);
 	}
 
 	public override void WriteTo(ref NetWriter writer)
@@ -39,7 +39,9 @@ public sealed class PlayerIdentityPacket : BaseCpmPacket
 	{
 		PlayerState = reader.ReadSerializable<PlayerStateHash>();
 		PlayerAvatar = reader.ReadSerializable<MultiplayerAvatarsData>();
-		Random = reader.ReadSerializable<ByteArrayNetSerializable>();
-		PublicEncryptionKey = reader.ReadSerializable<ByteArrayNetSerializable>();
+		Random ??= new ByteArrayNetSerializable("random", 32, true);
+		Random.ReadFrom(ref reader);
+		PublicEncryptionKey ??= new ByteArrayNetSerializable("publicEncryptionKey", 0, 256, true);
+		PublicEncryptionKey.ReadFrom(ref reader);
 	}
 }

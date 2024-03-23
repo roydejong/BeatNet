@@ -10,6 +10,8 @@ public class TypedParam
 
     public string NameForField => Name[..1].ToUpper() + Name[1..];
     public string NameForArg => Name[..1].ToLower() + Name[1..];
+    
+    public bool IsFixedInit => TypeName == "ByteArrayNetSerializable";
 
     public string? TryGetGenericFromType()
     {

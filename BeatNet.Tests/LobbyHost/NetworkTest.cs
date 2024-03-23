@@ -93,9 +93,7 @@ public class NetworkTest
             var identity = new PlayerIdentityPacket
             (
                 playerState: stateHash,
-                playerAvatar: new(new(), BitMask128.MaxValue),
-                random: new("random", 0, 32, true),
-                publicEncryptionKey: new("publicEncryptionKey", 0, 256, true)
+                playerAvatar: new(new(), BitMask128.MaxValue)
             );
             
             writer.Reset();

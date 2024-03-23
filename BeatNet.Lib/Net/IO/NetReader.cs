@@ -287,7 +287,7 @@ public ref struct NetReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T ReadSerializable<T>() where T : INetSerializable
     {
-        var instance = (T)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(T));
+        var instance = (T)RuntimeHelpers.GetUninitializedObject(typeof(T));
         instance.ReadFrom(ref this);
         return instance;
     }

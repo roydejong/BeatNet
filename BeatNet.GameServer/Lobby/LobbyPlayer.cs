@@ -68,8 +68,8 @@ public class LobbyPlayer : IConnectedPlayer
     {
         State = identityPacket.PlayerState;
         Avatars = identityPacket.PlayerAvatar;
-        PublicEncryptionKey = identityPacket.PublicEncryptionKey.GetData(true);
-        Random = identityPacket.Random.GetData(true);
+        PublicEncryptionKey = identityPacket.PublicEncryptionKey.CopyData(true);
+        Random = identityPacket.Random.CopyData(true);
         
         _playerIdentityPacket = identityPacket;
     }

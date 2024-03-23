@@ -31,6 +31,8 @@ Mostly just need to test, and probably need some additional implementation for l
 
 ## Optimizations
 - Merge multiple messages per player-send (would that actually be more efficient? maybe some sort of send-batch API per update tick?)
+- Object / packet pools
+- Byte array pools
 
 ## Release
 - README

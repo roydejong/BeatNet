@@ -18,10 +18,10 @@ public sealed class OptionalAvatarDataPacket : BaseSessionPacket
 	public uint DataType { get; set; }
 	public ByteArrayNetSerializable Data { get; set; }
 
-	public OptionalAvatarDataPacket(uint dataType, ByteArrayNetSerializable? data = null)
+	public OptionalAvatarDataPacket(uint dataType)
 	{
 		DataType = dataType;
-		Data = data ?? new ByteArrayNetSerializable("Optional avatar data", 0, 32767, true);
+		Data = new ByteArrayNetSerializable("Optional avatar data", 0, 32767, true);
 	}
 
 	public override void WriteTo(ref NetWriter writer)
@@ -33,6 +33,7 @@ public sealed class OptionalAvatarDataPacket : BaseSessionPacket
 	public override void ReadFrom(ref NetReader reader)
 	{
 		DataType = reader.ReadUInt();
-		Data = reader.ReadSerializable<ByteArrayNetSerializable>();
+		Data ??= new ByteArrayNetSerializable("Optional avatar data", 0, 32767, true);
+		Data.ReadFrom(ref reader);
 	}
 }

@@ -25,8 +25,8 @@ public class LobbyHost
     private bool _threadRunning;
     private ILogger? _logger;
 
-    private readonly List<byte> _availableConnectionIds;
-    private readonly List<int> _availableSortIndices;
+    private readonly Queue<byte> _availableConnectionIds;
+    private readonly Queue<int> _availableSortIndices;
     private readonly Dictionary<ushort, LobbyPlayer> _players;
     private readonly Dictionary<uint, LobbyPlayer> _playersByPeer;
     private bool _sortIndexUpdateNeeded;
@@ -92,11 +92,11 @@ public class LobbyHost
 
         _availableConnectionIds.Clear();
         for (byte i = 0; i < maxPlayerCount; i++)
-            _availableConnectionIds.Add(i);
+            _availableConnectionIds.Enqueue(i);
         
         _availableSortIndices.Clear();
         for (int i = 0; i < maxPlayerCount; i++)
-            _availableSortIndices.Add(i);
+            _availableSortIndices.Enqueue(i);
 
         // TODO Server browser update
     }
@@ -238,11 +238,19 @@ public class LobbyHost
 
             var player = new LobbyPlayer(this, connectEvent.Peer.ID, newConnectionId);
             player.SetConnectionRequest(connectEvent.ConnectionRequest);
+
+            if (string.IsNullOrEmpty(player.UserId))
+            {
+                _logger?.Warning("({Port}) Rejecting connection with empty / invalid UserId: {EndPoint}",
+                    PortNumber, logEndPoint);
+                KickPeer(connectEvent.Peer.ID, immediate: false, DisconnectedReason.Kicked);
+                return;
+            }
                     
             _players[newConnectionId] = player;
             _playersByPeer[connectEvent.Peer.ID] = player;
 
-            _logger?.Debug("({Port}) Player #{Slot} connected ({UserId}, {UserName}, {EndPoint})",
+            _logger?.Information("({Port}) Player #{Slot} connected ({UserId}, {UserName}, {EndPoint})",
                 PortNumber, newConnectionId, player.UserId, player.UserName, logEndPoint);
                     
             HandlePlayerConnect(player);
@@ -267,11 +275,11 @@ public class LobbyHost
             _players.Remove(player.ConnectionId);
             _playersByPeer.Remove(disconnectEvent.PeerId);
 
-            _availableConnectionIds.Add(player.ConnectionId);
+            _availableConnectionIds.Enqueue(player.ConnectionId);
             if (player.SortIndex != null)
-                _availableSortIndices.Add(player.SortIndex.Value);
+                _availableSortIndices.Enqueue(player.SortIndex.Value);
 
-            _logger?.Debug("({Port}) Player #{Slot} disconnected ({UserId}, {UserName})",
+            _logger?.Information("({Port}) Player #{Slot} disconnected ({UserId}, {UserName})",
                 PortNumber, player.ConnectionId, player.UserId, player.UserName);
                         
             HandlePlayerDisconnect(player);
@@ -353,8 +361,7 @@ public class LobbyHost
             return false;
         }
 
-        // Get lowest available slot
-        connectionId = _availableConnectionIds.Min();
+        connectionId = _availableConnectionIds.Dequeue();
         return true;
     }
     
@@ -366,8 +373,7 @@ public class LobbyHost
             return false;
         }
 
-        // Get lowest available index
-        sortIndex = _availableSortIndices.Min();
+        sortIndex = _availableSortIndices.Dequeue();
         return true;
     }
 
@@ -385,7 +391,7 @@ public class LobbyHost
 
     private void KickPeer(uint peerId, bool immediate, DisconnectedReason reason = DisconnectedReason.Unknown)
     {
-        _logger?.Debug("({Port}) Kicking peer {PeerId} ({Reason}, {Mode})",
+        _logger?.Information("({Port}) Kicking peer {PeerId} ({Reason}, {Mode})",
             PortNumber, peerId, reason, immediate ? "Immediate" : "Graceful");
 
         if (!immediate)

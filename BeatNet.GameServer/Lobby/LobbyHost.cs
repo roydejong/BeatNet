@@ -91,7 +91,7 @@ public class LobbyHost
         MaxPlayerCount = maxPlayerCount;
 
         _availableConnectionIds.Clear();
-        for (byte i = 0; i < maxPlayerCount; i++)
+        for (byte i = 1; i <= maxPlayerCount; i++)
             _availableConnectionIds.Enqueue(i);
         
         _availableSortIndices.Clear();

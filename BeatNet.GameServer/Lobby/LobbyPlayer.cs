@@ -37,6 +37,9 @@ public class LobbyPlayer : IConnectedPlayer
 
     public LobbyPlayer(LobbyHost lobbyHost, uint peerId, byte connectionId)
     {
+        if (connectionId == 0)
+            throw new ArgumentException("Player connection ID must be > 0");
+        
         LobbyHost = lobbyHost;
         PeerId = peerId;
         ConnectionId = connectionId;

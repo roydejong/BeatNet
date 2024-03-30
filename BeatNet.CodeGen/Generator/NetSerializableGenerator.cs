@@ -33,13 +33,14 @@ public class NetSerializableGenerator
             Directory.CreateDirectory(targetDir);
         
         var targetFile = Path.Combine(targetDir, $"{NetSerializable.TypeName}.cs");
-        
-        var useStruct = NetSerializable.TypeName.StartsWith("Vector")
-                        || NetSerializable.TypeName.StartsWith("Quaternion")
-                        || NetSerializable.TypeName.StartsWith("ColorSerializable")
-                        || NetSerializable.TypeName.StartsWith("Color32")
-                        || NetSerializable.TypeName.StartsWith("ColorNoAlpha")
-                        || NetSerializable.TypeName.Contains("BitMask");
+
+        var useStruct = false;
+        // NetSerializable.TypeName.StartsWith("Vector")
+        //                 || NetSerializable.TypeName.StartsWith("Quaternion")
+        //                 || NetSerializable.TypeName.StartsWith("ColorSerializable")
+        //                 || NetSerializable.TypeName.StartsWith("Color32")
+        //                 || NetSerializable.TypeName.StartsWith("ColorNoAlpha")
+        //                 || NetSerializable.TypeName.Contains("BitMask");
         var classInit = useStruct ? "struct" : "sealed class";
         
         using var sw = new StreamWriter(targetFile);

@@ -10,7 +10,7 @@ using BeatNet.Lib.BeatSaber.Generated.Enum;
 namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
-public struct Vector3Serializable : INetSerializable
+public sealed class Vector3Serializable : INetSerializable
 {
 	public int X { get; set; }
 	public int Y { get; set; }

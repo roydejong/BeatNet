@@ -33,8 +33,7 @@ public class RpcTest
         Assert.That(rpcRead.StartTime, Is.EqualTo(rpcWrite.StartTime));
         Assert.That(reader.Position, Is.EqualTo(writer.Position), "Reader position should be at the end of buffer contents");
     }
-
-
+    
     [Test]
     public void TestComplexRpcWriteAndRead()
     {

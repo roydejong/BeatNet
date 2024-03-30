@@ -590,7 +590,7 @@ public class LobbyHost
         {
             SendTo(otherPlayer.GetPlayerConnectedPacket(), newPlayer);
             
-            if (newPlayer.SortIndex.HasValue)
+            if (otherPlayer.SortIndex.HasValue)
                 SendTo(otherPlayer.GetPlayerSortOrderPacket(), newPlayer);
             
             var identityPacket = otherPlayer.GetPlayerIdentityPacket();

@@ -519,6 +519,7 @@ public class LobbyHost
                     GameMode.OnPlayerUpdate(player);
                     if (isIdentityInit)
                         _sortIndexUpdateNeeded = true;
+                    SendToAllFrom(identityPacket, player.ConnectionId);
                     break;
                 case PlayerAvatarPacket avatarPacket:
                     player.SetPlayerAvatar(avatarPacket.PlayerAvatar);

@@ -104,6 +104,18 @@ public class DeserializeParser
                         TypeCast = typeCast
                     };
                 }
+                else if (field.EndsWith(".CreateFromSerializedData(reader)"))
+                {
+                    var dotIdx = field.IndexOf(".CreateFromSerializedData", StringComparison.Ordinal);
+                    var refType = field[..dotIdx];
+                    
+                    yield return new DeserializeInstruction()
+                    {
+                        CallType = "Deserialize();",
+                        FieldName = linkedField.Name,
+                        TypeCast = refType
+                    };
+                }
                 else
                 {
                     // Parser expectation failed: expected reader or deserialize call in static return

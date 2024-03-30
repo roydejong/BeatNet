@@ -67,6 +67,7 @@ public sealed class LevelCompletionResults : INetSerializable
 
 	public void WriteTo(ref NetWriter writer)
 	{
+		writer.WriteSerializable<GameplayModifiers>(GameplayModifiers);
 		writer.WriteVarInt((int)ModifiedScore);
 		writer.WriteVarInt((int)MultipliedScore);
 		writer.WriteVarInt((int)Rank);
@@ -94,6 +95,7 @@ public sealed class LevelCompletionResults : INetSerializable
 
 	public void ReadFrom(ref NetReader reader)
 	{
+		GameplayModifiers = reader.ReadSerializable<GameplayModifiers>();
 		ModifiedScore = (int)reader.ReadVarInt();
 		MultipliedScore = (int)reader.ReadVarInt();
 		Rank = (Rank)reader.ReadVarInt();

@@ -43,7 +43,7 @@ public class Config
     /// <summary>
     /// The absolute maximum amount lobbies this server will host.
     /// </summary>
-    [JsonProperty] public int MaxLobbyCount = 32;
+    [JsonProperty] public int MaxLobbyCount = 1;
     
     /// <summary>
     /// The absolute maximum amount of players per lobby instance.

@@ -39,7 +39,7 @@ public class LobbyHost
     public int MaxPlayerCount { get; private set; }
     public string? Password { get; private set; }
 
-    public string ServerName { get; set; } = "its me your magic lan server";
+    public string ServerName => $"BeatNet {PortNumber}";
     public string GameModeType => GameMode.GetType().Name;
     public string GameModeName => GameMode.GetName();
     public bool IsRunning => _server.IsRunning;
@@ -241,7 +241,15 @@ public class LobbyHost
 
             if (string.IsNullOrEmpty(player.UserId))
             {
-                _logger?.Warning("({Port}) Rejecting connection with empty / invalid UserId: {EndPoint}",
+                _logger?.Warning("({Port}) Rejecting connection with empty / invalid User ID: {EndPoint}",
+                    PortNumber, logEndPoint);
+                KickPeer(connectEvent.Peer.ID, immediate: false, DisconnectedReason.Kicked);
+                return;
+            }
+            
+            if (_players.Values.Any(p => p.UserId == player.UserId))
+            {
+                _logger?.Warning("({Port}) Rejecting connection with duplicate User ID: {EndPoint}",
                     PortNumber, logEndPoint);
                 KickPeer(connectEvent.Peer.ID, immediate: false, DisconnectedReason.Kicked);
                 return;

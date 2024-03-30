@@ -162,20 +162,9 @@ public class LobbyPlayer : IConnectedPlayer
 
     #region Packet helpers
     
-    public PlayerConnectedPacket GetPlayerConnectedPacket()
-    {
-        return new PlayerConnectedPacket(ConnectionId, UserId!, UserName!, false);
-    }
-
-    public PlayerSortOrderPacket GetPlayerSortOrderPacket()
-    {
-        return new PlayerSortOrderPacket(UserId!, SortIndex!.Value);
-    }
-
-    public PlayerIdentityPacket? GetPlayerIdentityPacket()
-    {
-        return _playerIdentityPacket;
-    }
+    public PlayerConnectedPacket GetPlayerConnectedPacket() => new(ConnectionId, UserId!, UserName!, false);
+    public PlayerSortOrderPacket GetPlayerSortOrderPacket() => new(UserId!, SortIndex!.Value);
+    public PlayerIdentityPacket? GetPlayerIdentityPacket() => _playerIdentityPacket;
     
     #endregion
 

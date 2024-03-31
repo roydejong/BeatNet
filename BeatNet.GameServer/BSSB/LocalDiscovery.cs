@@ -120,7 +120,7 @@ public class LocalDiscovery
                 
                 // Helper: If the LAN address it the same as ours, treat as localhost
                 var effectiveLanAddress = lanAddress;
-                if (clientEp.Address.Equals(lanAddress))
+                if (clientEp.Address.Equals(lanAddress) || IPAddress.IsLoopback(lanAddress))
                     effectiveLanAddress = IPAddress.Loopback;
                 
                 // Send response packet for every public lobby

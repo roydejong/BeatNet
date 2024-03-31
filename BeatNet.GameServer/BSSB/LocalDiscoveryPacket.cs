@@ -11,6 +11,7 @@ public class LocalDiscoveryPacket : INetSerializable
     public string ServerName;
     public string ServerUserId;
     public string GameModeName;
+    public string ServerTypeName;
     public int PlayerCount;
     public BeatmapLevelSelectionMask BeatmapLevelSelectionMask;
     public GameplayServerConfiguration GameplayServerConfiguration;
@@ -24,6 +25,7 @@ public class LocalDiscoveryPacket : INetSerializable
         writer.WriteString(ServerName);
         writer.WriteString(ServerUserId);
         writer.WriteString(GameModeName);
+        writer.WriteString(ServerTypeName);
         writer.WriteInt(PlayerCount);
         writer.WriteSerializable(BeatmapLevelSelectionMask);
         writer.WriteSerializable(GameplayServerConfiguration);

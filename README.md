@@ -7,7 +7,7 @@ BeatNet is a server that can host one or more Beat Saber multiplayer lobbies. It
 
 You can host public or private servers for you and your friends, or the community at large.
 
-ℹ️ **Compatible with Beat Saber 1.35 / 1.36 only**
+ℹ️ **Compatible with Beat Saber versions 1.35 - 1.37 only**
  
 ## Download
 You will need the [.NET 8 runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) installed to run the server.

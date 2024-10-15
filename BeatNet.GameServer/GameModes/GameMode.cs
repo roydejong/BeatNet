@@ -2,6 +2,7 @@
 using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
+using BeatNet.Lib.MultiplayerCore;
 
 namespace BeatNet.GameServer.GameModes;
 
@@ -67,7 +68,10 @@ public abstract class GameMode
     /// <summary>
     /// Handles a gameplay RPC from a player.
     /// </summary>
-    /// <param name="gameplayRpc"></param>
-    /// <param name="player"></param>
     public abstract void HandleGameplayRpc(BaseGameplayRpc gameplayRpc, LobbyPlayer player);
+
+    /// <summary>
+    /// Handles a MultiplayerCore beatmap packet, equivalent to a "level selected" event.
+    /// </summary>
+    public abstract void HandleMpBeatmapPacket(MpBeatmapPacket beatmapPacket, LobbyPlayer player);
 }

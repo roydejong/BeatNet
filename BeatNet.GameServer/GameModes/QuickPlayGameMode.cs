@@ -6,6 +6,7 @@ using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.BeatSaber.Generated.Rpc.Gameplay;
 using BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
+using BeatNet.Lib.MultiplayerCore;
 
 namespace BeatNet.GameServer.GameModes;
 
@@ -205,6 +206,11 @@ public class QuickPlayGameMode : GameMode
     public override void HandleGameplayRpc(BaseGameplayRpc gameplayRpc, LobbyPlayer player)
     {
         _gameplayManager.HandleGameplayRpc(gameplayRpc, player);
+    }
+
+    public override void HandleMpBeatmapPacket(MpBeatmapPacket beatmapPacket, LobbyPlayer player)
+    {
+        _voteManager.SetRecommendedBeatmap(player, BeatmapLevel.FromMpBeatmapPacket(beatmapPacket));
     }
 
     private void HandleTopVotedBeatmapChanged(BeatmapLevel? level)

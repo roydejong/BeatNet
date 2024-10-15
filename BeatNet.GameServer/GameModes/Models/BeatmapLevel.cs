@@ -1,5 +1,6 @@
 ﻿using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
+using BeatNet.Lib.MultiplayerCore;
 
 namespace BeatNet.GameServer.GameModes.Models;
 
@@ -22,6 +23,16 @@ public class BeatmapLevel
             LevelId = key.LevelID,
             Characteristic = key.BeatmapCharacteristicSerializedName,
             Difficulty = key.Difficulty
+        };
+    }
+
+    public static BeatmapLevel FromMpBeatmapPacket(MpBeatmapPacket packet)
+    {
+        return new BeatmapLevel()
+        {
+            LevelId = $"custom_level_{packet.LevelHash}",
+            Characteristic = packet.CharacteristicName,
+            Difficulty = packet.Difficulty
         };
     }
 

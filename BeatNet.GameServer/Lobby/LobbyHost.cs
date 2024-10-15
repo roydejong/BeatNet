@@ -8,6 +8,7 @@ using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.BeatSaber.Generated.Packet;
 using BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 using BeatNet.Lib.BeatSaber.Util;
+using BeatNet.Lib.MultiplayerCore;
 using BeatNet.Lib.Net;
 using BeatNet.Lib.Net.Events;
 using BeatNet.Lib.Net.Interfaces;
@@ -483,6 +484,7 @@ public class LobbyHost
         var shouldProcess = payload.ReceiverId is 0 or 127; 
         
         LobbyPlayer? unicastPlayer = null;
+        
         if (isUnicast)
             unicastPlayer = ConnectedPlayers.FirstOrDefault(p => p.ConnectionId == payload.ReceiverId);
         
@@ -511,6 +513,7 @@ public class LobbyHost
             // Process and handle message if server was among the intended recipients
             if (!shouldProcess)
                 continue;
+            
             switch (message)
             {
                 case PlayerIdentityPacket identityPacket:
@@ -548,6 +551,9 @@ public class LobbyHost
                 case BaseGameplayRpc gameplayRpc:
                     GameMode.HandleGameplayRpc(gameplayRpc, player);
                     break;
+                case MpBeatmapPacket mpBeatmapPacket:
+                    GameMode.HandleMpBeatmapPacket(mpBeatmapPacket, player);
+                    break;
                 case NodePoseSyncStateNetSerializable:
                 case NodePoseSyncStateDeltaNetSerializable:
                 case StandardScoreSyncStateNetSerializable:
@@ -555,7 +561,7 @@ public class LobbyHost
                     // The messages are only for relaying; ignore them
                     break;
                 default:
-                    _logger?.Warning("Player {PlayerId} sent unimplemented message ({PacketType})",
+                    _logger?.Warning("Player {PlayerId} sent {PacketType}: no server handler implementation",
                         player.ConnectionId, message.GetType().Name);
                     break;
             }
@@ -566,6 +572,7 @@ public class LobbyHost
     {
         _logger?.Warning("Player {PlayerId} sent illegal message ({PacketType}), this may indicate a protocol error",
             player.ConnectionId, message.GetType().Name);
+        
         KickPlayer(player, DisconnectedReason.Kicked);
     }
     

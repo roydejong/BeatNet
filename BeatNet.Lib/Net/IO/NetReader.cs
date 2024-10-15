@@ -130,6 +130,10 @@ public ref struct NetReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TEnum ReadUIntEnum<TEnum>() where TEnum : Enum
         => (TEnum)Enum.ToObject(typeof(TEnum), ReadUInt());
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TEnum ReadByteEnum<TEnum>() where TEnum : Enum
+        => (TEnum)Enum.ToObject(typeof(TEnum), ReadByte());
 
     #endregion
     

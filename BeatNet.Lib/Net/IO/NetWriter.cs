@@ -143,7 +143,7 @@ public ref struct NetWriter
         => WriteInt(Convert.ToInt32(value));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteÚIntEnum<TEnum>(TEnum value) where TEnum : Enum
+    public void WriteUIntEnum<TEnum>(TEnum value) where TEnum : Enum
         => WriteUInt(Convert.ToUInt32(value));
 
     #endregion

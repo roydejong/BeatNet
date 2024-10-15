@@ -2,7 +2,8 @@
 
 public enum MpcMessageType : byte
 {
-    // MultiplayerCore
+    // -----------------------------------------------------------------------------------------------------------------
+    // MultiplayerCore 
     
     /// <summary>
     /// https://github.com/Goobwabber/MultiplayerCore/blob/main/MultiplayerCore/Beatmaps/Packets/MpBeatmapPacket.cs
@@ -12,7 +13,16 @@ public enum MpcMessageType : byte
     /// https://github.com/Goobwabber/MultiplayerCore/blob/main/MultiplayerCore/Players/MpPlayerData.cs
     /// </summary>
     MpPlayerData,
+    /// <summary>
+    /// https://github.com/Goobwabber/MultiplayerCore/blob/main/MultiplayerCore/Players/Packets/GetMpPerPlayerPacket.cs
+    /// </summary>
+    GetMpPerPlayerPacket,
+    /// <summary>
+    /// https://github.com/Goobwabber/MultiplayerCore/blob/main/MultiplayerCore/Players/Packets/MpPerPlayerPacket.cs
+    /// </summary>
+    MpPerPlayerPacket,
     
+    // -----------------------------------------------------------------------------------------------------------------
     // MultiplayerChat
     
     /// <summary>
@@ -20,8 +30,12 @@ public enum MpcMessageType : byte
     /// </summary>
     MpcTextChatPacket,
     
+    // -----------------------------------------------------------------------------------------------------------------
+    // Generic
+    
     /// <summary>
     /// Fallback for message types not explicitly supported by BeatNet.
+    /// Any packet name that is not recognized will use this type.
     /// </summary>
     Generic = 255
 }
@@ -33,6 +47,8 @@ public static class MpcMessageTypeExtensions
         // MultiplayerCore
         {"MpBeatmapPacket", MpcMessageType.MpBeatmapPacket},
         {"MpPlayerData", MpcMessageType.MpPlayerData},
+        {"GetMpPerPlayerPacket", MpcMessageType.GetMpPerPlayerPacket},
+        {"MpPerPlayerPacket", MpcMessageType.MpPerPlayerPacket},
         
         // MultiplayerChat
         {"MpcTextChatPacket", MpcMessageType.MpcTextChatPacket}

@@ -139,6 +139,11 @@ public class NetPayload : INetSerializable
                 mpcPacketName = nextReader.ReadString();
                 var mpcMessageType = MpcMessageTypeExtensions.GetMpCoreMessageType(mpcPacketName);
 
+                if (mpcMessageType == MpcMessageType.Generic)
+                {
+                    Log.Logger?.Debug("Using generic fallback for MPC packet type {PacketName}", mpcPacketName);
+                }
+                
                 packetLayer = PacketLayer.MultiplayerCore;
                 packetType = (byte)mpcMessageType;
             }
@@ -146,10 +151,11 @@ public class NetPayload : INetSerializable
 
         // Try to instantiate the message
         message = SerializableRegistry.TryInstantiate(packetLayer, packetType);
+        
         if (message == null)
         {
             Log.Logger?.Warning("Failed to read message, not implemented ({PacketLayer}, {PacketType})",
-                packetLayer, packetType);
+                packetLayer, mpcPacketName ?? packetType.ToString());
             return false;
         }
 

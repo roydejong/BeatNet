@@ -13,6 +13,8 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 public sealed class ObstacleSpawnInfoNetSerializable : INetSerializable
 {
 	public float Time { get; set; }
+	public float StartBeat { get; set; }
+	public float EndBeat { get; set; }
 	public int LineIndex { get; set; }
 	public NoteLineLayer LineLayer { get; set; }
 	public float Duration { get; set; }
@@ -27,9 +29,11 @@ public sealed class ObstacleSpawnInfoNetSerializable : INetSerializable
 	public float NoteLinesDistance { get; set; }
 	public float Rotation { get; set; }
 
-	public ObstacleSpawnInfoNetSerializable(float time, int lineIndex, NoteLineLayer lineLayer, float duration, int width, int height, Vector3Serializable moveStartPos, Vector3Serializable moveEndPos, Vector3Serializable jumpEndPos, float obstacleHeight, float moveDuration, float jumpDuration, float noteLinesDistance, float rotation)
+	public ObstacleSpawnInfoNetSerializable(float time, float startBeat, float endBeat, int lineIndex, NoteLineLayer lineLayer, float duration, int width, int height, Vector3Serializable moveStartPos, Vector3Serializable moveEndPos, Vector3Serializable jumpEndPos, float obstacleHeight, float moveDuration, float jumpDuration, float noteLinesDistance, float rotation)
 	{
 		Time = time;
+		StartBeat = startBeat;
+		EndBeat = endBeat;
 		LineIndex = lineIndex;
 		LineLayer = lineLayer;
 		Duration = duration;

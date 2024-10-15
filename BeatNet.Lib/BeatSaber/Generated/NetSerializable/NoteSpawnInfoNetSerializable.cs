@@ -13,6 +13,7 @@ namespace BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 public sealed class NoteSpawnInfoNetSerializable : INetSerializable
 {
 	public float Time { get; set; }
+	public float Beat { get; set; }
 	public int LineIndex { get; set; }
 	public NoteLineLayer NoteLineLayer { get; set; }
 	public NoteLineLayer BeforeJumpNoteLineLayer { get; set; }
@@ -34,9 +35,10 @@ public sealed class NoteSpawnInfoNetSerializable : INetSerializable
 	public float CutDirectionAngleOffset { get; set; }
 	public float CutSfxVolumeMultiplier { get; set; }
 
-	public NoteSpawnInfoNetSerializable(float time, int lineIndex, NoteLineLayer noteLineLayer, NoteLineLayer beforeJumpNoteLineLayer, GameplayType gameplayType, ScoringType scoringType, ColorType colorType, NoteCutDirection cutDirection, float timeToNextColorNote, float timeToPrevColorNote, int flipLineIndex, float flipYSide, Vector3Serializable moveStartPos, Vector3Serializable moveEndPos, Vector3Serializable jumpEndPos, float jumpGravity, float moveDuration, float jumpDuration, float rotation, float cutDirectionAngleOffset, float cutSfxVolumeMultiplier)
+	public NoteSpawnInfoNetSerializable(float time, float beat, int lineIndex, NoteLineLayer noteLineLayer, NoteLineLayer beforeJumpNoteLineLayer, GameplayType gameplayType, ScoringType scoringType, ColorType colorType, NoteCutDirection cutDirection, float timeToNextColorNote, float timeToPrevColorNote, int flipLineIndex, float flipYSide, Vector3Serializable moveStartPos, Vector3Serializable moveEndPos, Vector3Serializable jumpEndPos, float jumpGravity, float moveDuration, float jumpDuration, float rotation, float cutDirectionAngleOffset, float cutSfxVolumeMultiplier)
 	{
 		Time = time;
+		Beat = beat;
 		LineIndex = lineIndex;
 		NoteLineLayer = noteLineLayer;
 		BeforeJumpNoteLineLayer = beforeJumpNoteLineLayer;

@@ -5,6 +5,18 @@ namespace BeatNet.Tests.CodeGen;
 public class LineAnalyzerTest
 {
     [Test]
+    public void TestPublicStaticClassDeclare()
+    {
+        var text = "public static class RankModel";
+        var line = new LineAnalyzer(text);
+        
+        Assert.That(line.Modifier, Is.EqualTo("public"));
+        Assert.That(line.IsDeclaration, Is.True);
+        Assert.That(line.IsClass, Is.True);
+        Assert.That(line.DeclaredName, Is.EqualTo("RankModel"));
+    }
+    
+    [Test]
     public void TestParsesStructDeclare()
     {
         var text = "public struct ColorSchemeNetSerializable : INetSerializable";
@@ -45,7 +57,20 @@ public class LineAnalyzerTest
     }
     
     [Test]
-    public void TestParsesEnum()
+    public void TestParsesSimpleEnum()
+    {
+        var text = "public enum Rank";
+        var line = new LineAnalyzer(text);
+        
+        Assert.That(line.Modifier, Is.EqualTo("public"));
+        Assert.That(line.IsDeclaration, Is.True);
+        Assert.That(line.IsEnum, Is.True);
+        Assert.That(line.DeclaredName, Is.EqualTo("Rank"));
+        Assert.That(line.DeclaredType, Is.Null);
+    }
+    
+    [Test]
+    public void TestParsesEnumWithBackingType()
     {
         var text = "private enum RpcType : byte";
         var line = new LineAnalyzer(text);

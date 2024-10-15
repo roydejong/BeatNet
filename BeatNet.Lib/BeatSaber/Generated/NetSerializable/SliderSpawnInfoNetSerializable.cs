@@ -16,6 +16,7 @@ public sealed class SliderSpawnInfoNetSerializable : INetSerializable
 	public SliderType SliderType { get; set; }
 	public bool HasHeadNote { get; set; }
 	public float HeadTime { get; set; }
+	public float HeadBeat { get; set; }
 	public int HeadLineIndex { get; set; }
 	public NoteLineLayer HeadLineLayer { get; set; }
 	public NoteLineLayer HeadBeforeJumpLineLayer { get; set; }
@@ -45,12 +46,13 @@ public sealed class SliderSpawnInfoNetSerializable : INetSerializable
 	public float JumpDuration { get; set; }
 	public float Rotation { get; set; }
 
-	public SliderSpawnInfoNetSerializable(ColorType colorType, SliderType sliderType, bool hasHeadNote, float headTime, int headLineIndex, NoteLineLayer headLineLayer, NoteLineLayer headBeforeJumpLineLayer, float headControlPointLengthMultiplier, NoteCutDirection headCutDirection, float headCutDirectionAngleOffset, bool hasTailNote, float tailTime, int tailLineIndex, NoteLineLayer tailLineLayer, NoteLineLayer tailBeforeJumpLineLayer, float tailControlPointLengthMultiplier, NoteCutDirection tailCutDirection, float tailCutDirectionAngleOffset, SliderMidAnchorMode midAnchorMode, int sliceCount, float squishAmount, Vector3Serializable headMoveStartPos, Vector3Serializable headJumpStartPos, Vector3Serializable headJumpEndPos, float headJumpGravity, Vector3Serializable tailMoveStartPos, Vector3Serializable tailJumpStartPos, Vector3Serializable tailJumpEndPos, float tailJumpGravity, float moveDuration, float jumpDuration, float rotation)
+	public SliderSpawnInfoNetSerializable(ColorType colorType, SliderType sliderType, bool hasHeadNote, float headTime, float headBeat, int headLineIndex, NoteLineLayer headLineLayer, NoteLineLayer headBeforeJumpLineLayer, float headControlPointLengthMultiplier, NoteCutDirection headCutDirection, float headCutDirectionAngleOffset, bool hasTailNote, float tailTime, int tailLineIndex, NoteLineLayer tailLineLayer, NoteLineLayer tailBeforeJumpLineLayer, float tailControlPointLengthMultiplier, NoteCutDirection tailCutDirection, float tailCutDirectionAngleOffset, SliderMidAnchorMode midAnchorMode, int sliceCount, float squishAmount, Vector3Serializable headMoveStartPos, Vector3Serializable headJumpStartPos, Vector3Serializable headJumpEndPos, float headJumpGravity, Vector3Serializable tailMoveStartPos, Vector3Serializable tailJumpStartPos, Vector3Serializable tailJumpEndPos, float tailJumpGravity, float moveDuration, float jumpDuration, float rotation)
 	{
 		ColorType = colorType;
 		SliderType = sliderType;
 		HasHeadNote = hasHeadNote;
 		HeadTime = headTime;
+		HeadBeat = headBeat;
 		HeadLineIndex = headLineIndex;
 		HeadLineLayer = headLineLayer;
 		HeadBeforeJumpLineLayer = headBeforeJumpLineLayer;

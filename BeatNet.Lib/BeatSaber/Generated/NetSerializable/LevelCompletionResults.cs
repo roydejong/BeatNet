@@ -36,8 +36,9 @@ public sealed class LevelCompletionResults : INetSerializable
 	public float AverageCutScoreForNotesWithFullScoreScoringType { get; set; }
 	public int MaxCombo { get; set; }
 	public float EndSongTime { get; set; }
+	public bool Invalidated { get; set; }
 
-	public LevelCompletionResults(GameplayModifiers gameplayModifiers, int modifiedScore, int multipliedScore, Rank rank, bool fullCombo, float leftSaberMovementDistance, float rightSaberMovementDistance, float leftHandMovementDistance, float rightHandMovementDistance, LevelEndStateType levelEndStateType, LevelEndAction levelEndAction, float energy, int goodCutsCount, int badCutsCount, int missedCount, int notGoodCount, int okCount, int maxCutScore, int totalCutScore, int goodCutsCountForNotesWithFullScoreScoringType, float averageCenterDistanceCutScoreForNotesWithFullScoreScoringType, float averageCutScoreForNotesWithFullScoreScoringType, int maxCombo, float endSongTime)
+	public LevelCompletionResults(GameplayModifiers gameplayModifiers, int modifiedScore, int multipliedScore, Rank rank, bool fullCombo, float leftSaberMovementDistance, float rightSaberMovementDistance, float leftHandMovementDistance, float rightHandMovementDistance, LevelEndStateType levelEndStateType, LevelEndAction levelEndAction, float energy, int goodCutsCount, int badCutsCount, int missedCount, int notGoodCount, int okCount, int maxCutScore, int totalCutScore, int goodCutsCountForNotesWithFullScoreScoringType, float averageCenterDistanceCutScoreForNotesWithFullScoreScoringType, float averageCutScoreForNotesWithFullScoreScoringType, int maxCombo, float endSongTime, bool invalidated)
 	{
 		GameplayModifiers = gameplayModifiers;
 		ModifiedScore = modifiedScore;
@@ -63,6 +64,7 @@ public sealed class LevelCompletionResults : INetSerializable
 		AverageCutScoreForNotesWithFullScoreScoringType = averageCutScoreForNotesWithFullScoreScoringType;
 		MaxCombo = maxCombo;
 		EndSongTime = endSongTime;
+		Invalidated = invalidated;
 	}
 
 	public void WriteTo(ref NetWriter writer)
@@ -91,6 +93,7 @@ public sealed class LevelCompletionResults : INetSerializable
 		writer.WriteFloat((float)AverageCutScoreForNotesWithFullScoreScoringType);
 		writer.WriteVarInt((int)MaxCombo);
 		writer.WriteFloat((float)EndSongTime);
+		writer.WriteBool(Invalidated);
 	}
 
 	public void ReadFrom(ref NetReader reader)
@@ -119,5 +122,6 @@ public sealed class LevelCompletionResults : INetSerializable
 		AverageCutScoreForNotesWithFullScoreScoringType = (float)reader.ReadFloat();
 		MaxCombo = (int)reader.ReadVarInt();
 		EndSongTime = (float)reader.ReadFloat();
+		Invalidated = (bool)reader.ReadBool();
 	}
 }

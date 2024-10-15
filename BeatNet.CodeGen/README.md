@@ -2,9 +2,9 @@
 **Analyses Beat Saber source code and automatically generates types for the game's network packets and structures.** 
 
 ## Requirements
-- .NET 7
+- .NET 8
 - dnSpy
-- Beat Saber (tested on v1.34.6)
+- Beat Saber (tested on v1.38.0)
 
 ## Setup
 Clone the project, then build with:

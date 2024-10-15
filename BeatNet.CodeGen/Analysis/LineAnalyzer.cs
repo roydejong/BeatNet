@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using BeatNet.CodeGen.Analysis.Structs;
 
 namespace BeatNet.CodeGen.Analysis;
@@ -29,11 +30,11 @@ public class LineAnalyzer
     public readonly List<ClassInheritor>? ClassInheritors;
     public readonly string? DeclaredType;
     public readonly List<TypedParam>? MethodParams;
-    public bool IsOpenBracket;
-    public bool IsCloseBracket;
-    public bool IsEnumCase;
-    public string? DefaultValue;
-    public bool IsAttribute;
+    public readonly bool IsOpenBracket;
+    public readonly bool IsCloseBracket;
+    public readonly bool IsEnumCase;
+    public readonly string? DefaultValue;
+    public readonly bool IsAttribute;
 
     public LineAnalyzer(string line, string? contextTypeName = null, bool? contextInEnum = false)
     {
@@ -168,6 +169,11 @@ public class LineAnalyzer
         {
             // We don't care about delegates (so far)
             return;
+        }
+
+        if (Words[0] == "async")
+        {
+            Words = Words[1..];
         }
 
         if (Words[0] == "{")

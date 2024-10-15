@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="ENet-CSharp" Version="2.4.8" />
+    <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
     <PackageReference Include="Serilog" Version="3.1.1" />
   </ItemGroup>
 

@@ -26,7 +26,7 @@ jobs:
     - name: Server publish build (win-x64)
       run: dotnet publish BeatNet.GameServer/BeatNet.GameServer.csproj -c Release -r win-x64 --self-contained false
     - name: Server artifact publish (win-x64)
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: BeatNet-win-x64
         path: /home/runner/work/BeatNet/BeatNet/BeatNet.GameServer/bin/Release/net8.0/win-x64/publish/

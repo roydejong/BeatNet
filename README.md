@@ -13,7 +13,7 @@ You can host public or private servers for you and your friends, or the communit
 **✅ This version is compatible/tested with Beat Saber version 1.40.2.**
  
 ## Download
-You will need the [.NET 8 runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) installed to run the server.
+You will need the [.NET 9 runtime](https://dotnet.microsoft.com/en-us/download/dotnet/9.0) installed to run the server.
 
 - 👍 **[Download latest stable release](https://github.com/roydejong/BeatNet/releases/latest)** (recommended)
 - 💀 **[Download latest development build](https://github.com/roydejong/BeatNet/actions/workflows/dotnet.yml?query=event%3Apush+is%3Asuccess+branch%3Amain)**

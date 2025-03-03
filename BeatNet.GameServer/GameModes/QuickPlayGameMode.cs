@@ -126,11 +126,11 @@ public class QuickPlayGameMode : GameMode
                     if (shownLevel != null)
                         player.Send(new SetSelectedBeatmapRpc(shownLevel.ToBeatmapKey()));
                     else
-                        player.Send(new ClearSelectedBeatmapRpc());
+                        player.Send(ClearSelectedBeatmapRpc.Instance);
                     player.Send(new SetSelectedGameplayModifiersRpc(shownModifiers));
-                    player.Send(new GetRecommendedBeatmapRpc());
-                    player.Send(new GetRecommendedGameplayModifiersRpc());
-                    player.Send(new GetIsReadyRpc());
+                    player.Send(GetRecommendedBeatmapRpc.Instance);
+                    player.Send(GetRecommendedGameplayModifiersRpc.Instance);
+                    player.Send(GetIsReadyRpc.Instance);
                     // (They'll ask for countdown stuff manually but I've seen some issues with recommends)
                 }
                 break;
@@ -143,7 +143,7 @@ public class QuickPlayGameMode : GameMode
                 if (selectedBeatmap != null)
                     player.Send(new SetSelectedBeatmapRpc(selectedBeatmap.ToBeatmapKey()));
                 else
-                    player.Send(new ClearSelectedBeatmapRpc());
+                    player.Send(ClearSelectedBeatmapRpc.Instance);
                 if (selectedBeatmap != null)
                     player.Send(new GetIsEntitledToLevelRpc(selectedBeatmap.LevelId));
                 break;
@@ -188,7 +188,7 @@ public class QuickPlayGameMode : GameMode
                 if (_countdownManager.IsCountingDown)
                     player.Send(new SetCountdownEndTimeRpc(_countdownManager.CountdownEndTime!));
                 else
-                    player.Send(new CancelCountdownRpc());
+                    player.Send(CancelCountdownRpc.Instance);
                 break;
             }
             case GetStartedLevelRpc:
@@ -197,7 +197,7 @@ public class QuickPlayGameMode : GameMode
                     player.Send(new StartLevelRpc(_currentLevel!.ToBeatmapKey(), _currentModifiers ?? DefaultModifiers, 
                         _levelStartTime!));
                 else
-                    player.Send(new CancelLevelStartRpc());
+                    player.Send(CancelLevelStartRpc.Instance);
                 break;
             }
         }

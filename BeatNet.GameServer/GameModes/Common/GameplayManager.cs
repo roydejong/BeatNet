@@ -149,7 +149,7 @@ public class GameplayManager
                     .ToList();
 
                 foreach (var nonReadyPlayer in nonReadyPlayers)
-                    nonReadyPlayer.Send(new GetGameplaySceneReadyRpc());
+                    nonReadyPlayer.Send(GetGameplaySceneReadyRpc.Instance);
                 
                 Log.Logger.Warning("GAMEPLAY: Waiting for scene loads...");
                 break;
@@ -203,7 +203,7 @@ public class GameplayManager
                     .ToList();
                 
                 foreach (var nonReadyPlayer in nonReadyPlayers)
-                    nonReadyPlayer.Send(new GetGameplaySongReadyRpc());
+                    nonReadyPlayer.Send(GetGameplaySongReadyRpc.Instance);
                 
                 Log.Logger.Warning("GAMEPLAY: Waiting for song loads...");
                 break;

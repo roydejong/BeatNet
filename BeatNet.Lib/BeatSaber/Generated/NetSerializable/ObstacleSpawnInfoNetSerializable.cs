@@ -20,16 +20,12 @@ public sealed class ObstacleSpawnInfoNetSerializable : INetSerializable
 	public float Duration { get; set; }
 	public int Width { get; set; }
 	public int Height { get; set; }
-	public Vector3Serializable MoveStartPos { get; set; }
-	public Vector3Serializable MoveEndPos { get; set; }
-	public Vector3Serializable JumpEndPos { get; set; }
+	public Vector3Serializable MoveOffset { get; set; }
+	public float ObstacleWidth { get; set; }
 	public float ObstacleHeight { get; set; }
-	public float MoveDuration { get; set; }
-	public float JumpDuration { get; set; }
-	public float NoteLinesDistance { get; set; }
 	public float Rotation { get; set; }
 
-	public ObstacleSpawnInfoNetSerializable(float time, float startBeat, float endBeat, int lineIndex, NoteLineLayer lineLayer, float duration, int width, int height, Vector3Serializable moveStartPos, Vector3Serializable moveEndPos, Vector3Serializable jumpEndPos, float obstacleHeight, float moveDuration, float jumpDuration, float noteLinesDistance, float rotation)
+	public ObstacleSpawnInfoNetSerializable(float time, float startBeat, float endBeat, int lineIndex, NoteLineLayer lineLayer, float duration, int width, int height, Vector3Serializable moveOffset, float obstacleWidth, float obstacleHeight, float rotation)
 	{
 		Time = time;
 		StartBeat = startBeat;
@@ -39,13 +35,9 @@ public sealed class ObstacleSpawnInfoNetSerializable : INetSerializable
 		Duration = duration;
 		Width = width;
 		Height = height;
-		MoveStartPos = moveStartPos;
-		MoveEndPos = moveEndPos;
-		JumpEndPos = jumpEndPos;
+		MoveOffset = moveOffset;
+		ObstacleWidth = obstacleWidth;
 		ObstacleHeight = obstacleHeight;
-		MoveDuration = moveDuration;
-		JumpDuration = jumpDuration;
-		NoteLinesDistance = noteLinesDistance;
 		Rotation = rotation;
 	}
 
@@ -57,13 +49,9 @@ public sealed class ObstacleSpawnInfoNetSerializable : INetSerializable
 		writer.WriteFloat(Duration);
 		writer.WriteVarInt(Width);
 		writer.WriteVarInt(Height);
-		writer.WriteSerializable<Vector3Serializable>(MoveStartPos);
-		writer.WriteSerializable<Vector3Serializable>(MoveEndPos);
-		writer.WriteSerializable<Vector3Serializable>(JumpEndPos);
+		writer.WriteSerializable<Vector3Serializable>(MoveOffset);
+		writer.WriteFloat(ObstacleWidth);
 		writer.WriteFloat(ObstacleHeight);
-		writer.WriteFloat(MoveDuration);
-		writer.WriteFloat(JumpDuration);
-		writer.WriteFloat(NoteLinesDistance);
 		writer.WriteFloat(Rotation);
 	}
 
@@ -75,13 +63,9 @@ public sealed class ObstacleSpawnInfoNetSerializable : INetSerializable
 		Duration = reader.ReadFloat();
 		Width = reader.ReadVarInt();
 		Height = reader.ReadVarInt();
-		MoveStartPos = reader.ReadSerializable<Vector3Serializable>();
-		MoveEndPos = reader.ReadSerializable<Vector3Serializable>();
-		JumpEndPos = reader.ReadSerializable<Vector3Serializable>();
+		MoveOffset = reader.ReadSerializable<Vector3Serializable>();
+		ObstacleWidth = reader.ReadFloat();
 		ObstacleHeight = reader.ReadFloat();
-		MoveDuration = reader.ReadFloat();
-		JumpDuration = reader.ReadFloat();
-		NoteLinesDistance = reader.ReadFloat();
 		Rotation = reader.ReadFloat();
 	}
 }

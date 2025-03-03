@@ -10,7 +10,7 @@ You can host public or private servers for you and your friends, or the communit
 > [!TIP]
 > Lost? Confused? If you don't want to run or host your own server, check out **[BeatTogether](https://discord.com/invite/gezGrFG4tz)**! They provide free public servers for the community. BeatNet is primarily aimed at modders, developers and power users.
 
-**✅ This version is compatible/tested with Beat Saber version 1.38 only.**
+**✅ This version is compatible/tested with Beat Saber version 1.40.2.**
  
 ## Download
 You will need the [.NET 8 runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) installed to run the server.

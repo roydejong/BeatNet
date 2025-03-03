@@ -72,12 +72,15 @@ public static class ReadWriteMethodGenerator
         
         var hasByteFlag = false;
         var byteFlagBitCount = 0;
-
-        if (fields.Count(f => !f.IsConst) != instructions.Count
+        
+        var nonConstFieldCount = fields.Count(f => !f.IsConst);
+        var instructionCount = instructions.Count;
+        
+        if (nonConstFieldCount != instructionCount
             && !instructions.Any(i => i.CallType == "GetByte();")) // not relevant warning for byte-packed flags
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"WARNING: Possibly incomplete type: `{item.GetSelfName()}` - inconsistent field vs. instruction count");
+            Console.WriteLine($"WARNING: Possibly incomplete type: `{item.GetSelfName()}` - inconsistent field count ({nonConstFieldCount}) vs. instruction count ({instructionCount})");
             Console.ResetColor();
             Debugger.Break();
         }

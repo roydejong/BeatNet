@@ -4,7 +4,7 @@
 ## Requirements
 - .NET 8
 - dnSpy
-- Beat Saber (tested on v1.38.0)
+- Beat Saber (tested on v1.38.0 - v1.40.2)
 
 ## Setup
 Clone the project, then build with:
@@ -63,3 +63,18 @@ You will need to provide a manual implementation for these that implements `INet
 - `BitMaskArray`
 - `BitMaskSparse`
 - `ByteArrayNetSerializable`
+
+### Expected warnings
+As of v1.40.2, the following warnings may be expected:
+
+> WARNING: Possibly incomplete type: `NoteSpawnInfoNetSerializable` - inconsistent field count (20) vs. instruction count (19)
+
+One less instruction is expected because the `beat` field is contained in the type but not serialized.
+
+> WARNING: Possibly incomplete type: `ObstacleSpawnInfoNetSerializable` - inconsistent field count (12) vs. instruction count (10)
+
+Two fewer instructions are expected because the `startBeat` and `endBeat` fields are contained in the type but not serialized.
+
+> WARNING: Possibly incomplete type: `SliderSpawnInfoNetSerializable` - inconsistent field count (27) vs. instruction count (26)
+
+One less instruction is expected because the `headBeat` field is contained in the type but not serialized.

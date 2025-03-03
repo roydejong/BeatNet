@@ -34,19 +34,13 @@ public sealed class SliderSpawnInfoNetSerializable : INetSerializable
 	public SliderMidAnchorMode MidAnchorMode { get; set; }
 	public int SliceCount { get; set; }
 	public float SquishAmount { get; set; }
-	public Vector3Serializable HeadMoveStartPos { get; set; }
-	public Vector3Serializable HeadJumpStartPos { get; set; }
-	public Vector3Serializable HeadJumpEndPos { get; set; }
-	public float HeadJumpGravity { get; set; }
-	public Vector3Serializable TailMoveStartPos { get; set; }
-	public Vector3Serializable TailJumpStartPos { get; set; }
-	public Vector3Serializable TailJumpEndPos { get; set; }
-	public float TailJumpGravity { get; set; }
-	public float MoveDuration { get; set; }
-	public float JumpDuration { get; set; }
+	public Vector3Serializable HeadNoteOffset { get; set; }
+	public float HeadGravityBase { get; set; }
+	public Vector3Serializable TailNoteOffset { get; set; }
+	public float TailGravityBase { get; set; }
 	public float Rotation { get; set; }
 
-	public SliderSpawnInfoNetSerializable(ColorType colorType, SliderType sliderType, bool hasHeadNote, float headTime, float headBeat, int headLineIndex, NoteLineLayer headLineLayer, NoteLineLayer headBeforeJumpLineLayer, float headControlPointLengthMultiplier, NoteCutDirection headCutDirection, float headCutDirectionAngleOffset, bool hasTailNote, float tailTime, int tailLineIndex, NoteLineLayer tailLineLayer, NoteLineLayer tailBeforeJumpLineLayer, float tailControlPointLengthMultiplier, NoteCutDirection tailCutDirection, float tailCutDirectionAngleOffset, SliderMidAnchorMode midAnchorMode, int sliceCount, float squishAmount, Vector3Serializable headMoveStartPos, Vector3Serializable headJumpStartPos, Vector3Serializable headJumpEndPos, float headJumpGravity, Vector3Serializable tailMoveStartPos, Vector3Serializable tailJumpStartPos, Vector3Serializable tailJumpEndPos, float tailJumpGravity, float moveDuration, float jumpDuration, float rotation)
+	public SliderSpawnInfoNetSerializable(ColorType colorType, SliderType sliderType, bool hasHeadNote, float headTime, float headBeat, int headLineIndex, NoteLineLayer headLineLayer, NoteLineLayer headBeforeJumpLineLayer, float headControlPointLengthMultiplier, NoteCutDirection headCutDirection, float headCutDirectionAngleOffset, bool hasTailNote, float tailTime, int tailLineIndex, NoteLineLayer tailLineLayer, NoteLineLayer tailBeforeJumpLineLayer, float tailControlPointLengthMultiplier, NoteCutDirection tailCutDirection, float tailCutDirectionAngleOffset, SliderMidAnchorMode midAnchorMode, int sliceCount, float squishAmount, Vector3Serializable headNoteOffset, float headGravityBase, Vector3Serializable tailNoteOffset, float tailGravityBase, float rotation)
 	{
 		ColorType = colorType;
 		SliderType = sliderType;
@@ -70,16 +64,10 @@ public sealed class SliderSpawnInfoNetSerializable : INetSerializable
 		MidAnchorMode = midAnchorMode;
 		SliceCount = sliceCount;
 		SquishAmount = squishAmount;
-		HeadMoveStartPos = headMoveStartPos;
-		HeadJumpStartPos = headJumpStartPos;
-		HeadJumpEndPos = headJumpEndPos;
-		HeadJumpGravity = headJumpGravity;
-		TailMoveStartPos = tailMoveStartPos;
-		TailJumpStartPos = tailJumpStartPos;
-		TailJumpEndPos = tailJumpEndPos;
-		TailJumpGravity = tailJumpGravity;
-		MoveDuration = moveDuration;
-		JumpDuration = jumpDuration;
+		HeadNoteOffset = headNoteOffset;
+		HeadGravityBase = headGravityBase;
+		TailNoteOffset = tailNoteOffset;
+		TailGravityBase = tailGravityBase;
 		Rotation = rotation;
 	}
 
@@ -106,16 +94,10 @@ public sealed class SliderSpawnInfoNetSerializable : INetSerializable
 		writer.WriteVarInt((int)MidAnchorMode);
 		writer.WriteVarInt(SliceCount);
 		writer.WriteFloat(SquishAmount);
-		writer.WriteSerializable<Vector3Serializable>(HeadMoveStartPos);
-		writer.WriteSerializable<Vector3Serializable>(HeadJumpStartPos);
-		writer.WriteSerializable<Vector3Serializable>(HeadJumpEndPos);
-		writer.WriteFloat(HeadJumpGravity);
-		writer.WriteSerializable<Vector3Serializable>(TailMoveStartPos);
-		writer.WriteSerializable<Vector3Serializable>(TailJumpStartPos);
-		writer.WriteSerializable<Vector3Serializable>(TailJumpEndPos);
-		writer.WriteFloat(TailJumpGravity);
-		writer.WriteFloat(MoveDuration);
-		writer.WriteFloat(JumpDuration);
+		writer.WriteSerializable<Vector3Serializable>(HeadNoteOffset);
+		writer.WriteFloat(HeadGravityBase);
+		writer.WriteSerializable<Vector3Serializable>(TailNoteOffset);
+		writer.WriteFloat(TailGravityBase);
 		writer.WriteFloat(Rotation);
 	}
 
@@ -142,16 +124,10 @@ public sealed class SliderSpawnInfoNetSerializable : INetSerializable
 		MidAnchorMode = (SliderMidAnchorMode)reader.ReadVarInt();
 		SliceCount = reader.ReadVarInt();
 		SquishAmount = reader.ReadFloat();
-		HeadMoveStartPos = reader.ReadSerializable<Vector3Serializable>();
-		HeadJumpStartPos = reader.ReadSerializable<Vector3Serializable>();
-		HeadJumpEndPos = reader.ReadSerializable<Vector3Serializable>();
-		HeadJumpGravity = reader.ReadFloat();
-		TailMoveStartPos = reader.ReadSerializable<Vector3Serializable>();
-		TailJumpStartPos = reader.ReadSerializable<Vector3Serializable>();
-		TailJumpEndPos = reader.ReadSerializable<Vector3Serializable>();
-		TailJumpGravity = reader.ReadFloat();
-		MoveDuration = reader.ReadFloat();
-		JumpDuration = reader.ReadFloat();
+		HeadNoteOffset = reader.ReadSerializable<Vector3Serializable>();
+		HeadGravityBase = reader.ReadFloat();
+		TailNoteOffset = reader.ReadSerializable<Vector3Serializable>();
+		TailGravityBase = reader.ReadFloat();
 		Rotation = reader.ReadFloat();
 	}
 }

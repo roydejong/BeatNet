@@ -23,5 +23,7 @@ public enum GameplayModifierMask : ushort
 	ProMode = 8192,
 	ZenMode = 16384,
 	SmallCubes = 32768,
-	All = 65535
+	All = 65535,
+	MakingGameEasier = 17944,
+	MakingGameHarder = 47584
 }

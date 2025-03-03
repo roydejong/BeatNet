@@ -25,17 +25,15 @@ public sealed class NoteSpawnInfoNetSerializable : INetSerializable
 	public float TimeToPrevColorNote { get; set; }
 	public int FlipLineIndex { get; set; }
 	public float FlipYSide { get; set; }
-	public Vector3Serializable MoveStartPos { get; set; }
-	public Vector3Serializable MoveEndPos { get; set; }
-	public Vector3Serializable JumpEndPos { get; set; }
-	public float JumpGravity { get; set; }
-	public float MoveDuration { get; set; }
-	public float JumpDuration { get; set; }
+	public Vector3Serializable MoveStartOffset { get; set; }
+	public Vector3Serializable MoveEndOffset { get; set; }
+	public Vector3Serializable JumpEndOffset { get; set; }
+	public float GravityBase { get; set; }
 	public float Rotation { get; set; }
 	public float CutDirectionAngleOffset { get; set; }
 	public float CutSfxVolumeMultiplier { get; set; }
 
-	public NoteSpawnInfoNetSerializable(float time, float beat, int lineIndex, NoteLineLayer noteLineLayer, NoteLineLayer beforeJumpNoteLineLayer, GameplayType gameplayType, ScoringType scoringType, ColorType colorType, NoteCutDirection cutDirection, float timeToNextColorNote, float timeToPrevColorNote, int flipLineIndex, float flipYSide, Vector3Serializable moveStartPos, Vector3Serializable moveEndPos, Vector3Serializable jumpEndPos, float jumpGravity, float moveDuration, float jumpDuration, float rotation, float cutDirectionAngleOffset, float cutSfxVolumeMultiplier)
+	public NoteSpawnInfoNetSerializable(float time, float beat, int lineIndex, NoteLineLayer noteLineLayer, NoteLineLayer beforeJumpNoteLineLayer, GameplayType gameplayType, ScoringType scoringType, ColorType colorType, NoteCutDirection cutDirection, float timeToNextColorNote, float timeToPrevColorNote, int flipLineIndex, float flipYSide, Vector3Serializable moveStartOffset, Vector3Serializable moveEndOffset, Vector3Serializable jumpEndOffset, float gravityBase, float rotation, float cutDirectionAngleOffset, float cutSfxVolumeMultiplier)
 	{
 		Time = time;
 		Beat = beat;
@@ -50,12 +48,10 @@ public sealed class NoteSpawnInfoNetSerializable : INetSerializable
 		TimeToPrevColorNote = timeToPrevColorNote;
 		FlipLineIndex = flipLineIndex;
 		FlipYSide = flipYSide;
-		MoveStartPos = moveStartPos;
-		MoveEndPos = moveEndPos;
-		JumpEndPos = jumpEndPos;
-		JumpGravity = jumpGravity;
-		MoveDuration = moveDuration;
-		JumpDuration = jumpDuration;
+		MoveStartOffset = moveStartOffset;
+		MoveEndOffset = moveEndOffset;
+		JumpEndOffset = jumpEndOffset;
+		GravityBase = gravityBase;
 		Rotation = rotation;
 		CutDirectionAngleOffset = cutDirectionAngleOffset;
 		CutSfxVolumeMultiplier = cutSfxVolumeMultiplier;
@@ -75,12 +71,10 @@ public sealed class NoteSpawnInfoNetSerializable : INetSerializable
 		writer.WriteFloat(TimeToPrevColorNote);
 		writer.WriteVarInt(FlipLineIndex);
 		writer.WriteVarInt((int)FlipYSide);
-		writer.WriteSerializable<Vector3Serializable>(MoveStartPos);
-		writer.WriteSerializable<Vector3Serializable>(MoveEndPos);
-		writer.WriteSerializable<Vector3Serializable>(JumpEndPos);
-		writer.WriteFloat(JumpGravity);
-		writer.WriteFloat(MoveDuration);
-		writer.WriteFloat(JumpDuration);
+		writer.WriteSerializable<Vector3Serializable>(MoveStartOffset);
+		writer.WriteSerializable<Vector3Serializable>(MoveEndOffset);
+		writer.WriteSerializable<Vector3Serializable>(JumpEndOffset);
+		writer.WriteFloat(GravityBase);
 		writer.WriteFloat(Rotation);
 		writer.WriteFloat(CutDirectionAngleOffset);
 		writer.WriteFloat(CutSfxVolumeMultiplier);
@@ -100,12 +94,10 @@ public sealed class NoteSpawnInfoNetSerializable : INetSerializable
 		TimeToPrevColorNote = reader.ReadFloat();
 		FlipLineIndex = reader.ReadVarInt();
 		FlipYSide = (float)reader.ReadVarInt();
-		MoveStartPos = reader.ReadSerializable<Vector3Serializable>();
-		MoveEndPos = reader.ReadSerializable<Vector3Serializable>();
-		JumpEndPos = reader.ReadSerializable<Vector3Serializable>();
-		JumpGravity = reader.ReadFloat();
-		MoveDuration = reader.ReadFloat();
-		JumpDuration = reader.ReadFloat();
+		MoveStartOffset = reader.ReadSerializable<Vector3Serializable>();
+		MoveEndOffset = reader.ReadSerializable<Vector3Serializable>();
+		JumpEndOffset = reader.ReadSerializable<Vector3Serializable>();
+		GravityBase = reader.ReadFloat();
 		Rotation = reader.ReadFloat();
 		CutDirectionAngleOffset = reader.ReadFloat();
 		CutSfxVolumeMultiplier = reader.ReadFloat();

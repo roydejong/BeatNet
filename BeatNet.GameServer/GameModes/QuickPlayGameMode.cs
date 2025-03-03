@@ -213,6 +213,10 @@ public class QuickPlayGameMode : GameMode
         _voteManager.SetRecommendedBeatmap(player, BeatmapLevel.FromMpBeatmapPacket(beatmapPacket));
     }
 
+    public override void HandleMpPlayerData(MpPlayerDataPacket playerData, LobbyPlayer player)
+    {
+    }
+
     private void HandleTopVotedBeatmapChanged(BeatmapLevel? level)
     {
         if (_countdownManager.IsLockedIn || _gameplayManager.Started)

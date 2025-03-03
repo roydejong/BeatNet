@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Serilog;
 
 namespace BeatNet.Lib.Net.IO;
 
@@ -16,7 +17,10 @@ public class RingBuffer<T>(int capacity) where T : notnull
         var oldCount = Interlocked.Increment(ref _atomicCount);
 
         if (oldCount >= Capacity)
+        {
+            Log.Logger.Warning("Ring buffer overflow, lobby may be unstable");
             TryDequeue(out _);
+        }
     }
 
     public bool TryDequeue(out T item)

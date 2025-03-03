@@ -558,6 +558,8 @@ public class LobbyHost
                 case NodePoseSyncStateDeltaNetSerializable:
                 case StandardScoreSyncStateNetSerializable:
                 case StandardScoreSyncStateDeltaNetSerializable:
+                case GetMpPerPlayerPacket:
+                case MpPerPlayerPacket:
                     // The messages are only for relaying; ignore them
                     break;
                 default:

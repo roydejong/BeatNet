@@ -63,7 +63,7 @@ public class NetPayload : INetSerializable
 
                 if (message is BaseRpc rpc)
                     subWriter.WriteByte(rpc.RpcTypeValue);
-                else if (message is BaseMpcPacket mpcPacket)
+                else if (message is BaseMpCorePacket mpcPacket)
                     subWriter.WriteString(mpcPacket.PacketName);
             }
 
@@ -139,7 +139,7 @@ public class NetPayload : INetSerializable
                 mpcPacketName = nextReader.ReadString();
                 var mpcMessageType = MpcMessageTypeExtensions.GetMpCoreMessageType(mpcPacketName);
 
-                if (mpcMessageType == MpcMessageType.Generic)
+                if (mpcMessageType == MpCoreMessageType.Generic)
                 {
                     Log.Logger?.Debug("Using generic fallback for MPC packet type {PacketName}", mpcPacketName);
                 }
@@ -160,7 +160,7 @@ public class NetPayload : INetSerializable
         }
 
         // Restore generic packet name for MPC
-        if (mpcPacketName != null && message is GenericMpcPacket mpcPacket)
+        if (mpcPacketName != null && message is GenericMpCorePacket mpcPacket)
             mpcPacket.PacketNameValue = mpcPacketName;
 
         // Read message contents

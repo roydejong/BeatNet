@@ -2,9 +2,9 @@
 
 namespace BeatNet.Lib.MultiplayerCore;
 
-public class GenericMpcPacket : BaseMpcPacket
+public class GenericMpCorePacket : BaseMpCorePacket
 {
-    public override MpcMessageType MpcMessageType => MpcMessageType.Generic;
+    public override MpCoreMessageType MpCoreMessageType => MpCoreMessageType.Generic;
 
     public string PacketNameValue { get; set; } = "";
     public override string PacketName => PacketNameValue;

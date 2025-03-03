@@ -1,6 +1,6 @@
 ﻿namespace BeatNet.Lib.MultiplayerCore;
 
-public enum MpcMessageType : byte
+public enum MpCoreMessageType : byte
 {
     // -----------------------------------------------------------------------------------------------------------------
     // MultiplayerCore 
@@ -42,21 +42,21 @@ public enum MpcMessageType : byte
 
 public static class MpcMessageTypeExtensions
 {
-    public static readonly Dictionary<string, MpcMessageType> TranslationTable = new()
+    public static readonly Dictionary<string, MpCoreMessageType> TranslationTable = new()
     {
         // MultiplayerCore
-        {"MpBeatmapPacket", MpcMessageType.MpBeatmapPacket},
-        {"MpPlayerData", MpcMessageType.MpPlayerData},
-        {"GetMpPerPlayerPacket", MpcMessageType.GetMpPerPlayerPacket},
-        {"MpPerPlayerPacket", MpcMessageType.MpPerPlayerPacket},
+        {"MpBeatmapPacket", MpCoreMessageType.MpBeatmapPacket},
+        {"MpPlayerData", MpCoreMessageType.MpPlayerData},
+        {"GetMpPerPlayerPacket", MpCoreMessageType.GetMpPerPlayerPacket},
+        {"MpPerPlayerPacket", MpCoreMessageType.MpPerPlayerPacket},
         
         // MultiplayerChat
-        {"MpcTextChatPacket", MpcMessageType.MpcTextChatPacket}
+        {"MpcTextChatPacket", MpCoreMessageType.MpcTextChatPacket}
     };
 
-    public static string? GetMpCorePacketName(this MpcMessageType value) =>
+    public static string? GetMpCorePacketName(this MpCoreMessageType value) =>
         TranslationTable.FirstOrDefault(kv => kv.Value == value).Key ?? null;
 
-    public static MpcMessageType GetMpCoreMessageType(string mpCorePacketName) =>
-        TranslationTable.GetValueOrDefault(mpCorePacketName, MpcMessageType.Generic);
+    public static MpCoreMessageType GetMpCoreMessageType(string mpCorePacketName) =>
+        TranslationTable.GetValueOrDefault(mpCorePacketName, MpCoreMessageType.Generic);
 }

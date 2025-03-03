@@ -31,8 +31,8 @@ public static class SerializableRegistry
             case BaseGameplayRpc rpc:
                 RegisterInternal(PacketLayer.GameplayRpc, rpc.RpcTypeValue, serializable);
                 break;
-            case BaseMpcPacket msg:
-                RegisterInternal(PacketLayer.MultiplayerCore, (byte)msg.MpcMessageType, serializable);
+            case BaseMpCorePacket msg:
+                RegisterInternal(PacketLayer.MultiplayerCore, (byte)msg.MpCoreMessageType, serializable);
                 break;
             case BaseSessionPacket msg:
                 RegisterInternal(PacketLayer.MultiplayerSession, (byte)msg.SessionMessageType, serializable);

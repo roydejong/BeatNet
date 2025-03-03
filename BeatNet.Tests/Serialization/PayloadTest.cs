@@ -31,7 +31,7 @@ public class PayloadTest
         var msgOne = new RequestKickPlayerRpc("bla123");
         writePayload.Messages.Add(msgOne);
 
-        var msgTwo = new GenericMpcPacket();
+        var msgTwo = new GenericMpCorePacket();
         msgTwo.PacketNameValue = "FakePacket";
         msgTwo.Payload = new byte[] { 0x01, 0x02, 0x03 };
         writePayload.Messages.Add(msgTwo);
@@ -61,7 +61,7 @@ public class PayloadTest
         {
             Assert.That(readPayload.Messages, Has.Count.EqualTo(2));
             Assert.That(readPayload.Messages[0], Is.InstanceOf<RequestKickPlayerRpc>());
-            Assert.That(readPayload.Messages[1], Is.InstanceOf<GenericMpcPacket>());
+            Assert.That(readPayload.Messages[1], Is.InstanceOf<GenericMpCorePacket>());
         });
 
         // Packet message 1 - Menu RPC
@@ -69,7 +69,7 @@ public class PayloadTest
         Assert.That(message1.KickedPlayerId, Is.EqualTo(msgOne.KickedPlayerId));
         
         // Packet message 2 - MPC Generic
-        var message2 = (GenericMpcPacket)readPayload.Messages[1];
+        var message2 = (GenericMpCorePacket)readPayload.Messages[1];
         Assert.Multiple(() =>
         {
             Assert.That(message2.PacketNameValue, Is.EqualTo(msgTwo.PacketNameValue));

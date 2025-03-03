@@ -8,9 +8,9 @@ namespace BeatNet.Lib.MultiplayerCore;
 
 // ReSharper disable InconsistentNaming IdentifierTypo ClassNeverInstantiated.Global MemberCanBePrivate.Global
 [UsedImplicitly]
-public class MpBeatmapPacket : BaseMpcPacket
+public class MpBeatmapPacket : BaseMpCorePacket
 {
-    public override MpcMessageType MpcMessageType => MpcMessageType.MpBeatmapPacket;
+    public override MpCoreMessageType MpCoreMessageType => MpCoreMessageType.MpBeatmapPacket;
     public override string PacketName => "MpBeatmapPacket";
 
     public string LevelHash { get; set; } = null!;

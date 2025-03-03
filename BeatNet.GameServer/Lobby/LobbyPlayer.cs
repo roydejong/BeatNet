@@ -5,7 +5,10 @@ using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.BeatSaber.Generated.Packet;
 using BeatNet.Lib.BeatSaber.Util;
+using BeatNet.Lib.MultiplayerCore;
+using BeatNet.Lib.MultiplayerCore.Enums;
 using BeatNet.Lib.Net;
+using Serilog;
 
 namespace BeatNet.GameServer.Lobby;
 
@@ -27,6 +30,10 @@ public class LobbyPlayer : IConnectedPlayer
     private byte[]? PublicEncryptionKey { get; set; }
     private byte[]? Random { get; set; }
     public bool Disconnected { get; set; }
+
+    public string? PlatformUserId { get; set; }
+    public MpCorePlatform Platform { get; set; }
+    public string? GameVersion { get; set; }
 
     public bool HasIdentity => _playerIdentityPacket != null;
 
@@ -53,8 +60,26 @@ public class LobbyPlayer : IConnectedPlayer
         Disconnected = false;
         PublicEncryptionKey = null;
         Random = null;
+        
+        PlatformUserId = null;
+        Platform = MpCorePlatform.Unknown;
+        GameVersion = null;
 
         _playerIdentityPacket = null;
+    }
+    
+    public void SetMpCorePlayerData(MpPlayerDataPacket playerData)
+    {
+        if (!string.IsNullOrEmpty(playerData.PlatformUserId))
+            PlatformUserId = playerData.PlatformUserId;
+        
+        if (playerData.Platform != MpCorePlatform.Unknown)
+            Platform = playerData.Platform;
+        
+        if (!string.IsNullOrEmpty(playerData.GameVersion))
+            GameVersion = playerData.GameVersion;
+        
+        Log.Information("Extra player data set for {UserId}: {PlatformUserId}, {Platform}, {GameVersion}", UserId, PlatformUserId, Platform, GameVersion);
     }
 
     #region State updates

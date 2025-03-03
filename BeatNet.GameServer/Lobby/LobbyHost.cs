@@ -554,6 +554,10 @@ public class LobbyHost
                 case MpBeatmapPacket mpBeatmapPacket:
                     GameMode.HandleMpBeatmapPacket(mpBeatmapPacket, player);
                     break;
+                case MpPlayerDataPacket mpPlayerDataPacket:
+                    player.SetMpCorePlayerData(mpPlayerDataPacket);
+                    GameMode.HandleMpPlayerData(mpPlayerDataPacket, player);
+                    break;
                 case NodePoseSyncStateNetSerializable:
                 case NodePoseSyncStateDeltaNetSerializable:
                 case StandardScoreSyncStateNetSerializable:

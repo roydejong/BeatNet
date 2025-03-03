@@ -74,4 +74,13 @@ public abstract class GameMode
     /// Handles a MultiplayerCore beatmap packet, equivalent to a "level selected" event.
     /// </summary>
     public abstract void HandleMpBeatmapPacket(MpBeatmapPacket beatmapPacket, LobbyPlayer player);
+    
+    /// <summary>
+    /// Handles a MultiplayerCore player data packet, which contains extended player information.
+    /// </summary>
+    /// <remarks>
+    /// Only sent by MultiplayerCore users; only sent if other players are in the lobby; not guaranteed to be present.
+    /// ** Also, not actually sent at all by MultiplayerCore anymore?
+    /// </remarks>
+    public abstract void HandleMpPlayerData(MpPlayerDataPacket playerData, LobbyPlayer player);
 }

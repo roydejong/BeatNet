@@ -188,7 +188,10 @@ public class NetPayload : INetSerializable
         if (_subBufferPool == null)
             throw new InvalidOperationException("Sub-buffer pool not initialized");
 
-        return _subBufferPool.Dequeue();
+        if (_subBufferPool.TryDequeue(out var buffer))
+            return buffer;
+        
+        throw new InvalidOperationException("Sub-buffer pool is depleted");
     }
 
     public static void ReturnSubBuffer(byte[] buffer)

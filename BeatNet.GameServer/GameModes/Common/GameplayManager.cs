@@ -144,7 +144,13 @@ public class GameplayManager
                 }
                 
                 // Not all players ready yet; ensure they're transitioning and ask for their settings
-                _host.SendToAll(new GetGameplaySceneReadyRpc());
+                var nonReadyPlayers = _playersAtLevelStart
+                    .Where(p => !_playerSceneSettings.ContainsKey(p.Id))
+                    .ToList();
+
+                foreach (var nonReadyPlayer in nonReadyPlayers)
+                    nonReadyPlayer.Send(new GetGameplaySceneReadyRpc());
+                
                 Log.Logger.Warning("GAMEPLAY: Waiting for scene loads...");
                 break;
             }
@@ -192,7 +198,13 @@ public class GameplayManager
                 }
                 
                 // Not all players ready yet; ask for their song ready status
-                _host.SendToAll(new GetGameplaySongReadyRpc());
+                var nonReadyPlayers = _playersAtLevelStart
+                    .Where(p => !_playerSongReady.Contains(p.Id))
+                    .ToList();
+                
+                foreach (var nonReadyPlayer in nonReadyPlayers)
+                    nonReadyPlayer.Send(new GetGameplaySongReadyRpc());
+                
                 Log.Logger.Warning("GAMEPLAY: Waiting for song loads...");
                 break;
             }

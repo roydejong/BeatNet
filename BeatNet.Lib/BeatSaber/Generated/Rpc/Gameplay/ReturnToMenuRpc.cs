@@ -15,4 +15,6 @@ public sealed class ReturnToMenuRpc : BaseGameplayRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly ReturnToMenuRpc Instance = new();
 }

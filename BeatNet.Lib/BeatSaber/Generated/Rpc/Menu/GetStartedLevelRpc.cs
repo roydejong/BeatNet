@@ -15,4 +15,6 @@ public sealed class GetStartedLevelRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly GetStartedLevelRpc Instance = new();
 }

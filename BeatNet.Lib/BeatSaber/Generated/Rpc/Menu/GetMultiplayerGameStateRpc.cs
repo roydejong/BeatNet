@@ -15,4 +15,6 @@ public sealed class GetMultiplayerGameStateRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly GetMultiplayerGameStateRpc Instance = new();
 }

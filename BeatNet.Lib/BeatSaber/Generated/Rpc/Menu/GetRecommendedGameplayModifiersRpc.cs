@@ -15,4 +15,6 @@ public sealed class GetRecommendedGameplayModifiersRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly GetRecommendedGameplayModifiersRpc Instance = new();
 }

@@ -50,15 +50,28 @@ public class PacketGenerator
         sw.WriteLine("\t" + $"public override {messageTypeType} InternalMessageType => {messageTypeType}.{packetTypeCase};");
         
         sw.WriteLine();
+        
         sw.WriteLine(
             FieldGenerator.GenerateFields(Packet)
         );
+        
         sw.WriteLine(
             ConstructorGenerator.GenerateConstructor(Packet)
         );
+        
         sw.Write(
             ReadWriteMethodGenerator.GenerateMethods(Packet, overrideKeyword: true)
         );
+        
+        var isEmptyPayload = Packet.Fields.Count == 0;
+
+        if (isEmptyPayload)
+        {
+            // Add static singleton instance
+            sw.WriteLine();
+            sw.WriteLine("\t" + $"public static readonly {Packet.PacketName} Instance = new();");
+        }
+
         sw.Write("}");
         sw.Close();
     }

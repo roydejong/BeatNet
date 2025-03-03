@@ -15,4 +15,6 @@ public sealed class GetIsReadyRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly GetIsReadyRpc Instance = new();
 }

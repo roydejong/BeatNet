@@ -15,4 +15,6 @@ public sealed class GetPlayersPermissionConfigurationRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly GetPlayersPermissionConfigurationRpc Instance = new();
 }

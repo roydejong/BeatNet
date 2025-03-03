@@ -15,4 +15,6 @@ public sealed class GetIsStartButtonEnabledRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly GetIsStartButtonEnabledRpc Instance = new();
 }

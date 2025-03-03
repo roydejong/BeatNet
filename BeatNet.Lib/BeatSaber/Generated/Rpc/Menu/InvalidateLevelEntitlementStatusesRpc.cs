@@ -15,4 +15,6 @@ public sealed class InvalidateLevelEntitlementStatusesRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly InvalidateLevelEntitlementStatusesRpc Instance = new();
 }

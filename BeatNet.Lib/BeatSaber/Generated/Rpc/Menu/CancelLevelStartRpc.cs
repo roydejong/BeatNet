@@ -15,4 +15,6 @@ public sealed class CancelLevelStartRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly CancelLevelStartRpc Instance = new();
 }

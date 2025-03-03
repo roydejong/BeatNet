@@ -15,4 +15,6 @@ public sealed class ClearSelectedGameplayModifiersRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly ClearSelectedGameplayModifiersRpc Instance = new();
 }

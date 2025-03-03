@@ -15,4 +15,6 @@ public sealed class CancelCountdownRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly CancelCountdownRpc Instance = new();
 }

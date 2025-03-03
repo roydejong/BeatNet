@@ -15,4 +15,6 @@ public sealed class GetCountdownEndTimeRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly GetCountdownEndTimeRpc Instance = new();
 }

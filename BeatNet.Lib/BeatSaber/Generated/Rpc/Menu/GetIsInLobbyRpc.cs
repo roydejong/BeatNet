@@ -15,4 +15,6 @@ public sealed class GetIsInLobbyRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly GetIsInLobbyRpc Instance = new();
 }

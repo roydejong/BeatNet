@@ -15,4 +15,6 @@ public sealed class ClearRecommendedBeatmapRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly ClearRecommendedBeatmapRpc Instance = new();
 }

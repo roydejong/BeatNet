@@ -15,4 +15,6 @@ public sealed class GetGameplaySongReadyRpc : BaseGameplayRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly GetGameplaySongReadyRpc Instance = new();
 }

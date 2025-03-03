@@ -15,4 +15,6 @@ public sealed class GetOwnedSongPacksRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly GetOwnedSongPacksRpc Instance = new();
 }

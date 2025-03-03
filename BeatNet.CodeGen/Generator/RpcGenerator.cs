@@ -233,6 +233,15 @@ public class RpcGenerator
             sw.WriteLine($"\t}}");
         }
         
+        var isEmptyPayload = !hasParams;
+
+        if (isEmptyPayload)
+        {
+            // Add static singleton instance
+            sw.WriteLine();
+            sw.WriteLine("\t" + $"public static readonly {Rpc.RpcName} Instance = new();");
+        }
+        
         // End of class and file
         sw.Write("}");
         sw.Close();

@@ -15,4 +15,6 @@ public sealed class CancelStartGameTimeRpc : BaseMenuRpc
 	{
 		// RPC without parameters
 	}
+
+	public static readonly CancelStartGameTimeRpc Instance = new();
 }

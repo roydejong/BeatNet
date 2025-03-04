@@ -614,7 +614,7 @@ public class LobbyHost
         
         // Send host player data (hidden server player)
         SendToFrom(new PlayerIdentityPacket(
-            new PlayerStateHash(BitMaskUtils.CreateBitMask128(new[] { "dedicated_server" })),
+            new PlayerStateHash(BitMaskUtils.CreateBitMask128(["dedicated_server"])),
             new MultiplayerAvatarsData(new List<MultiplayerAvatarData>(), BitMask128.MinValue)
         ), newPlayer, 0);
         

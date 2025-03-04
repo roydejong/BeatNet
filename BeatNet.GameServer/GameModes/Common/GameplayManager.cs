@@ -88,7 +88,7 @@ public class GameplayManager
         ResetState();
 
         if (!finished)
-            _host.SendToAll(new ReturnToMenuRpc());
+            _host.SendToAll(ReturnToMenuRpc.Instance);
 
         if (finished)
             GameplayFinishedEvent?.Invoke();

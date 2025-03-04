@@ -225,7 +225,7 @@ public class QuickPlayGameMode : GameMode
         if (level != null)
             Host.SendToAll(new SetSelectedBeatmapRpc(level.ToBeatmapKey()));
         else
-            Host.SendToAll(new ClearSelectedBeatmapRpc());
+            Host.SendToAll(ClearSelectedBeatmapRpc.Instance);
         
         if (level != null)
             Host.SendToAll(new GetIsEntitledToLevelRpc(level.LevelId));
@@ -276,11 +276,11 @@ public class QuickPlayGameMode : GameMode
         if (GameState != MultiplayerGameState.Lobby)
             return;
         
-        Host.SendToAll(new CancelCountdownRpc());
-        Host.SendToAll(new CancelLevelStartRpc());
+        Host.SendToAll(CancelCountdownRpc.Instance);
+        Host.SendToAll(CancelLevelStartRpc.Instance);
         
-        Host.SendToAll(new GetRecommendedBeatmapRpc());
-        Host.SendToAll(new GetRecommendedGameplayModifiersRpc());
+        Host.SendToAll(GetRecommendedBeatmapRpc.Instance);
+        Host.SendToAll(GetRecommendedGameplayModifiersRpc.Instance);
     }
 
     private void HandleGameplayCancelled()
@@ -290,7 +290,7 @@ public class QuickPlayGameMode : GameMode
 
         GameState = MultiplayerGameState.Lobby;
         
-        Host.SendToAll(new ReturnToMenuRpc());
+        Host.SendToAll(ReturnToMenuRpc.Instance);
         Host.SendToAll(new SetMultiplayerGameStateRpc(MultiplayerGameState.Lobby));
         
         _currentLevel = null;
@@ -304,7 +304,7 @@ public class QuickPlayGameMode : GameMode
 
         GameState = MultiplayerGameState.Lobby;
         
-        Host.SendToAll(new ReturnToMenuRpc());
+        Host.SendToAll(ReturnToMenuRpc.Instance);
         Host.SendToAll(new SetMultiplayerGameStateRpc(MultiplayerGameState.Lobby));
         
         _currentLevel = null;

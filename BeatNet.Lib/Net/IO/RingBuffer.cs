@@ -14,13 +14,11 @@ public class RingBuffer<T>(int capacity) where T : notnull
     {
         _queue.Enqueue(item);
 
-        var oldCount = Interlocked.Increment(ref _atomicCount);
-
-        if (oldCount >= Capacity)
-        {
-            Log.Logger.Warning("Ring buffer overflow, lobby may be unstable");
-            TryDequeue(out _);
-        }
+        if (Interlocked.Increment(ref _atomicCount) <= Capacity)
+            return;
+        
+        Log.Logger.Warning("Ring buffer overflow, lobby may be unstable");
+        TryDequeue(out _);
     }
 
     public bool TryDequeue(out T item)

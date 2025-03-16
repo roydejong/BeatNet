@@ -21,6 +21,32 @@ public class QuickPlayGameMode : GameMode
     private BeatmapLevel? _currentLevel;
     private GameplayModifiers? _currentModifiers;
     private long? _levelStartTime;
+
+    public override MultiplayerLobbyState LobbyState
+    {
+        get
+        {
+            if (_gameplayManager.Started)
+            {
+                switch (_gameplayManager.State)
+                {
+                    case GameplayManager.GameplayState.Gameplay:
+                        return MultiplayerLobbyState.GameRunning;
+                    
+                    case GameplayManager.GameplayState.NotStarted:
+                    case GameplayManager.GameplayState.SceneSyncStart:
+                    case GameplayManager.GameplayState.SongSyncStart:
+                        return MultiplayerLobbyState.GameStarting;
+                }
+            }
+            else if (_countdownManager.IsCountingDown)
+            {
+                return MultiplayerLobbyState.LobbyCountdown;
+            }
+            
+            return MultiplayerLobbyState.LobbySetup;
+        }
+    }
     
     public QuickPlayGameMode(LobbyHost host) : base(host)
     {

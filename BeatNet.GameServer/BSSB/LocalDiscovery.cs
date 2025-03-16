@@ -135,6 +135,7 @@ public class LocalDiscovery
                         GameModeName = lobby.GameModeName,
                         ServerTypeName = "BeatNet",
                         PlayerCount = lobby.PlayerCount,
+                        LobbyState = (int)lobby.GameMode.LobbyState,
                         BeatmapLevelSelectionMask = lobby.GetBeatmapLevelSelectionMask(),
                         GameplayServerConfiguration = lobby.GetGameplayServerConfiguration()
                     };

@@ -19,6 +19,7 @@ public abstract class GameMode
     public abstract SongSelectionMode SongSelectionMode { get; }
     public abstract bool AllowModifierSelection { get; }
     public abstract bool AllowSpectate { get; }
+    public abstract MultiplayerLobbyState LobbyState { get; }
 
     /// <summary>
     /// Gets the name/description of the game mode.

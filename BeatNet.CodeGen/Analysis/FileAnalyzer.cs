@@ -155,7 +155,8 @@ public class FileAnalyzer
             "MultiplayerGameState", "ColorType", "NoteCutDirection", "NoteLineLayer", "SliderMidAnchorMode",
             "NoteData", "DiscoveryPolicy", "InvitePolicy", "GameplayServerMode", "SongSelectionMode",
             "GameplayServerControlSettings", "MultiplayerAvatarData", "SliderData", "MultiplayerSessionManager",
-            "PacketOption", "BeatmapLevelSelectionMask", "GameplayModifierMask", "BeatmapDifficultyMask"
+            "PacketOption", "BeatmapLevelSelectionMask", "GameplayModifierMask", "BeatmapDifficultyMask",
+            "MultiplayerLobbyState"
         };
         foreach (var allow in allowList)
         {

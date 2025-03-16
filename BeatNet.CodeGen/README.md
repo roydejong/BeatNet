@@ -4,7 +4,7 @@
 ## Requirements
 - .NET 8
 - dnSpy
-- Beat Saber (tested on v1.38.0 - v1.40.2)
+- Beat Saber (tested on v1.38.0 - v1.40.3)
 
 ## Setup
 Clone the project, then build with:

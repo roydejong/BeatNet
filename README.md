@@ -5,8 +5,6 @@
 
 BeatNet is a server for hosting high performance Beat Saber multiplayer lobbies on LAN or WAN. It supports official, custom and modded content across multiple game modes. You can host public or private servers for you and your friends, or the community at large.
 
-You can host public or private servers for you and your friends, or the community at large.
-
 > [!TIP]
 > Lost? Confused? If you don't want to run or host your own server, check out **[BeatTogether](https://discord.com/invite/gezGrFG4tz)**! They provide free public servers for the community. BeatNet is primarily aimed at modders, developers and power users.
 

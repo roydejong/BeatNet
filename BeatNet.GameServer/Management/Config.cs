@@ -7,6 +7,7 @@ public class Config
 {
     /// <summary>
     /// The UDP port the game server / lobby instance should use.
+    /// If the environment variable "SERVER_PORT" is set, it will override this value.
     /// </summary>
     [JsonProperty] public ushort UdpPort = 7777;
 

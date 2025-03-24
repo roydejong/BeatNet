@@ -27,11 +27,31 @@ public class BeatSaberService : IHostedService
         LobbyHost = null;
     }
 
+    private ushort DetermineServerPort()
+    {
+        var port = Config.UdpPort;
+        
+        if (Environment.GetEnvironmentVariable("SERVER_PORT") is not { } envPort)
+            return port;
+        
+        if (ushort.TryParse(envPort, out var parsedPort))
+        {
+            port = parsedPort;
+            _logger.Information("Overriding UDP port with SERVER_PORT: {Port}", port);
+        }
+        else
+        {
+            _logger.Warning("Invalid SERVER_PORT value: {Port}", envPort);
+        }
+
+        return port;
+    }
+
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.Information("BeatNet server is starting...");
-
-        LobbyHost = new LobbyHost(Config.UdpPort);
+        
+        LobbyHost = new LobbyHost(DetermineServerPort());
         LobbyHost.SetLogger(_logger);
 
         await LobbyHost.Start();

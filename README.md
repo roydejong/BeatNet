@@ -9,24 +9,15 @@ custom and modded content across multiple game modes. You can host public or pri
 or the community at large.
 
 > [!TIP]
-> Lost? Confused? If you don't want to run or host your own server, check out *
-*[BeatTogether](https://discord.com/invite/gezGrFG4tz)**! They provide free public servers for the community. BeatNet is
-> primarily aimed at modders, developers and power users.
+> Lost? Confused? If you don't want to run or host your own server, check out **[BeatTogether](https://discord.com/invite/gezGrFG4tz)**! They provide free public servers for the community. BeatNet is primarily aimed at power users, modders and developers.
 
 **✅ This version is compatible/tested with Beat Saber version 1.40.3.**
 
 ## Setup
 
-The easiest and recommended way to deploy BeatNet is via the *
-*[🐳 Docker image](https://hub.docker.com/repository/docker/hippomade/beatnet)**.
+The easiest and recommended way to deploy BeatNet is via the **[🐳 Docker image](https://hub.docker.com/repository/docker/hippomade/beatnet)**.
 
-Alternatively, you can **✅ [Download the latest stable release](https://github.com/roydejong/BeatNet/releases/latest)**
-or *
-
-*
-
-💀 [Development build](https://github.com/roydejong/BeatNet/actions/workflows/dotnet.yml?query=event%3Apush+is%3Asuccess+branch%3Amain)
-**.
+Alternatively, you can **✅ [Download the latest stable release](https://github.com/roydejong/BeatNet/releases/latest)** or **💀 [Development build](https://github.com/roydejong/BeatNet/actions/workflows/dotnet.yml?query=event%3Apush+is%3Asuccess+branch%3Amain)**.
 
 ### Using Docker
 

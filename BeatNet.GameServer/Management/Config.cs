@@ -34,6 +34,16 @@ public class Config
     /// </summary>
     [JsonProperty] public string GameMode = "beatnet:quickplay";
 
+    /// <summary>
+    /// If set to true, the lobby will be publicly listed in the server browser.
+    /// </summary>
+    [JsonProperty] public bool Public = false;
+    
+    /// <summary>
+    /// The name to use for local discovery / server browser listings.
+    /// </summary>
+    [JsonProperty] public string Name = "BeatNet Server";
+
     public string ToJson() =>
         JsonConvert.SerializeObject(this, Formatting.Indented);
 

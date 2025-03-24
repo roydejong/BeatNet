@@ -73,6 +73,9 @@ public class QuickPlayGameMode : GameMode
     public override SongSelectionMode SongSelectionMode => SongSelectionMode.Vote;
     public override bool AllowModifierSelection => true;
     public override bool AllowSpectate => true;
+    public override string? GameplaySessionId => _gameplayManager.GameplaySessionId;
+    public override BeatmapLevel? CurrentLevel => _currentLevel;
+    public override GameplayModifiers? CurrentModifiers => _currentModifiers;
 
     public override string GetName()
     {

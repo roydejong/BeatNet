@@ -1,4 +1,5 @@
-﻿using BeatNet.GameServer.BSSB;
+﻿using System.Net;
+using BeatNet.GameServer.BSSB;
 using BeatNet.GameServer.Lobby;
 using BeatNet.GameServer.Management;
 using Microsoft.Extensions.Hosting;
@@ -51,10 +52,30 @@ public class BeatSaberService : IHostedService
     {
         _logger.Information("BeatNet server is starting...");
         
+        // Determine WAN address (needed for public servers)
+        IPAddress? wanAddress = null;
+
+        if (!string.IsNullOrEmpty(Config.WanAddress))
+            wanAddress = IPAddress.Parse(Config.WanAddress);
+        else if (Config.Public)
+            wanAddress = await SelfIpUtil.TryGetWanAddress();
+
+        if (wanAddress == null && Config.Public)
+        {
+            _logger.Error("Failed to determine WAN address, cannot start public server");
+            Environment.Exit(-1);
+            return;
+        }
+        
+        // Start lobby
         LobbyHost = new LobbyHost(
             portNumber: DetermineServerPort(),
+            wanAddress: wanAddress,
             maxPlayerCount: Config.MaxPlayerCount,
-            gameMode: Config.GameMode
+            gameMode: Config.GameMode,
+            serverName: Config.Name,
+            isPublic: Config.Public,
+            password: null // (not yet supported anywhere)
         );
         
         LobbyHost.SetLogger(_logger);
@@ -69,6 +90,7 @@ public class BeatSaberService : IHostedService
             return;
         }
 
+        // Start local discovery
         if (Config.EnableLocalDiscovery)
             _localDiscovery.Start();
     }

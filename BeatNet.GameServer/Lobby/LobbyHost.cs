@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using BeatNet.GameServer.GameModes;
 using BeatNet.GameServer.Util;
 using BeatNet.Lib.BeatSaber.Common;
@@ -16,9 +17,10 @@ using Serilog;
 
 namespace BeatNet.GameServer.Lobby;
 
-public class LobbyHost
+public partial class LobbyHost
 {
     public readonly ushort PortNumber;
+    public readonly IPAddress? WanAddress;
     public readonly string ServerUserId;
 
     private readonly NetServer _server;
@@ -36,25 +38,29 @@ public class LobbyHost
     public IReadOnlyList<LobbyPlayer> ConnectedPlayers => _players.Values.Where(p => !p.Disconnected).ToList();
 
     public SyncTimeProvider TimeProvider { get; private set; }
-    public GameMode GameMode { get; private set; } = null!;
     public int MaxPlayerCount { get; private set; }
+    public GameMode GameMode { get; private set; } = null!;
+    public string ServerName { get; private set; } = null!;
+    public bool IsPublic { get; private set; }
     public string? Password { get; private set; }
 
-    public string ServerName => $"BeatNet {PortNumber}";
     public string GameModeType => GameMode.GetType().Name;
     public string GameModeName => GameMode.GetName();
     public bool IsRunning => _server.IsRunning;
     public int PlayerCount => _players.Count;
     public bool IsEmpty => PlayerCount == 0;
     public bool IsFull => PlayerCount >= MaxPlayerCount;
-    public bool IsPublic => string.IsNullOrEmpty(Password);
     public long SyncTime => TimeProvider.GetRunTimeMs();
+    
+    public IPEndPoint WanEndpoint => new(WanAddress, PortNumber);
 
     private long _lastPingTime = 0;
 
-    public LobbyHost(ushort portNumber, int maxPlayerCount, string gameMode, string? password = null)
+    public LobbyHost(ushort portNumber, IPAddress? wanAddress, int maxPlayerCount, string gameMode,
+        string? serverName = null, bool isPublic = false, string? password = null)
     {
         PortNumber = portNumber;
+        WanAddress = wanAddress;
         ServerUserId = "beatnet:" + RandomId.Generate(8);
 
         _server = new NetServer(portNumber);
@@ -72,6 +78,8 @@ public class LobbyHost
         
         SetMaxPlayerCount(maxPlayerCount);
         SetGameMode(GameModeFactory.Instantiate(gameMode, this));
+        SetServerName(serverName ?? $"BeatNet {portNumber}");
+        SetIsPublic(isPublic);
         SetPassword(password);
     }
 
@@ -98,7 +106,7 @@ public class LobbyHost
         for (int i = 0; i < maxPlayerCount; i++)
             _availableSortIndices.Enqueue(i);
 
-        // TODO Server browser update
+        _announceNeeded = true;
     }
 
     public void SetGameMode(GameMode gameMode)
@@ -108,15 +116,29 @@ public class LobbyHost
 
         GameMode = gameMode;
         GameMode.Reset();
+        
+        _announceNeeded = true;
+    }
 
-        // TODO Server browser update
+    public void SetServerName(string serverName)
+    {
+        ServerName = serverName;
+        
+        _announceNeeded = true;
+    }
+    
+    public void SetIsPublic(bool isPublic)
+    {
+        IsPublic = isPublic;
+        
+        _announceNeeded = true;
     }
 
     public void SetPassword(string? password)
     {
         Password = password;
-
-        // TODO Server browser update
+        
+        _announceNeeded = true;
     }
 
     public async Task<bool> Start()
@@ -133,16 +155,15 @@ public class LobbyHost
         // Initial state
         TimeProvider.Reset();
         GameMode.Reset();
-
-        // TODO Server browser update (fire and forget async)
+        _announceNeeded = true;
 
         // Start thread
         _thread.Name = $"LobbyHost:{PortNumber}";
         _thread.Start();
 
         // Done!
-        _logger?.Information("Started lobby server (Port {Port}, {GameMode}, {MaxPlayerCount} players)",
-            PortNumber, GameMode.GameModeId, MaxPlayerCount);
+        _logger?.Information("Started lobby server (Port {Port}, {GameMode}, {MaxPlayerCount} players, {PrivacyMode})",
+            PortNumber, GameMode.GameModeId, MaxPlayerCount, IsPublic ? "Public" : "Private");
         return true;
     }
 
@@ -159,10 +180,12 @@ public class LobbyHost
             await Task.Delay(50); // give some time to ensure NetServer completes sends
         }
 
-        // TODO Server browser update (fire and forget async)
-
         // Stop net server
         await _server.Stop();
+        
+        // Ensure removal from server browser
+        _announceNeeded = false;
+        await PerformBssbAnnounce(true);
 
         // Wait for lobby thread to stop
         while (_threadRunning)
@@ -352,11 +375,6 @@ public class LobbyHost
         }
         
         _sortIndexUpdateNeeded = false;
-    }
-
-    private void _UpdateServerBrowser()
-    {
-        // TODO Periodic server browser update
     }
 
     #endregion

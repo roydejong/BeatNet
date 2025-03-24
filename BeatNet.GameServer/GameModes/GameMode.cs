@@ -1,6 +1,8 @@
-﻿using BeatNet.GameServer.Lobby;
+﻿using BeatNet.GameServer.GameModes.Models;
+using BeatNet.GameServer.Lobby;
 using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
+using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.MultiplayerCore;
 
 namespace BeatNet.GameServer.GameModes;
@@ -24,6 +26,9 @@ public abstract class GameMode
     public abstract bool AllowModifierSelection { get; }
     public abstract bool AllowSpectate { get; }
     public abstract MultiplayerLobbyState LobbyState { get; }
+    public abstract string? GameplaySessionId { get; }
+    public abstract BeatmapLevel? CurrentLevel { get; }
+    public abstract GameplayModifiers? CurrentModifiers { get; }
 
     /// <summary>
     /// Gets the name/description of the game mode.

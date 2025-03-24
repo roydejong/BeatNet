@@ -9,14 +9,28 @@ BeatNet is a server for hosting high performance Beat Saber multiplayer lobbies 
 > Lost? Confused? If you don't want to run or host your own server, check out **[BeatTogether](https://discord.com/invite/gezGrFG4tz)**! They provide free public servers for the community. BeatNet is primarily aimed at modders, developers and power users.
 
 **✅ This version is compatible/tested with Beat Saber version 1.40.2.**
- 
-## Download
-You will need the [.NET 9 runtime](https://dotnet.microsoft.com/en-us/download/dotnet/9.0) installed to run the server.
-
-- 👍 **[Download latest stable release](https://github.com/roydejong/BeatNet/releases/latest)** (recommended)
-- 💀 **[Download latest development build](https://github.com/roydejong/BeatNet/actions/workflows/dotnet.yml?query=event%3Apush+is%3Asuccess+branch%3Amain)**
-
-*Note: MacOS is not supported at this time.*
 
 ## Setup
-Extract the server files to the desired location. The server configuration will be stored in `config/server.json`.
+The easiest and recommended way to deploy BeatNet is via the **[🐳 Docker image](https://hub.docker.com/repository/docker/hippomade/beatnet)**.
+
+Alternatively, you can **✅ [Download the latest stable release](https://github.com/roydejong/BeatNet/releases/latest)** or **💀 [Development build](https://github.com/roydejong/BeatNet/actions/workflows/dotnet.yml?query=event%3Apush+is%3Asuccess+branch%3Amain)**.
+
+### Using Docker
+Pull the latest image from Docker Hub, then run it in a container:
+
+```bash
+docker pull hippomade/beatnet:latest
+docker run -e SERVER_PORT=7777 -p 7777:7777/udp -p 47777:47777/udp -d hippomade/beatnet:latest
+```
+
+This will start a default Quick Play lobby server on UDP port 7777.
+
+> [!NOTE] 
+> The `latest` version of the image is the latest stable release. You can also use `dev-main` to grab the latest development build.
+ 
+> [!WARNING]   
+> Never rebind the ports; the server needs to know its own port number to announce itself to the Server Browser and to identify itself via Local Discovery.
+> If you wish to use a different port, change the configuration and set the `SERVER_PORT` environment variable, e.g.:
+> ```
+> docker run -e SERVER_PORT=12345 -p 12345:12345/udp -d hippomade/beatnet:latest
+> ```

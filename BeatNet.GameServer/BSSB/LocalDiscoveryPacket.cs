@@ -1,5 +1,4 @@
-﻿using System.Net;
-using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
+﻿using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.Net.Interfaces;
 using BeatNet.Lib.Net.IO;
 
@@ -7,7 +6,7 @@ namespace BeatNet.GameServer.BSSB;
 
 public class LocalDiscoveryPacket : INetSerializable
 {
-    public IPEndPoint ServerEndPoint;
+    public int Port;
     public string ServerName;
     public string ServerUserId;
     public string GameModeName;
@@ -22,7 +21,7 @@ public class LocalDiscoveryPacket : INetSerializable
         writer.WriteString(LocalDiscovery.PacketPrefix);
         writer.WriteInt(LocalDiscovery.ProtocolVersion);
         
-        writer.WriteIpEndPoint(ServerEndPoint);
+        writer.WriteInt(Port);
         writer.WriteString(ServerName);
         writer.WriteString(ServerUserId);
         writer.WriteString(GameModeName);

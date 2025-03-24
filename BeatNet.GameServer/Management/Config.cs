@@ -23,13 +23,6 @@ public class Config
     [JsonProperty] public string? WanAddress = null;
     
     /// <summary>
-    /// The server's private LAN (IPv4 or IPv6) address.
-    /// Used in local network discovery, must be the address LAN users will use to connect.
-    /// If null, LAN address will be automatically detected.
-    /// </summary>
-    [JsonProperty] public string? LanAddress = null;
-    
-    /// <summary>
     /// The absolute maximum amount of players per lobby instance.
     /// Should never exceed 127 due to the limitations of the multiplayer protocol.
     /// </summary>

@@ -2,7 +2,6 @@
 using System.Net.Sockets;
 using BeatNet.GameServer.Lobby;
 using BeatNet.GameServer.Main;
-using BeatNet.GameServer.Management;
 using BeatNet.Lib;
 using BeatNet.Lib.Net.IO;
 using Serilog;
@@ -39,7 +38,7 @@ public class LocalDiscovery
     {
         if (_keepAlive)
             return;
-        
+
         _keepAlive = true;
         _udpClient = new UdpClient(BroadcastPort);
         _pollThread.Start();
@@ -49,7 +48,7 @@ public class LocalDiscovery
     {
         if (!_keepAlive)
             return;
-        
+
         _keepAlive = false;
         _udpClient!.Dispose();
         _udpClient = null;
@@ -59,25 +58,8 @@ public class LocalDiscovery
 
     private void __Poll()
     {
-        // Determine LAN address for broadcast
-        IPAddress? lanAddress = null;
-        
-        if (!string.IsNullOrEmpty(_service.Config.LanAddress))
-            IPAddress.TryParse(_service.Config.LanAddress, out lanAddress);
-        
-        if (lanAddress == null)
-            lanAddress = SelfIpUtil.TryGetLanAddress();
-        
-        if (lanAddress == null)
-        {
-            _logger?.Error("Local network discovery could not start, no LAN address could be determined");
-            Stop();
-            return;
-        }
-        
-        _logger?.Information("Started local network discovery (LAN: {LanAddress}, Broadcast port: {Port})",
-            lanAddress, BroadcastPort);
-        
+        _logger?.Information("Started local network discovery ({Port})", BroadcastPort);
+
         // Init write buffer
         var writeBuffer = GC.AllocateArray<byte>(1024, true);
         var writer = new NetWriter(writeBuffer);
@@ -115,23 +97,18 @@ public class LocalDiscovery
                     continue;
                 }
 
-                _logger?.Information("Sending local network discovery response to {ClientEp}", clientEp);
-                
-                // Helper: If the LAN address it the same as ours, treat as localhost
-                var effectiveLanAddress = lanAddress;
-                if (clientEp.Address.Equals(lanAddress) || IPAddress.IsLoopback(lanAddress))
-                    effectiveLanAddress = IPAddress.Loopback;
-                
+                _logger?.Debug("Sending local network discovery response to {ClientEp}", clientEp);
+
                 // Send response packet for public lobby
                 var publicLobbies = new List<LobbyHost>();
                 if (_service.LobbyHost?.IsRunning ?? false)
                     publicLobbies.Add(_service.LobbyHost);
-                
+
                 foreach (var lobby in publicLobbies)
                 {
                     var packet = new LocalDiscoveryPacket
                     {
-                        ServerEndPoint = new IPEndPoint(effectiveLanAddress, lobby.PortNumber),
+                        Port = lobby.PortNumber,
                         ServerName = lobby.ServerName,
                         ServerUserId = lobby.ServerUserId,
                         GameModeName = lobby.GameModeName,
@@ -141,10 +118,10 @@ public class LocalDiscovery
                         BeatmapLevelSelectionMask = lobby.GetBeatmapLevelSelectionMask(),
                         GameplayServerConfiguration = lobby.GetGameplayServerConfiguration()
                     };
-                    
+
                     writer.Reset();
                     packet.WriteTo(ref writer);
-                    
+
                     _udpClient.Send(writer.Data.ToArray(), writer.Position, clientEp);
                 }
             }

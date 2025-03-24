@@ -1,10 +1,9 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using BeatNet.GameServer.Lobby;
 using BeatNet.GameServer.Main;
 using BeatNet.GameServer.Management;
 using BeatNet.Lib;
-using BeatNet.Lib.BeatSaber.Generated.Enum;
-using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.Net.IO;
 using Serilog;
 
@@ -116,15 +115,18 @@ public class LocalDiscovery
                     continue;
                 }
 
-                _logger?.Debug("Sending local network discovery response to {ClientEp}", clientEp);
+                _logger?.Information("Sending local network discovery response to {ClientEp}", clientEp);
                 
                 // Helper: If the LAN address it the same as ours, treat as localhost
                 var effectiveLanAddress = lanAddress;
                 if (clientEp.Address.Equals(lanAddress) || IPAddress.IsLoopback(lanAddress))
                     effectiveLanAddress = IPAddress.Loopback;
                 
-                // Send response packet for every public lobby
-                var publicLobbies = _service.GetPublicLobbies();
+                // Send response packet for public lobby
+                var publicLobbies = new List<LobbyHost>();
+                if (_service.LobbyHost?.IsRunning ?? false)
+                    publicLobbies.Add(_service.LobbyHost);
+                
                 foreach (var lobby in publicLobbies)
                 {
                     var packet = new LocalDiscoveryPacket
@@ -142,6 +144,7 @@ public class LocalDiscovery
                     
                     writer.Reset();
                     packet.WriteTo(ref writer);
+                    
                     _udpClient.Send(writer.Data.ToArray(), writer.Position, clientEp);
                 }
             }

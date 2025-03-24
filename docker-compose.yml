@@ -1,0 +1,18 @@
+﻿services:
+  server:
+    build: .
+    volumes:
+      - config:/app/config
+    ports:
+      - "7777:7777/udp"
+      - "47777:47777/udp"
+    networks:
+      - bridge_network
+    restart: always
+    
+volumes:
+  config:
+    
+networks:
+  bridge_network:
+    driver: bridge

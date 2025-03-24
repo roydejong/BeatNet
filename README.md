@@ -3,7 +3,7 @@
 
 [![.NET Build](https://github.com/roydejong/BeatNet/actions/workflows/dotnet.yml/badge.svg?branch=main&event=push)](https://github.com/roydejong/BeatNet/actions/workflows/dotnet.yml)
 
-BeatNet is a server that can host one or more Beat Saber multiplayer lobbies. It supports official, custom and modded content across multiple game modes. It aims to be high-performance and easy to use.
+BeatNet is a server for hosting high performance Beat Saber multiplayer lobbies on LAN or WAN. It supports official, custom and modded content across multiple game modes. You can host public or private servers for you and your friends, or the community at large.
 
 You can host public or private servers for you and your friends, or the community at large.
 

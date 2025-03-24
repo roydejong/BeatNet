@@ -20,17 +20,42 @@ Pull the latest image from Docker Hub, then run it in a container:
 
 ```bash
 docker pull hippomade/beatnet:latest
-docker run -e SERVER_PORT=7777 -p 7777:7777/udp -p 47777:47777/udp -d hippomade/beatnet:latest
+docker run -e SERVER_PORT=7777 -p 7777:7777/udp -p 47777:47777/udp -v config:/app/config -d hippomade/beatnet:latest
 ```
 
-This will start a default Quick Play lobby server on UDP port 7777.
+This will start a default Quick Play lobby server on UDP port 7777, with local network discovery enabled.
 
 > [!NOTE] 
 > The `latest` version of the image is the latest stable release. You can also use `dev-main` to grab the latest development build.
  
 > [!WARNING]   
-> Never rebind the ports; the server needs to know its own port number to announce itself to the Server Browser and to identify itself via Local Discovery.
-> If you wish to use a different port, change the configuration and set the `SERVER_PORT` environment variable, e.g.:
+> You should not rebind the ports; the server needs to know its own port number to announce itself to the Server Browser and to identify itself via local network discovery.
+> If you wish to use a different port, set the `SERVER_PORT` environment variable and expose that port, e.g.:
 > ```
 > docker run -e SERVER_PORT=12345 -p 12345:12345/udp -d hippomade/beatnet:latest
 > ```
+> Local network discovery always uses port 47777. As it can only be bound once, you may have to consider [using host networking](https://docs.docker.com/engine/network/drivers/host/) if you want multiple game servers to support local discovery.
+
+## Configuration
+You can configure the server by creating or editing `config/server.json`.
+
+> [!TIP] 
+> When using Docker, it is strongly recommended to mount the config directory as a volume (`-v config:/app/config`).
+
+| Setting | Type | Default | Description |
+| ------- | ------- | ------- | ----------- |
+| **`UdpPort`** | `ushort` | 7777 | The UDP port number the lobby should be hosted on. Can be overriden with the `SERVER_PORT` environment variable. |
+| **`EnableLocalDiscovery`** | `bool` | true | If true, enable local network discovery responses (LAN discovery) for the [Server Browser](https://github.com/roydejong/BeatSaberServerBrowser). |
+| **`WanAddress`** | `string?` | null | Optional: Manual override for the server's public IPv4 or IPv6 address. Used for public server browser lobbies only, this is the address clients will connect to. |
+| **`MaxPlayerCount`** | `int` | 5 | The lobby size; how many players can join. Normally 2-5; modded lobbies support any player count up to 127.  |
+| **`GameMode`** | `string` | beatnet:quickplay | The name of a supported game mode the lobby will run. See below for a complete list of built-in game modes. |
+
+ 🔁 The server must be restarted to apply any changes.
+
+ ## Game Modes
+
+ ### `beatnet:quickplay`
+ **Quick Play**: This is a continuous mode where players can vote for the next level after completing the last. Most votes win!
+
+- **Countdown:** As soon as any suggestion is made, the lobby will begin counting down. The top voted level will be shown in the center. When the countdown reaches 5 seconds, the vote is locked in and the next level is chosen.
+- **Modifier voting**: Modifiers can also be voted on. The modifier set with the most votes will win. If no modifiers are selected, the default "No Fail" modifier is used.

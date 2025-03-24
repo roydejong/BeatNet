@@ -1,0 +1,29 @@
+﻿name: Build and Publish Docker Image (Dev)
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          # Get the branch name and tag it as 'dev-branchname'
+          VERSION="dev-${GITHUB_REF##*/}"
+          
+          # Build the Docker image and push it to Docker Hub
+          docker build --build-arg VERSION=$VERSION -t ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:$VERSION .
+          docker push ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:$VERSION

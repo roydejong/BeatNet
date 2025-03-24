@@ -1,4 +1,5 @@
-﻿using BeatNet.GameServer.GameModes;
+﻿using System.Net;
+using BeatNet.GameServer.GameModes;
 using BeatNet.Lib.BeatSaber;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.BeatSaber.Generated.Packet;
@@ -26,7 +27,7 @@ public class NetworkTest
     public void TestClientHostCommunication()
     {
         // Init
-        var lobbyHost = new GameServer.Lobby.LobbyHost(12345, 5, QuickPlayGameMode.Id);
+        var lobbyHost = new GameServer.Lobby.LobbyHost(12345, IPAddress.Any, 5, QuickPlayGameMode.Id);
         Assert.That(lobbyHost.PortNumber, Is.EqualTo(12345));
 
         // Start

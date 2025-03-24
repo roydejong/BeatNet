@@ -29,7 +29,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: BeatNet-win-x64
-        path: /home/runner/work/BeatNet/BeatNet/BeatNet.GameServer/bin/Release/net8.0/win-x64/publish/
+        path: /home/runner/work/BeatNet/BeatNet/BeatNet.GameServer/bin/Release/net9.0/win-x64/publish/
 
     - name: Server publish build (linux-x64)
       run: dotnet publish BeatNet.GameServer/BeatNet.GameServer.csproj -c Release -r linux-x64 --self-contained false
@@ -37,4 +37,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: BeatNet-linux-x64
-        path: /home/runner/work/BeatNet/BeatNet/BeatNet.GameServer/bin/Release/net8.0/linux-x64/publish/
+        path: /home/runner/work/BeatNet/BeatNet/BeatNet.GameServer/bin/Release/net9.0/linux-x64/publish/

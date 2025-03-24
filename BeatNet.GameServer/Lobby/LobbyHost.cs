@@ -190,6 +190,8 @@ public class LobbyHost
 
             while (IsRunning)
             {
+                _server.EventWaitHandle.Reset();
+                
                 _UpdateConnectQueue();
                 _UpdateDisconnectQueue();
                 _UpdateReceiveQueue();

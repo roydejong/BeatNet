@@ -54,7 +54,15 @@ public class BeatSaberService : IHostedService
         LobbyHost = new LobbyHost(DetermineServerPort());
         LobbyHost.SetLogger(_logger);
 
-        await LobbyHost.Start();
+        var startResult = await LobbyHost.Start();
+
+        if (!startResult)
+        {
+            await LobbyHost.Stop();
+            _logger.Warning("Lobby host failed to start, exiting");
+            Environment.Exit(-1);
+            return;
+        }
 
         if (Config.EnableLocalDiscovery)
             _localDiscovery.Start();

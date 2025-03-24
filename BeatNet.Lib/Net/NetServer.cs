@@ -76,7 +76,7 @@ public class NetServer
             await Task.Delay(10);
 
         EventWaitHandle.Set();
-        return _serverThreadAlive;
+        return _serverThreadAlive && _serverThreadKeepAlive;
     }
 
     public async Task<bool> Stop()
@@ -115,7 +115,7 @@ public class NetServer
 
     private void __ServerThread()
     {
-        _serverThreadAlive = true;
+        _serverThreadAlive = false;
 
         try
         {
@@ -134,6 +134,8 @@ public class NetServer
             var shutdownCycle = true;
             while (_serverThreadKeepAlive || shutdownCycle)
             {
+                _serverThreadAlive = true;
+                
                 // Send: Pending packets
                 while (SendQueue.TryDequeue(out var e))
                 {

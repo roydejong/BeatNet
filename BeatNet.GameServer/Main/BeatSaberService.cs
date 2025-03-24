@@ -51,7 +51,12 @@ public class BeatSaberService : IHostedService
     {
         _logger.Information("BeatNet server is starting...");
         
-        LobbyHost = new LobbyHost(DetermineServerPort());
+        LobbyHost = new LobbyHost(
+            portNumber: DetermineServerPort(),
+            maxPlayerCount: Config.MaxPlayerCount,
+            gameMode: Config.GameMode
+        );
+        
         LobbyHost.SetLogger(_logger);
 
         var startResult = await LobbyHost.Start();

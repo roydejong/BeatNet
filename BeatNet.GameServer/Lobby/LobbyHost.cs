@@ -52,8 +52,7 @@ public class LobbyHost
 
     private long _lastPingTime = 0;
 
-    public LobbyHost(ushort portNumber, int maxPlayerCount = DefaultMaxPlayerCount, GameMode? gameMode = null,
-        string? password = null)
+    public LobbyHost(ushort portNumber, int maxPlayerCount, string gameMode, string? password = null)
     {
         PortNumber = portNumber;
         ServerUserId = "beatnet:" + RandomId.Generate(8);
@@ -72,7 +71,7 @@ public class LobbyHost
         TimeProvider = new SyncTimeProvider();
         
         SetMaxPlayerCount(maxPlayerCount);
-        SetGameMode(gameMode ?? new QuickPlayGameMode(this));
+        SetGameMode(GameModeFactory.Instantiate(gameMode, this));
         SetPassword(password);
     }
 
@@ -143,7 +142,7 @@ public class LobbyHost
 
         // Done!
         _logger?.Information("Started lobby server (Port {Port}, {GameMode}, {MaxPlayerCount} players)",
-            PortNumber, GameMode.GetType().Name, MaxPlayerCount);
+            PortNumber, GameMode.GameModeId, MaxPlayerCount);
         return true;
     }
 

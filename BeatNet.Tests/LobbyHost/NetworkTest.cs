@@ -1,9 +1,7 @@
-﻿using BeatNet.Lib.BeatSaber;
-using BeatNet.Lib.BeatSaber.Common;
+﻿using BeatNet.GameServer.GameModes;
+using BeatNet.Lib.BeatSaber;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.BeatSaber.Generated.Packet;
-using BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
-using BeatNet.Lib.BeatSaber.Util;
 using BeatNet.Lib.Net;
 using BeatNet.Lib.Net.IO;
 using ENet;
@@ -15,20 +13,20 @@ public class NetworkTest
     [SetUp]
     public void SetUp()
     {
-        ENet.Library.Initialize();
+        Library.Initialize();
     }
 
     [TearDown]
     public void TearDown()
     {
-        ENet.Library.Deinitialize();
+        Library.Deinitialize();
     }
 
     [Test]
     public void TestClientHostCommunication()
     {
         // Init
-        var lobbyHost = new GameServer.Lobby.LobbyHost(12345);
+        var lobbyHost = new GameServer.Lobby.LobbyHost(12345, 5, QuickPlayGameMode.Id);
         Assert.That(lobbyHost.PortNumber, Is.EqualTo(12345));
 
         // Start

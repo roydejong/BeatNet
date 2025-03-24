@@ -12,6 +12,9 @@ namespace BeatNet.GameServer.GameModes;
 
 public class QuickPlayGameMode : GameMode
 {
+    public const string Id = "beatnet:quickplay";
+    public override string GameModeId => Id;
+    
     public MultiplayerGameState GameState { get; private set; }
 
     private readonly VoteManager _voteManager;

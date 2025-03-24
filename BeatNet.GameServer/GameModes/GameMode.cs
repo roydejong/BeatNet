@@ -1,20 +1,24 @@
 ﻿using BeatNet.GameServer.Lobby;
 using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
-using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.MultiplayerCore;
 
 namespace BeatNet.GameServer.GameModes;
 
 public abstract class GameMode
 {
+    /// <summary>
+    /// The unique system identifier of the game mode, used in configuration.
+    /// </summary>
+    public abstract string GameModeId { get; }
+    
     public readonly LobbyHost Host;
     
     public GameMode(LobbyHost host)
     {
         Host = host;
     }
-    
+ 
     public abstract GameplayServerMode GameplayServerMode { get; }
     public abstract SongSelectionMode SongSelectionMode { get; }
     public abstract bool AllowModifierSelection { get; }

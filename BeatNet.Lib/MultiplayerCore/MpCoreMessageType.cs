@@ -1,4 +1,6 @@
-﻿namespace BeatNet.Lib.MultiplayerCore;
+﻿using BeatNet.Lib.MultiplayerChat;
+
+namespace BeatNet.Lib.MultiplayerCore;
 
 public enum MpCoreMessageType : byte
 {
@@ -26,9 +28,17 @@ public enum MpCoreMessageType : byte
     // MultiplayerChat
     
     /// <summary>
-    /// https://github.com/roydejong/BeatSaberMultiplayerChat/blob/main/Network/MpcTextChatPacket.cs
+    /// https://github.com/roydejong/BeatSaberMultiplayerChat/blob/main/Network/MpChatCapabilitiesPacket.cs
     /// </summary>
-    MpcTextChatPacket,
+    MpChatCapabilitiesPacket,
+    /// <summary>
+    /// https://github.com/roydejong/BeatSaberMultiplayerChat/blob/main/Network/MpChatTextPacket.cs
+    /// </summary>
+    MpChatTextPacket,
+    /// <summary>
+    /// https://github.com/roydejong/BeatSaberMultiplayerChat/blob/main/Network/MpChatVoicePacket.cs
+    /// </summary>
+    MpChatVoicePacket,
     
     // -----------------------------------------------------------------------------------------------------------------
     // Generic
@@ -45,13 +55,15 @@ public static class MpcMessageTypeExtensions
     public static readonly Dictionary<string, MpCoreMessageType> TranslationTable = new()
     {
         // MultiplayerCore
-        {"MpBeatmapPacket", MpCoreMessageType.MpBeatmapPacket},
-        {"MpPlayerData", MpCoreMessageType.MpPlayerData},
-        {"GetMpPerPlayerPacket", MpCoreMessageType.GetMpPerPlayerPacket},
-        {"MpPerPlayerPacket", MpCoreMessageType.MpPerPlayerPacket},
+        {nameof(MpBeatmapPacket), MpCoreMessageType.MpBeatmapPacket},
+        {"MpPlayerData", MpCoreMessageType.MpPlayerData}, // MpPlayerDataPacket
+        {nameof(GetMpPerPlayerPacket), MpCoreMessageType.GetMpPerPlayerPacket},
+        {nameof(MpPerPlayerPacket), MpCoreMessageType.MpPerPlayerPacket},
         
         // MultiplayerChat
-        {"MpcTextChatPacket", MpCoreMessageType.MpcTextChatPacket}
+        {nameof(MpChatCapabilitiesPacket), MpCoreMessageType.MpChatCapabilitiesPacket},
+        {nameof(MpChatTextPacket), MpCoreMessageType.MpChatTextPacket},
+        {nameof(MpChatVoicePacket), MpCoreMessageType.MpChatVoicePacket}
     };
 
     public static string? GetMpCorePacketName(this MpCoreMessageType value) =>

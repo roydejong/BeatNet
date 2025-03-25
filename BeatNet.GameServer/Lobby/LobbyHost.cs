@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net;
+using BeatNet.GameServer.Chat;
 using BeatNet.GameServer.GameModes;
 using BeatNet.GameServer.Util;
 using BeatNet.Lib.BeatSaber.Common;
@@ -9,6 +10,7 @@ using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.BeatSaber.Generated.Packet;
 using BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 using BeatNet.Lib.BeatSaber.Util;
+using BeatNet.Lib.MultiplayerChat;
 using BeatNet.Lib.MultiplayerCore;
 using BeatNet.Lib.Net;
 using BeatNet.Lib.Net.Events;
@@ -37,7 +39,9 @@ public partial class LobbyHost
     public IReadOnlyList<LobbyPlayer> PlayerList => _players.Values.ToList();
     public IReadOnlyList<LobbyPlayer> ConnectedPlayers => _players.Values.Where(p => !p.Disconnected).ToList();
 
-    public SyncTimeProvider TimeProvider { get; private set; }
+    public readonly SyncTimeProvider TimeProvider;
+    public readonly ChatManager ChatManager;
+    
     public int MaxPlayerCount { get; private set; }
     public GameMode GameMode { get; private set; } = null!;
     public string ServerName { get; private set; } = null!;
@@ -51,8 +55,6 @@ public partial class LobbyHost
     public bool IsEmpty => PlayerCount == 0;
     public bool IsFull => PlayerCount >= MaxPlayerCount;
     public long SyncTime => TimeProvider.GetRunTimeMs();
-    
-    public IPEndPoint WanEndpoint => new(WanAddress, PortNumber);
 
     private long _lastPingTime = 0;
 
@@ -74,7 +76,8 @@ public partial class LobbyHost
         _playersByPeer = new(maxPlayerCount);
         _sortIndexUpdateNeeded = false;
 
-        TimeProvider = new SyncTimeProvider();
+        TimeProvider = new();
+        ChatManager = new(this);
         
         SetMaxPlayerCount(maxPlayerCount);
         SetGameMode(GameModeFactory.Instantiate(gameMode, this));
@@ -89,6 +92,7 @@ public partial class LobbyHost
             .ForContext<LobbyHost>()
             .ForContext("Port", PortNumber);
         _server.SetLogger(_logger);
+        ChatManager.SetLogger(_logger);
     }
 
     public void SetMaxPlayerCount(int maxPlayerCount)
@@ -327,7 +331,7 @@ public partial class LobbyHost
             if (!_playersByPeer.TryGetValue(packetEvent.PeerId, out var player) || player.Disconnected)
                 continue;
             
-            HandleReceive(player, packetEvent.Payload);
+            HandleReceive(player, packetEvent.Payload, packetEvent.Channel);
         }
     }
 
@@ -489,10 +493,20 @@ public partial class LobbyHost
     }
     
     #endregion
+    
+    #region Send util
+
+    public void SendVoiceBroadcast(MpChatVoicePacket message, byte from, NetChannel channel)
+    {
+        foreach (var to in ConnectedPlayers.Where(player => player.CanReceiveVoiceChat && player.ConnectionId != from))
+            SendToFrom(message, to, from, channel);
+    }
+
+    #endregion
 
     #region Receive
     
-    private void HandleReceive(LobbyPlayer player, NetPayload payload)
+    private void HandleReceive(LobbyPlayer player, NetPayload payload, NetChannel channel)
     {
         if (payload.Messages == null)
             return;
@@ -509,6 +523,13 @@ public partial class LobbyHost
         
         foreach (var message in payload.Messages)
         {
+            // Optimized dispatch for voice
+            if (isBroadcast && message is MpChatVoicePacket voicePacket)
+            {
+                SendVoiceBroadcast(voicePacket, player.ConnectionId, channel);
+                continue;
+            }
+            
             // Message blacklist: clients may not send these
             switch (message)
             {
@@ -525,9 +546,9 @@ public partial class LobbyHost
 
             // Relay messages if requested
             if (isBroadcast)
-                SendToAllFrom(message, player.ConnectionId);
+                SendToAllFrom(message, player.ConnectionId, channel);
             else if (unicastPlayer != null)
-                SendToFrom(message, unicastPlayer, player.ConnectionId);
+                SendToFrom(message, unicastPlayer, player.ConnectionId, channel);
 
             // Process and handle message if server was among the intended recipients
             if (!shouldProcess)
@@ -577,16 +598,23 @@ public partial class LobbyHost
                     player.SetMpCorePlayerData(mpPlayerDataPacket);
                     GameMode.HandleMpPlayerData(mpPlayerDataPacket, player);
                     break;
+                case MpChatCapabilitiesPacket capabilitiesPacket:
+                    player.SetMpChatCapabilities(capabilitiesPacket);
+                    break;
+                case MpChatTextPacket chatTextPacket:
+                    ChatManager.HandleChatMessage(player, chatTextPacket.Text);
+                    break;
                 case NodePoseSyncStateNetSerializable:
                 case NodePoseSyncStateDeltaNetSerializable:
                 case StandardScoreSyncStateNetSerializable:
                 case StandardScoreSyncStateDeltaNetSerializable:
                 case GetMpPerPlayerPacket:
                 case MpPerPlayerPacket:
+                case MpChatVoicePacket:
                     // The messages are only for relaying; ignore them
                     break;
                 default:
-                    _logger?.Debug("Player {PlayerId} sent {PacketType}: no server handler implementation",
+                    _logger?.Warning("Player {PlayerId} sent {PacketType}: no server handler implementation",
                         player.ConnectionId, message.GetType().Name);
                     break;
             }

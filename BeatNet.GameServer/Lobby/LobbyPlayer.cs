@@ -1,13 +1,12 @@
 ﻿using BeatNet.GameServer.Util;
 using BeatNet.Lib.BeatSaber;
 using BeatNet.Lib.BeatSaber.Common;
-using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.BeatSaber.Generated.Packet;
 using BeatNet.Lib.BeatSaber.Util;
+using BeatNet.Lib.MultiplayerChat;
 using BeatNet.Lib.MultiplayerCore;
 using BeatNet.Lib.MultiplayerCore.Enums;
-using BeatNet.Lib.Net;
 using Serilog;
 
 namespace BeatNet.GameServer.Lobby;
@@ -41,6 +40,10 @@ public class LobbyPlayer : IConnectedPlayer
     
     public readonly LongRollingAverage LatencyAverage = new(30);
     public bool HasValidLatency => LatencyAverage.HasValue;
+    
+    public bool CanTextChat;
+    public bool CanReceiveVoiceChat;
+    public bool CanTransmitVoiceChat;
 
     public LobbyPlayer(LobbyHost lobbyHost, uint peerId, byte connectionId)
     {
@@ -64,22 +67,12 @@ public class LobbyPlayer : IConnectedPlayer
         PlatformUserId = null;
         Platform = MpCorePlatform.Unknown;
         GameVersion = null;
+        
+        CanTextChat = false;
+        CanReceiveVoiceChat = false;
+        CanTransmitVoiceChat = false;
 
         _playerIdentityPacket = null;
-    }
-    
-    public void SetMpCorePlayerData(MpPlayerDataPacket playerData)
-    {
-        if (!string.IsNullOrEmpty(playerData.PlatformUserId))
-            PlatformUserId = playerData.PlatformUserId;
-        
-        if (playerData.Platform != MpCorePlatform.Unknown)
-            Platform = playerData.Platform;
-        
-        if (!string.IsNullOrEmpty(playerData.GameVersion))
-            GameVersion = playerData.GameVersion;
-        
-        Log.Information("Extra player data set for {UserId}: {PlatformUserId}, {Platform}, {GameVersion}", UserId, PlatformUserId, Platform, GameVersion);
     }
 
     #region State updates
@@ -111,6 +104,41 @@ public class LobbyPlayer : IConnectedPlayer
         Avatars = avatarsData;
     }
     
+    #endregion
+
+    #region Mod data updates
+    
+    public void SetMpCorePlayerData(MpPlayerDataPacket playerData)
+    {
+        if (!string.IsNullOrEmpty(playerData.PlatformUserId))
+            PlatformUserId = playerData.PlatformUserId;
+        
+        if (playerData.Platform != MpCorePlatform.Unknown)
+            Platform = playerData.Platform;
+        
+        if (!string.IsNullOrEmpty(playerData.GameVersion))
+            GameVersion = playerData.GameVersion;
+        
+        Log.Information("Extra player data set for {UserName}: {PlatformUserId}, {Platform}, {GameVersion}", 
+            UserName, PlatformUserId, Platform, GameVersion);
+    }
+
+    public void SetMpChatCapabilities(MpChatCapabilitiesPacket capabilities)
+    {
+        CanTextChat = capabilities.CanTextChat;
+        CanReceiveVoiceChat = capabilities.CanReceiveVoiceChat;
+        CanTransmitVoiceChat = capabilities.CanTransmitVoiceChat;
+
+        var capabilitiesDescrs = new List<string>(3);
+        if (CanTextChat) capabilitiesDescrs.Add("text");
+        if (CanReceiveVoiceChat) capabilitiesDescrs.Add("listen");
+        if (CanTransmitVoiceChat) capabilitiesDescrs.Add("speak");
+        var capabilitiesDescr = capabilitiesDescrs.Count > 0 ? string.Join(", ", capabilitiesDescrs) : "none";
+
+        Log.Information("Chat capabilities set for {UserName}: {CapabilitiesText}",
+            UserName, capabilitiesDescr);
+    }
+
     #endregion
 
     #region State helpers
@@ -201,6 +229,12 @@ public class LobbyPlayer : IConnectedPlayer
     public void Send(BaseRpc rpc)
     {
         LobbyHost.SendTo(rpc, this);
+    }
+
+    public void SendChatMessage(string text)
+    {
+        LobbyHost.SendTo(new MpChatTextPacket { Text = text }, this);
+        Log.Information("[Server] -> [{UserName}] chat: {Text}", UserName, text);
     }
 
     #endregion

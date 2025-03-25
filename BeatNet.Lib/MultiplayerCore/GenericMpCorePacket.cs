@@ -20,7 +20,7 @@ public class GenericMpCorePacket : BaseMpCorePacket
     public override void ReadFrom(ref NetReader reader)
     {
         if (!reader.EndOfData)
-            Payload = reader.ReadBytes(reader.RemainingLength).ToArray();
+            Payload = reader.ReadBytes(reader.RemainingLength).ToArray(); // TODO Not ideal
         else
             Payload = null;
     }

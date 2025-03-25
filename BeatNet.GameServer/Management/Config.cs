@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Serilog;
 
 namespace BeatNet.GameServer.Management;
@@ -44,12 +45,15 @@ public class Config
     /// </summary>
     [JsonProperty] public string Name = "BeatNet Server";
 
+    [PublicAPI]
     public string ToJson() =>
         JsonConvert.SerializeObject(this, Formatting.Indented);
 
+    [PublicAPI]
     public static Config? FromJson(string json) =>
         JsonConvert.DeserializeObject<Config>(json);
 
+    [PublicAPI]
     public static Config LoadOrInitializeFile(string path)
     {
         var config = TryLoadFile(path);
@@ -77,22 +81,25 @@ public class Config
         return config;
     }
 
+    [PublicAPI]
     public static Config? TryLoadFile(string path, bool noComplain = false)
     {
-        if (!File.Exists(path))
+        var absolutePath = Path.GetFullPath(path);
+
+        if (!File.Exists(absolutePath))
             return null;
 
         Config? config = null;
 
         try
         {
-            config = FromJson(File.ReadAllText(path));
-            Log.Logger.Information("Loaded config file: {Path}", path);
+            config = FromJson(File.ReadAllText(absolutePath));
+            Log.Logger.Information("Loaded config file: {Path}", absolutePath);
         }
         catch (Exception ex)
         {
             if (!noComplain)
-                Log.Logger.Warning("Failed to load {Path}, error: {Exception}", path, ex);
+                Log.Logger.Warning(ex, "Failed to load config file: {Path}", absolutePath);
         }
 
         return config;

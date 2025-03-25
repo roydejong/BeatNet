@@ -586,7 +586,7 @@ public partial class LobbyHost
                     // The messages are only for relaying; ignore them
                     break;
                 default:
-                    _logger?.Warning("Player {PlayerId} sent {PacketType}: no server handler implementation",
+                    _logger?.Debug("Player {PlayerId} sent {PacketType}: no server handler implementation",
                         player.ConnectionId, message.GetType().Name);
                     break;
             }

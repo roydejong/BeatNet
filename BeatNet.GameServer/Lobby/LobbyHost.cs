@@ -449,31 +449,31 @@ public partial class LobbyHost
 
     #region Send APIs
 
-    public void SendTo(INetSerializable message, LobbyPlayer to, NetChannel channel = NetChannel.Reliable)
+    public void SendTo(INetSerializable message, LobbyPlayer to, NetChannel channel = NetChannel.ReliableOrdered)
         => _Send(to.PeerId, message, channel);
     
-    public void SendToFrom(INetSerializable message, LobbyPlayer to, byte from, NetChannel channel = NetChannel.Reliable)
+    public void SendToFrom(INetSerializable message, LobbyPlayer to, byte from, NetChannel channel = NetChannel.ReliableOrdered)
         => _Send(to.PeerId, message, channel, from);
 
-    public void SendToAll(INetSerializable message, NetChannel channel = NetChannel.Reliable)
+    public void SendToAll(INetSerializable message, NetChannel channel = NetChannel.ReliableOrdered)
     {
         foreach (var player in ConnectedPlayers)
             SendTo(message, player, channel);
     }
 
-    public void SendToAllFrom(INetSerializable message, byte from, NetChannel channel = NetChannel.Reliable)
+    public void SendToAllFrom(INetSerializable message, byte from, NetChannel channel = NetChannel.ReliableOrdered)
     {
         foreach (var to in ConnectedPlayers.Where(player => player.ConnectionId != from))
             SendToFrom(message, to, from, channel);
     }
     
-    public void SendToAllExcluding(INetSerializable message, byte? excluding = null, NetChannel channel = NetChannel.Reliable)
+    public void SendToAllExcluding(INetSerializable message, byte? excluding = null, NetChannel channel = NetChannel.ReliableOrdered)
     {
         foreach (var to in ConnectedPlayers.Where(player => player.ConnectionId != excluding))
             SendTo(message, to, channel);
     }
 
-    private void _Send(uint peerId, INetSerializable message, NetChannel channel = NetChannel.Reliable,
+    private void _Send(uint peerId, INetSerializable message, NetChannel channel = NetChannel.ReliableOrdered,
         byte senderId = 0)
     {
         if (message is BaseRpc rpc && rpc.SyncTime == 0)
@@ -496,10 +496,10 @@ public partial class LobbyHost
     
     #region Send util
 
-    public void SendVoiceBroadcast(MpChatVoicePacket message, byte from, NetChannel channel)
+    public void SendVoiceBroadcast(MpChatVoicePacket message, byte from)
     {
         foreach (var to in ConnectedPlayers.Where(player => player.CanReceiveVoiceChat && player.ConnectionId != from))
-            SendToFrom(message, to, from, channel);
+            SendToFrom(message, to, from, NetChannel.Unreliable);
     }
 
     #endregion
@@ -526,7 +526,7 @@ public partial class LobbyHost
             // Optimized dispatch for voice
             if (isBroadcast && message is MpChatVoicePacket voicePacket)
             {
-                SendVoiceBroadcast(voicePacket, player.ConnectionId, channel);
+                SendVoiceBroadcast(voicePacket, player.ConnectionId);
                 continue;
             }
             

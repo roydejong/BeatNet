@@ -74,7 +74,7 @@ public class NetworkTest
 
             var packet = new Packet();
             packet.Create(buffer[..writer.Position].ToArray(), PacketFlags.Reliable);
-            serverPeer.Send((byte)NetChannel.Reliable, ref packet);
+            serverPeer.Send((byte)NetChannel.ReliableOrdered, ref packet);
             client.Service(100, out _);
 
             // Check player list
@@ -99,7 +99,7 @@ public class NetworkTest
             writer.WriteSerializable(new NetPayload(identity));
             
             packet.Create(buffer[..writer.Position].ToArray(), PacketFlags.Reliable);
-            serverPeer.Send((byte)NetChannel.Reliable, ref packet);
+            serverPeer.Send((byte)NetChannel.ReliableOrdered, ref packet);
             client.Service(100, out _);
             client.Service(100, out _);
             

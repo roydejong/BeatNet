@@ -147,9 +147,12 @@ public class NetServer
                     writer.WriteSerializable(payload);
 
                     var packet = default(Packet);
-                    var packetFlags = e.Channel == NetChannel.Unreliable
-                        ? PacketFlags.Unsequenced
-                        : PacketFlags.Reliable;
+                    var packetFlags = e.Channel switch
+                    {
+                        NetChannel.ReliableOrdered => PacketFlags.Reliable,
+                        NetChannel.Unreliable => PacketFlags.None,
+                        _ => PacketFlags.None
+                    };
                     packet.Create(_sendBufferMemory, writer.Position, packetFlags);
                     peer.Send((byte)e.Channel, ref packet);
                 }

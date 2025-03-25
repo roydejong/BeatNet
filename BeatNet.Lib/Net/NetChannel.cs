@@ -2,12 +2,6 @@
 
 public enum NetChannel : byte
 {
-    /// <summary>
-    /// Reliable ENet channel (aka delivery method: ReliableOrdered).
-    /// </summary>
-    Reliable = 1,
-    /// <summary>
-    /// Unreliable / unsequenced ENet channel (aka delivery method: Unreliable).
-    /// </summary>
-    Unreliable = 2
+    Unreliable = 0,
+    ReliableOrdered = 1
 }

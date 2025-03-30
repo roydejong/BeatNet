@@ -1,26 +1,14 @@
 ﻿using System.Net;
-using System.Reflection;
 using System.Text;
 using BeatNet.GameServer.BSSB.Models;
-using BeatNet.Lib;
+using BeatNet.GameServer.Util;
 using Serilog;
 
 namespace BeatNet.GameServer.BSSB;
 
 public class BssbClient
 {
-    public const string ApiServerUrl = "https://bssb.app/";
-    
-    public static string UserAgent
-    {
-        get
-        {
-            var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version!;
-            var assemblyVersionStr = $"{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}";
-            
-            return $"BeatNet/{assemblyVersionStr} (BeatSaber/{VersionConsts.GameVersionLabel})";
-        }
-    }
+    public const string BaseUrl = "http://bssb.app";
 
     private readonly HttpClient _httpClient;
     private ILogger? _logger;
@@ -28,8 +16,8 @@ public class BssbClient
     public BssbClient()
     {
         _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri(ApiServerUrl);
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+        _httpClient.BaseAddress = new Uri(BaseUrl);
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", ServerVersion.UserAgent);
         _httpClient.DefaultRequestHeaders.Add("X-BSSB", "oh yeah");
     }
 

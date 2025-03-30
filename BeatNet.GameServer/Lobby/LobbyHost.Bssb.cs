@@ -72,7 +72,7 @@ public partial class LobbyHost
             if (_bssbActiveKey == null)
             {
                 _logger?.Information("Successfully announced to server browser: {Url}",
-                    $"https://bssb.app/game/{result.Key}");
+                    $"{BssbClient.BaseUrl}/game/{result.Key}");
             }
 
             _bssbActiveKey = result.Key;

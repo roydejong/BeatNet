@@ -238,4 +238,22 @@ public class LobbyPlayer : IConnectedPlayer
     }
 
     #endregion
+
+    #region BSSB helpers
+    
+    public string? BssbPlatformType
+    {
+        get
+        {
+            return Platform switch
+            {
+                MpCorePlatform.Steam => "steam",
+                MpCorePlatform.OculusPc => "oculus",
+                MpCorePlatform.OculusQuest => "oculus",
+                _ => null
+            };
+        }
+    }
+
+    #endregion
 }

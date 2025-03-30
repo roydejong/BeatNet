@@ -113,7 +113,7 @@ public partial class LobbyHost
             {
                 UserId = player.UserId,
                 UserName = player.UserName,
-                PlatformType = player.Platform.ToString(),
+                PlatformType = player.BssbPlatformType,
                 PlatformUserId = player.PlatformUserId,
                 SortIndex = player.SortIndex!.Value,
                 IsMe = false,

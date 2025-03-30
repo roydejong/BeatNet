@@ -8,7 +8,7 @@ namespace BeatNet.GameServer.BSSB;
 
 public class BssbClient
 {
-    public const string BaseUrl = "http://bssb.app";
+    public const string BaseUrl = "https://bssb.app";
 
     private readonly HttpClient _httpClient;
     private ILogger? _logger;

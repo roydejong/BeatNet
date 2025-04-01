@@ -104,7 +104,7 @@ public class GameplayManager
             case GameplayState.SceneSyncStart:
             {
                 // Clients are transitioning to the gameplay scene, and send their settings when ready
-                var anyPlayersRemaining = _playersRemaining.Any(p => p.StateIsActive);
+                var anyPlayersRemaining = _playersRemaining.Any(p => p.StateIsActive && !p.Disconnected);
                 var haveSettingsForAllPlayers = _playersAtLevelStart
                     .All(p => _playerSceneSettings.ContainsKey(p.Id));
                 var shouldForceStart = _host.SyncTime - _sceneLoadStartTime >= SceneLoadTimeoutMs;
@@ -118,7 +118,7 @@ public class GameplayManager
                     // A late player in this case is: didn't send settings on time, or state indicates they're inactive
                     var latePlayers = _host.ConnectedPlayers
                         .Where(p => !_playerSceneSettings.ContainsKey(p.Id) || !p.StateWasActiveAtLevelStart ||
-                                    !p.StateIsActive || p.StateFinishedLevel)
+                                    !p.StateIsActive || p.StateFinishedLevel || p.Disconnected)
                         .ToList();
 
                     foreach (var latePlayer in latePlayers)
@@ -160,7 +160,7 @@ public class GameplayManager
             case GameplayState.SongSyncStart:
             {
                 // Clients are in the lobby and we're waiting for all of them to finish loading the song / level
-                var anyPlayersRemaining = _playersRemaining.Any(p => p.StateIsActive);
+                var anyPlayersRemaining = _playersRemaining.Any(p => p.StateIsActive && !p.Disconnected);
                 var haveSongReadyForAllPlayers = _playersAtLevelStart
                     .All(p => _playerSongReady.Contains(p.Id));
                 var shouldForceStart = _host.SyncTime - _songLoadStartTime >= AudioLoadTimeoutMs;
@@ -264,6 +264,10 @@ public class GameplayManager
     {
         _playersRemaining.Remove(player);
         _playerSongReady.Remove(player.Id);
+
+        if (State == GameplayState.SceneSyncStart)
+            // Disconnect before scene sync start, we can safely remove them
+            _playersAtLevelStart.Remove(player);
         
         // Note: keep player scene settings, as they may be needed for late joiners/spectators to see the correct scene
     }

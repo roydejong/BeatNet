@@ -97,6 +97,9 @@ public class LobbyPlayer : IConnectedPlayer
     public void SetPlayerState(PlayerStateHash state)
     {
         State = state;
+
+        if (_playerIdentityPacket != null)
+            _playerIdentityPacket.PlayerState = State;
     }
 
     public void SetPlayerAvatar(MultiplayerAvatarsData avatarsData)

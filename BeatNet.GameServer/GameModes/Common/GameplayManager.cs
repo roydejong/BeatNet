@@ -113,15 +113,20 @@ public class GameplayManager
                 {
                     // All clients loaded scene (or timeout reached)
                     GameplaySessionId = Guid.NewGuid().ToString();
+
+                    // Notify any late players, rebuild active players
+                    // A late player in this case is: didn't send settings on time, or state indicates they're inactive
+                    var latePlayers = _host.ConnectedPlayers
+                        .Where(p => !_playerSceneSettings.ContainsKey(p.Id) || !p.StateWasActiveAtLevelStart ||
+                                    !p.StateIsActive || p.StateFinishedLevel)
+                        .ToList();
+
+                    foreach (var latePlayer in latePlayers)
+                        _playerSceneSettings.Remove(latePlayer.Id);
                     
                     var settingsSz = new PlayerSpecificSettingsAtStartNetSerializable(
                         _playerSceneSettings.Values.ToList()
                     );
-
-                    // Notify any late players, rebuild active players
-                    var latePlayers = _host.ConnectedPlayers
-                        .Where(p => !_playerSceneSettings.ContainsKey(p.Id) && p.StateWasActiveAtLevelStart)
-                        .ToList();
 
                     foreach (var latePlayer in latePlayers)
                     {
@@ -258,8 +263,9 @@ public class GameplayManager
     public void RemovePlayer(LobbyPlayer player)
     {
         _playersRemaining.Remove(player);
-        _playerSceneSettings.Remove(player.Id);
         _playerSongReady.Remove(player.Id);
+        
+        // Note: keep player scene settings, as they may be needed for late joiners/spectators to see the correct scene
     }
 
     public void HandleGameplayRpc(BaseGameplayRpc gameplayRpc, LobbyPlayer player)
@@ -268,7 +274,7 @@ public class GameplayManager
         {
             case SetGameplaySceneReadyRpc gameplaySceneReadyRpc:
             {
-                if (gameplaySceneReadyRpc.PlayerSpecificSettings != null)
+                if (gameplaySceneReadyRpc.PlayerSpecificSettings != null && State == GameplayState.SceneSyncStart)
                     _playerSceneSettings[player.Id] = gameplaySceneReadyRpc.PlayerSpecificSettings;
 
                 if (!player.StateWasActiveAtLevelStart && State > GameplayState.SceneSyncStart)

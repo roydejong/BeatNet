@@ -10,6 +10,10 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>TRACE;PACKET_DEBUG</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Include="..\.dockerignore">
       <Link>.dockerignore</Link>

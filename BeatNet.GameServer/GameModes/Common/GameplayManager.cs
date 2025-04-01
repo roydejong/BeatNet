@@ -270,6 +270,17 @@ public class GameplayManager
             {
                 if (gameplaySceneReadyRpc.PlayerSpecificSettings != null)
                     _playerSceneSettings[player.Id] = gameplaySceneReadyRpc.PlayerSpecificSettings;
+
+                if (!player.StateWasActiveAtLevelStart && State > GameplayState.SceneSyncStart)
+                {
+                    // Late joiner: advance to next state
+                    var settingsSz = new PlayerSpecificSettingsAtStartNetSerializable(
+                        _playerSceneSettings.Values.ToList()
+                    );
+                    _host.SendToAll(new SetPlayerDidConnectLateRpc(player.UserId, settingsSz, GameplaySessionId!));
+                    player.Send(GetGameplaySongReadyRpc.Instance);
+                }
+
                 Update();
                 break;
             }
@@ -277,6 +288,13 @@ public class GameplayManager
             {
                 if (!_playerSongReady.Contains(player.Id))
                     _playerSongReady.Add(player.Id);
+                
+                if (!player.StateWasActiveAtLevelStart && State > GameplayState.SongSyncStart)
+                {
+                    // Late joiner: advance to next state
+                    player.Send(new SetSongStartTimeRpc(_songStartTime));
+                }
+                
                 Update();
                 break;
             }

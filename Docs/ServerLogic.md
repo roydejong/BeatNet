@@ -264,7 +264,7 @@ Time-outs:
 - The server will time out after **15 seconds**, and will **force a level** to start with the players that are ready.
 - The clients will time out after **20 seconds**, and will **return to the lobby**.
 
-The server can send `SetPlayerDidConnectLateRpc` in this stage to indicate that a player connected late / will spectate.
+The server can send `SetPlayerDidConnectLateRpc` in this stage to indicate that a player connected late / will spectate. This packet effectively replaces `SetGameplaySceneSyncFinished` for the late player, containing the same data and having the same effect.
 
 ### 3. Sync song load
 Clients will enter the `SongStartSync` state, and fade in the multiplayer environment. Players will spawn in.

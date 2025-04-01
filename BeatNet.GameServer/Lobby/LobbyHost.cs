@@ -483,6 +483,14 @@ public partial class LobbyHost
     private void _Send(uint peerId, INetSerializable message, NetChannel channel = NetChannel.ReliableOrdered,
         byte senderId = 0)
     {
+#if PACKET_DEBUG
+        if (channel == NetChannel.ReliableOrdered && message is BaseRpc)
+        {
+            _logger?.Information("SEND: {PacketType} --> to {PlayerId} ({Channel})",
+                message.GetType().Name, peerId, channel);
+        }
+#endif
+
         if (message is BaseRpc rpc && rpc.SyncTime == 0)
             rpc.SyncTime = SyncTime;
         
@@ -530,6 +538,15 @@ public partial class LobbyHost
         
         foreach (var message in payload.Messages)
         {
+#if PACKET_DEBUG
+            if (channel == NetChannel.ReliableOrdered && message is BaseRpc)
+            {
+                _logger?.Information("RECEIVE: {PacketType} <-- from {PlayerId} ({Channel}), {Type}",
+                    message.GetType().Name, player.PeerId, channel, 
+                    (isBroadcast ? "Broadcast" : (isUnicast ? "Unicast" : "Normal")));
+            }
+#endif
+
             // Optimized dispatch for voice
             if (isBroadcast && message is MpChatVoicePacket voicePacket)
             {

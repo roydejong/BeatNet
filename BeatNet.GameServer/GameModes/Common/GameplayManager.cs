@@ -3,9 +3,7 @@ using BeatNet.Lib.BeatSaber.Common;
 using BeatNet.Lib.BeatSaber.Generated.Enum;
 using BeatNet.Lib.BeatSaber.Generated.NetSerializable;
 using BeatNet.Lib.BeatSaber.Generated.Rpc.Gameplay;
-using BeatNet.Lib.BeatSaber.Generated.Rpc.Menu;
 using Serilog;
-using Serilog.Core;
 
 namespace BeatNet.GameServer.GameModes.Common;
 
@@ -136,7 +134,7 @@ public class GameplayManager
                     _host.SendToAll(new SetGameplaySceneSyncFinishedRpc(settingsSz, GameplaySessionId!));
 
                     // Move on to song sync start immediately
-                    Log.Logger.Warning("GAMEPLAY: Scenes loaded! Moving to song load...");
+                    Log.Logger.Information("GAMEPLAY: Scenes loaded! Moving to song load...");
                     State = GameplayState.SongSyncStart;
                     _songLoadStartTime = _host.SyncTime;
                     Update();
@@ -151,7 +149,7 @@ public class GameplayManager
                 foreach (var nonReadyPlayer in nonReadyPlayers)
                     nonReadyPlayer.Send(GetGameplaySceneReadyRpc.Instance);
                 
-                Log.Logger.Warning("GAMEPLAY: Waiting for scene loads...");
+                Log.Logger.Information("GAMEPLAY: Waiting for scene loads...");
                 break;
             }
             case GameplayState.SongSyncStart:
@@ -189,7 +187,7 @@ public class GameplayManager
                     }
 
                     // Start the song
-                    Log.Logger.Warning("GAMEPLAY: Song loaded! Setting start time...");
+                    Log.Logger.Information("GAMEPLAY: Song loaded! Setting start time...");
                     _host.SendToAll(new SetSongStartTimeRpc(_songStartTime));
 
                     // Move on to gameplay
@@ -205,7 +203,7 @@ public class GameplayManager
                 foreach (var nonReadyPlayer in nonReadyPlayers)
                     nonReadyPlayer.Send(GetGameplaySongReadyRpc.Instance);
                 
-                Log.Logger.Warning("GAMEPLAY: Waiting for song loads...");
+                Log.Logger.Information("GAMEPLAY: Waiting for song loads...");
                 break;
             }
             case GameplayState.Gameplay:
@@ -231,12 +229,12 @@ public class GameplayManager
                         // Outro plays when we have any completion results
                         State = GameplayState.Outro;
                         _outroStartTime = _host.SyncTime;
-                        Log.Logger.Warning("GAMEPLAY: Finished, playing outro");
+                        Log.Logger.Information("GAMEPLAY: Finished, playing outro");
                     }
                     else
                     {
                         // Outro skips if we have no completion results
-                        Log.Logger.Warning("GAMEPLAY: Finished, cancelled");
+                        Log.Logger.Information("GAMEPLAY: Finished, cancelled");
                         StopImmediately(false);
                     }
                 }
@@ -248,7 +246,7 @@ public class GameplayManager
                 var isOutroFinished = _host.SyncTime - _outroStartTime >= OutroTimeMs;
                 if (isOutroFinished)
                 {
-                    Log.Logger.Warning("GAMEPLAY: Finished, outro done");
+                    Log.Logger.Information("GAMEPLAY: Finished, outro done");
                     StopImmediately(true);
                 }
 

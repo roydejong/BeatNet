@@ -327,6 +327,10 @@ public class QuickPlayGameMode : GameMode
         
         _currentLevel = null;
         _currentModifiers = null;
+        
+        // Re-ask recommendations; this ensures anyone in the lobby (bugged/early return) doesn't have their vote ignored
+        Host.SendToAll(GetRecommendedBeatmapRpc.Instance);
+        Host.SendToAll(GetRecommendedGameplayModifiersRpc.Instance);
     }
 
     private void HandleGameplayFinished()
@@ -341,6 +345,10 @@ public class QuickPlayGameMode : GameMode
         
         _currentLevel = null;
         _currentModifiers = null;
+        
+        // Re-ask recommendations; this ensures anyone in the lobby (bugged/early return) doesn't have their vote ignored
+        Host.SendToAll(GetRecommendedBeatmapRpc.Instance);
+        Host.SendToAll(GetRecommendedGameplayModifiersRpc.Instance);
     }
 
     public static GameplayModifiers DefaultModifiers =>

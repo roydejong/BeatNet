@@ -122,7 +122,7 @@ public class BeatSaberService : IHostedService
     {
         var isPublic = Config.Public;
 
-        if (Environment.GetEnvironmentVariable("PUBLIC") is { } envPublic)
+        if (Environment.GetEnvironmentVariable("PUBLIC_SERVER") is { } envPublic)
         {
             if (envPublic.ToLowerInvariant() is "1" or "true")
             {

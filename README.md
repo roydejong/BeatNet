@@ -28,7 +28,7 @@ Pull the latest image from Docker Hub, then run it in a container:
 
 ```bash
 docker pull hippomade/beatnet:latest
-docker run -e SERVER_PORT=7777 -e PUBLIC=1 -p 7777:7777/udp -p 47777:47777/udp -v config:/app/config -d hippomade/beatnet:latest
+docker run -e SERVER_PORT=7777 -e PUBLIC_SERVER=1 -p 7777:7777/udp -p 47777:47777/udp -v config:/app/config -d hippomade/beatnet:latest
 ```
 
 This will start a **public Quick Play lobby** server on UDP port 7777, with local network discovery enabled.
@@ -71,7 +71,7 @@ Some settings can be forced via environment variables. This can be useful for Do
 | Environment variable | Description                                                                                                                       |
 |----------------------|-----------------------------------------------------------------------------------------------------------------------------------|
 | `SERVER_PORT`        | The UDP port number the lobby should be hosted on. This overrides the `UdpPort` setting in the config file.                       |
-| `PUBLIC`             | If `1` or `true`, the server will be listed in the public server browser. This overrides the `Public` setting in the config file. |
+| `PUBLIC_SERVER`      | If `1` or `true`, the server will be listed in the public server browser. This overrides the `Public` setting in the config file. |
 | `NAME`               | The name to use for local discovery / server browser listings. This overrides the `Name` setting in the config file.              |
 
 ## Game Modes

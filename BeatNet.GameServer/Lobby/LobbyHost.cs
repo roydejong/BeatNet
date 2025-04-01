@@ -47,6 +47,7 @@ public partial class LobbyHost
     public string ServerName { get; private set; } = null!;
     public bool IsPublic { get; private set; }
     public string? Password { get; private set; }
+    public string? Motd { get; private set; }
 
     public string GameModeType => GameMode.GetType().Name;
     public string GameModeName => GameMode.GetName();
@@ -59,7 +60,7 @@ public partial class LobbyHost
     private long _lastPingTime = 0;
 
     public LobbyHost(ushort portNumber, IPAddress? wanAddress, int maxPlayerCount, string gameMode,
-        string? serverName = null, bool isPublic = false, string? password = null)
+        string? serverName = null, bool isPublic = false, string? password = null, string? motd = null)
     {
         PortNumber = portNumber;
         WanAddress = wanAddress;
@@ -84,6 +85,7 @@ public partial class LobbyHost
         SetServerName(serverName ?? $"BeatNet {portNumber}");
         SetIsPublic(isPublic);
         SetPassword(password);
+        SetMotd(motd);
     }
 
     public void SetLogger(ILogger logger)
@@ -143,6 +145,11 @@ public partial class LobbyHost
         Password = password;
         
         _announceNeeded = true;
+    }
+
+    public void SetMotd(string? motd)
+    {
+        Motd = motd;
     }
 
     public async Task<bool> Start()
@@ -375,7 +382,7 @@ public partial class LobbyHost
             
             player.SortIndex = sortIndex;
             SendToAll(player.GetPlayerSortOrderPacket());
-            GameMode.OnPlayerSpawn(player);
+            HandlePlayerSpawn(player);
         }
         
         _sortIndexUpdateNeeded = false;
@@ -667,6 +674,16 @@ public partial class LobbyHost
         
         // Allow game mode to handle new player
         GameMode.OnPlayerConnect(newPlayer);
+    }
+
+    private void HandlePlayerSpawn(LobbyPlayer player)
+    {
+        player.SendChatMessage($"Powered by BeatNet {ServerVersion.ProductVersionShortHash}");
+        
+        if (!string.IsNullOrWhiteSpace(Motd))
+            player.SendChatMessage(Motd);
+        
+        GameMode.OnPlayerSpawn(player);
     }
 
     private void HandlePlayerDisconnect(LobbyPlayer player)

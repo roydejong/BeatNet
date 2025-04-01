@@ -44,6 +44,12 @@ public class Config
     /// The name to use for local discovery / server browser listings.
     /// </summary>
     [JsonProperty] public string Name = "BeatNet Server";
+    
+    /// <summary>
+    /// Welcome message (MOTD) to send on player connect.
+    /// The player must have MultiplayerChat installed to see this message.
+    /// </summary>
+    [JsonProperty] public string? WelcomeMessage = "\ud83d\udd96";
 
     [PublicAPI]
     public string ToJson() =>

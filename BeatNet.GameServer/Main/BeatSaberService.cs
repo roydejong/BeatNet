@@ -75,7 +75,8 @@ public class BeatSaberService : IHostedService
             gameMode: Config.GameMode,
             serverName: Config.Name,
             isPublic: Config.Public,
-            password: null // (not yet supported anywhere)
+            password: null, // (not yet supported anywhere)
+            motd: Config.WelcomeMessage
         );
         
         LobbyHost.SetLogger(_logger);

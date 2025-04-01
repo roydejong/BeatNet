@@ -4,7 +4,7 @@
 ## Requirements
 - .NET 8
 - dnSpy
-- Beat Saber (tested on v1.38.0 - v1.40.3)
+- Beat Saber (tested on v1.38.0 - v1.40.4)
 
 ## Setup
 Clone the project, then build with:
@@ -65,7 +65,7 @@ You will need to provide a manual implementation for these that implements `INet
 - `ByteArrayNetSerializable`
 
 ### Expected warnings
-As of v1.40.3, the following warnings may be expected:
+As of v1.40.4, the following warnings may be expected:
 
 > WARNING: Possibly incomplete type: `NoteSpawnInfoNetSerializable` - inconsistent field count (20) vs. instruction count (19)
 

@@ -11,7 +11,7 @@ or the community at large.
 > [!TIP]
 > Lost? Confused? If you don't want to run or host your own server, check out **[BeatTogether](https://discord.com/invite/gezGrFG4tz)**! They provide free public servers for the community. BeatNet is primarily aimed at power users, modders and developers.
 
-**✅ This version is compatible/tested with Beat Saber version 1.40.3.**
+**✅ This version is compatible/tested with Beat Saber version 1.40.4.**
 
 ## Setup
 

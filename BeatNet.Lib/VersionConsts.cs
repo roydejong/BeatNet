@@ -5,7 +5,7 @@ namespace BeatNet.Lib;
 public static class VersionConsts
 {
     [PublicAPI] public const string GameVersionMinimum = "1.40.0";
-    [PublicAPI] public const string GameVersionLabel = "1.40.3";
+    [PublicAPI] public const string GameVersionLabel = "1.40.4";
     [PublicAPI] public const string GameVersionMaximum = "1.40.999";
     [PublicAPI] public const string MultiplayerCoreVersion = "1.5.0";
     [PublicAPI] public const uint ProtocolVersion = 9U;

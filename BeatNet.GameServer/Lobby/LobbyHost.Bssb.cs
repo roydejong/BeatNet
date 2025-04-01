@@ -37,50 +37,57 @@ public partial class LobbyHost
 
     public async Task PerformBssbAnnounce(bool forceRemove = false)
     {
-        var shouldAnnounce = IsRunning && IsPublic && !forceRemove;
-
-        if (!shouldAnnounce)
+        try
         {
-            // We are not in a state where we should announce; remove if needed, then bail
-            if (_bssbActiveKey != null)
+            var shouldAnnounce = IsRunning && IsPublic && !forceRemove;
+
+            if (!shouldAnnounce)
             {
-                var removeResult = await _bssbClient.UnAnnounce(new UnAnnounceParams()
+                // We are not in a state where we should announce; remove if needed, then bail
+                if (_bssbActiveKey != null)
                 {
-                    HostSecret = ServerUserId,
-                    HostUserId = ServerUserId,
-                    SelfUserId = ServerUserId
-                });
+                    var removeResult = await _bssbClient.UnAnnounce(new UnAnnounceParams()
+                    {
+                        HostSecret = ServerUserId,
+                        HostUserId = ServerUserId,
+                        SelfUserId = ServerUserId
+                    });
 
-                if (removeResult?.Result != null)
-                    _logger?.Information("Removed server browser listing: {Result}", removeResult.Result);
+                    if (removeResult?.Result != null)
+                        _logger?.Information("Removed server browser listing: {Result}", removeResult.Result);
 
-                _bssbActiveKey = null;
+                    _bssbActiveKey = null;
+                }
+
+                return;
             }
 
-            return;
-        }
+            if (WanAddress == null)
+                throw new InvalidOperationException("Cannot announce to server browser without WAN address");
 
-        if (WanAddress == null)
-            throw new InvalidOperationException("Cannot announce to server browser without WAN address");
+            // Generate and send announce
+            var announce = GenerateAnnounce();
+            var result = await _bssbClient.Announce(announce);
 
-        // Generate and send announce
-        var announce = GenerateAnnounce();
-        var result = await _bssbClient.Announce(announce);
-
-        if (result?.Success ?? false)
-        {
-            if (_bssbActiveKey == null)
+            if (result?.Success ?? false)
             {
-                _logger?.Information("Successfully announced to server browser: {Url}",
-                    $"{BssbClient.BaseUrl}/game/{result.Key}");
-            }
+                if (_bssbActiveKey == null)
+                {
+                    _logger?.Information("Successfully announced to server browser: {Url}",
+                        $"{BssbClient.BaseUrl}/game/{result.Key}");
+                }
 
-            _bssbActiveKey = result.Key;
+                _bssbActiveKey = result.Key;
+            }
+            else
+            {
+                _logger?.Warning("Server browser announce failed: {Error}",
+                    result?.ServerMessage ?? "Communication error");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            _logger?.Warning("Server browser announce failed: {Error}",
-                result?.ServerMessage ?? "Communication error");
+            _logger?.Error("Failed to announce to server browser: {Error}", ex.Message);
         }
     }
 

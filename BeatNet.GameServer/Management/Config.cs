@@ -37,11 +37,13 @@ public class Config
 
     /// <summary>
     /// If set to true, the lobby will be publicly listed in the server browser.
+    /// Can be overriden with the "PUBLIC" environment variable.
     /// </summary>
     [JsonProperty] public bool Public = false;
     
     /// <summary>
     /// The name to use for local discovery / server browser listings.
+    /// Can be overriden with the "NAME" environment variable.
     /// </summary>
     [JsonProperty] public string Name = "BeatNet Server";
     

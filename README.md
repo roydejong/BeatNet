@@ -14,22 +14,13 @@ the [Server Browser mod](https://github.com/roydejong/BeatSaberServerBrowser) on
 **✅ This version is compatible/tested with Beat Saber version 1.40.4.**
 
 > [!TIP]
-> Lost? Confused? If you don't want to run or host your own server, check out *
-*[BeatTogether](https://discord.com/invite/gezGrFG4tz)**! They provide free public servers for the community. BeatNet is
-> primarily aimed at power users, modders and developers.
+> Lost? Confused? If you don't want to run or host your own server, check out **[BeatTogether](https://discord.com/invite/gezGrFG4tz)**! They provide free public servers for the community. BeatNet is primarily aimed at power users, modders and developers.
 
 ## Setup
 
-The easiest and recommended way to deploy BeatNet is via the *
-*[🐳 Docker image](https://hub.docker.com/repository/docker/hippomade/beatnet)**.
+The easiest and recommended way to deploy BeatNet is via the **[🐳 Docker image](https://hub.docker.com/repository/docker/hippomade/beatnet)**.
 
-Alternatively, you can **✅ [Download the latest stable release](https://github.com/roydejong/BeatNet/releases/latest)**
-or *
-
-*
-
-💀 [Development build](https://github.com/roydejong/BeatNet/actions/workflows/dotnet.yml?query=event%3Apush+is%3Asuccess+branch%3Amain)
-**.
+Alternatively, you can **✅ [Download the latest stable release](https://github.com/roydejong/BeatNet/releases/latest)** or **💀 [Development build](https://github.com/roydejong/BeatNet/actions/workflows/dotnet.yml?query=event%3Apush+is%3Asuccess+branch%3Amain)**.
 
 ### Using Docker
 
@@ -37,26 +28,21 @@ Pull the latest image from Docker Hub, then run it in a container:
 
 ```bash
 docker pull hippomade/beatnet:latest
-docker run -e SERVER_PORT=7777 -p 7777:7777/udp -p 47777:47777/udp -v config:/app/config -d hippomade/beatnet:latest
+docker run -e SERVER_PORT=7777 -e PUBLIC=1 -p 7777:7777/udp -p 47777:47777/udp -v config:/app/config -d hippomade/beatnet:latest
 ```
 
-This will start a default Quick Play lobby server on UDP port 7777, with local network discovery enabled.
+This will start a **public Quick Play lobby** server on UDP port 7777, with local network discovery enabled.
 
 > [!NOTE]
-> The `latest` version of the image is the latest stable release. You can also use `dev-main` to grab the latest
-> development build.
+> The `latest` version of the image is the latest stable release. You can also use `dev-main` to grab the latest development build.
 
 > [!WARNING]   
-> You should not rebind the ports; the server needs to know its own port number to announce itself to the Server Browser
-> and to identify itself via local network discovery.
+> You should not rebind the ports; the server needs to know its own port number to announce itself to the Server Browser and to identify itself via local network discovery.
 > If you wish to use a different port, set the `SERVER_PORT` environment variable and expose that port, e.g.:
 > ```
 > docker run -e SERVER_PORT=12345 -p 12345:12345/udp -d hippomade/beatnet:latest
 > ```
-> Local network discovery always uses port 47777. As it can only be bound once, you may have to
-> consider [using host networking](https://docs.docker.com/engine/network/drivers/host/) if you want multiple game
-> servers
-> to support local discovery.
+> Local network discovery always uses port 47777. As it can only be bound once, you may have to consider [using host networking](https://docs.docker.com/engine/network/drivers/host/) if you want multiple game servers to support local discovery.
 
 ## Configuration
 
@@ -78,14 +64,21 @@ You can configure the server by creating or editing `config/server.json`.
 
 🔁 The server must be restarted to apply any changes.
 
+### Environment variables
+
+Some settings can be forced via environment variables. This can be useful for Docker users or situations where you do not want to customize the config file.
+
+| Environment variable | Description                                                                                                                       |
+|----------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| `SERVER_PORT`        | The UDP port number the lobby should be hosted on. This overrides the `UdpPort` setting in the config file.                       |
+| `PUBLIC`             | If `1` or `true`, the server will be listed in the public server browser. This overrides the `Public` setting in the config file. |
+| `NAME`               | The name to use for local discovery / server browser listings. This overrides the `Name` setting in the config file.              |
+
 ## Game Modes
 
 ### `beatnet:quickplay`
 
-**Quick Play**: This is a continuous mode where players can vote for the next level after completing the last. Most
-votes win!
+**Quick Play**: This is a continuous mode where players can vote for the next level after completing the last. Most votes win!
 
-- **Countdown:** As soon as any suggestion is made, the lobby will begin counting down. The top voted level will be
-  shown in the center. When the countdown reaches 5 seconds, the vote is locked in and the next level is chosen.
-- **Modifier voting**: Modifiers can also be voted on. The modifier set with the most votes will win. If no modifiers
-  are selected, the default "No Fail" modifier is used.
+- **Countdown:** As soon as any suggestion is made, the lobby will begin counting down. The top voted level will be shown in the center. When the countdown reaches 5 seconds, or if all players are ready, the vote is locked in and the next level is chosen.
+- **Modifier voting**: Modifiers can also be voted on. The modifier set with the most votes will win. If no modifiers are selected, the default "No Fail" modifier is used.
